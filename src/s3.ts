@@ -44,8 +44,17 @@ export class S3Resources extends Construct {
     });
 
     const s3TriggerLambda = new Function(this, 's3TriggerLambda', {
-      code: Code.fromAsset('src/resources/s3trigger'),
-      handler: 'translationSMA.lambda_handler',
+      code: Code.fromAsset('src/resources/s3trigger', {
+        bundling: {
+          image: Runtime.PYTHON_3_9.bundlingImage,
+          command: [
+            'bash',
+            '-c',
+            'pip install -r requirements.txt -t /asset-output && cp -au . /asset-output',
+          ],
+        },
+      }),
+      handler: 'index.handler',
       runtime: Runtime.PYTHON_3_9,
       architecture: Architecture.ARM_64,
       environment: {

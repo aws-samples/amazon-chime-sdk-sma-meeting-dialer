@@ -31,10 +31,7 @@ export class PSTNAudio extends Construct {
           statements: [
             new PolicyStatement({
               resources: ['*'],
-              actions: [
-                'chime:CreateSipMediaApplicationCall',
-                'chime:UpdateSipMediaApplicationCall',
-              ],
+              actions: ['chime:DeleteAttendee', 'chime:DeleteMeeting'],
             }),
           ],
         }),
@@ -57,7 +54,7 @@ export class PSTNAudio extends Construct {
           ],
         },
       }),
-      handler: 'handler',
+      handler: 'index.handler',
       runtime: Runtime.PYTHON_3_9,
       architecture: Architecture.ARM_64,
       environment: {},

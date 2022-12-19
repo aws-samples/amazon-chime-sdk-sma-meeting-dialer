@@ -6,7 +6,7 @@ import urllib.parse
 from botocore.exceptions import ClientError
 
 chime_sdk_meeting_client = boto3.client('chime-sdk-meetings')
-chime_sdk_voice_client = boto3.client('chime=sdk-voice')
+chime_sdk_voice_client = boto3.client('chime-sdk-voice')
 s3_client = boto3.client('s3')
 
 FROM_NUMBER = os.environ['FROM_NUMBER']
@@ -24,8 +24,8 @@ logger.setLevel(log_level)
 
 def handler(event, context):
     global log_prefix
-    log_prefix = 'S3Trigger: '
-    logger.info('RECV {%s} Event: {%s}', log_prefix, json.dumps(event))
+    log_prefix = 'S3Trigger'
+    logger.info('RECV %s Event: %s', log_prefix, json.dumps(event))
 
     bucket = event['Records'][0]['s3']['bucket']['name']
     key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding='utf-8')
@@ -38,22 +38,29 @@ def handler(event, context):
         raise error
 
     request_info = json.loads(meeting_request['Body'].read().decode('utf-8'))
-    logger.info(request_info)
+    logger.info('RECV Request Info: %s ', json.dumps(request_info))
 
     attendee_list = []
     for participant in request_info['Participants']:
+        logger.info('Adding attendee %s', participant['PhoneNumber'])
         attendee_list.append({
             'ExternalUserId': participant['PhoneNumber'],
         })
+    logger.info('Attendee List: %s', json.dumps(attendee_list))
 
+    logger.info('Creating meeting:  %s', request_info['EventId'])
     meeting_info = chime_sdk_meeting_client.create_meeting_with_attendees(
-        ClientRequestToken=request_info['EventId'],
+        ClientRequestToken=str(request_info['EventId']),
         MediaRegion='us-east-1',
-        ExternalMeetingId=request_info['EventId'],
+        ExternalMeetingId=str(request_info['EventId']),
         Attendees=attendee_list
     )
 
+    logger.info('Meeting Info:  %s', json.dumps(meeting_info))
+
     for attendee in meeting_info['Attendees']:
+        logger.info('Calling attendee at %s for meeting %s', attendee['ExternalUserId'], request_info['EventId'])
+        logger.info('Join Token: %s', attendee['JoinToken'])
         chime_sdk_voice_client.create_sip_media_application_call(
             FromPhoneNumber=FROM_NUMBER,
             ToPhoneNumber=attendee['ExternalUserId'],
@@ -62,7 +69,7 @@ def handler(event, context):
                 'meeting_id': meeting_info['Meeting']['MeetingId'],
                 'attendee_id': attendee['AttendeeId'],
                 'join_token': attendee['JoinToken'],
-                'event_id': request_info['EventId']
+                'event_id': str(request_info['EventId'])
             }
 
         )

@@ -775,9 +775,9 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "4cdf79245beb515cf7fcc1eca519433f038919c6369eefce2568e212499427d6.zip",
+          "S3Key": "30739af7631ba884e84e20f62f51629431270fd4cccbb2cc0bc2ff80f1a24036.zip",
         },
-        "Handler": "handler",
+        "Handler": "index.handler",
         "Role": {
           "Fn::GetAtt": [
             "PSTNAudiosmaLambdaRole282FF183",
@@ -823,8 +823,8 @@ def submit_response(event: dict, context, response_status: str, error_message: s
               "Statement": [
                 {
                   "Action": [
-                    "chime:CreateSipMediaApplicationCall",
-                    "chime:UpdateSipMediaApplicationCall",
+                    "chime:DeleteAttendee",
+                    "chime:DeleteMeeting",
                   ],
                   "Effect": "Allow",
                   "Resource": "*",
@@ -877,7 +877,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "29babdc7610fb670748d384e3333cae1bd17b68e1fe69ce7b4cf08f75ecdccf9.zip",
+          "S3Key": "582245a3aefb1b4ff550d522b04df39051b90f71df93fbf2fcd2917b778ba5ec.zip",
         },
         "Environment": {
           "Variables": {
@@ -895,7 +895,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
             },
           },
         },
-        "Handler": "translationSMA.lambda_handler",
+        "Handler": "index.handler",
         "Role": {
           "Fn::GetAtt": [
             "S3Resourcess3TriggerLambdaRoleC5DAD17F",
