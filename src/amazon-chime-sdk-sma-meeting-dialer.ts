@@ -20,6 +20,10 @@ export class SMAMeetingDialer extends Stack {
     new CfnOutput(this, 'triggerBucket', {
       value: triggerBucket.triggerBucket.bucketName,
     });
+
+    new CfnOutput(this, 'uploadToS3', {
+      value: `aws s3 cp trigger.json s3://${triggerBucket.triggerBucket.bucketName}`,
+    });
   }
 }
 

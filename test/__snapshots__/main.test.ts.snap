@@ -16,6 +16,19 @@ exports[`Snapshot 1`] = `
         "Ref": "S3ResourcestriggerBucket8073A445",
       },
     },
+    "uploadToS3": {
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "aws s3 cp trigger.json s3://",
+            {
+              "Ref": "S3ResourcestriggerBucket8073A445",
+            },
+          ],
+        ],
+      },
+    },
   },
   "Parameters": {
     "BootstrapVersion": {
