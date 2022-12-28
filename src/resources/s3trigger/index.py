@@ -31,10 +31,9 @@ def handler(event, context):
     key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding='utf-8')
     try:
         meeting_request = s3_client.get_object(Bucket=bucket, Key=key)
-        print("CONTENT TYPE: " + meeting_request['ContentType'])
+        logger.info("CONTENT TYPE: %s", meeting_request['ContentType'])
     except Exception as error:
-        print(error)
-        print(f'Error getting object {key} from bucket {bucket}. Make sure they exist and your bucket is in the same region as this function.')
+        logger.error('S3 GetObject Error: %s', error)
         raise error
 
     request_info = json.loads(meeting_request['Body'].read().decode('utf-8'))
