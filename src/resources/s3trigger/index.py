@@ -118,7 +118,7 @@ def send_email(event_id, to_email, meeting_passcode):
                         'Data': 
                         (
                             'A meeting has been started. /nTo join the meeting:/n+' + str(FROM_NUMBER) +
-                            ',,,' + str(meeting_passcode) + '/nhttps://link.to/meetingId'
+                            ',,' + str(meeting_passcode) + '/nhttps://link.to/meetingId'
                         ),
                         'Charset': 'UTF-8'
                     },
@@ -126,7 +126,7 @@ def send_email(event_id, to_email, meeting_passcode):
                         'Data':
                         (
                             '<p>A meeting has been started.</p><p>To join the meeting:</p><p>' +
-                            str(FROM_NUMBER) + ',,,' + str(meeting_passcode) +
+                            str(FROM_NUMBER) + ',,' + str(meeting_passcode) +
                             '<p><a href="https://link.to/meeting">https://link.to/meetingId</a></p>'
                         ),
                         'Charset': 'UTF-8'
