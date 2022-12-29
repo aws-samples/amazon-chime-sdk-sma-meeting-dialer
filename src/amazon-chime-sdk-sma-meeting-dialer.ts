@@ -1,16 +1,21 @@
 import { App, CfnOutput, Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { PSTNAudio, S3Resources } from '.';
+import { PSTNAudio, S3Resources, Database } from '.';
 
 export class SMAMeetingDialer extends Stack {
   constructor(scope: Construct, id: string, props: StackProps = {}) {
     super(scope, id, props);
 
-    const pstnAudio = new PSTNAudio(this, 'PSTNAudio');
+    const database = new Database(this, 'Database');
+
+    const pstnAudio = new PSTNAudio(this, 'PSTNAudio', {
+      meetingTable: database.meetingTable,
+    });
 
     const triggerBucket = new S3Resources(this, 'S3Resources', {
       fromNumber: pstnAudio.smaPhoneNumber,
       sipMediaApplicationId: pstnAudio.sipMediaApplicationId,
+      meetingTable: database.meetingTable,
     });
 
     new CfnOutput(this, 'pstnPhoneNumber', {

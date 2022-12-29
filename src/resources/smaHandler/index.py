@@ -5,6 +5,10 @@ import boto3
 from botocore.exceptions import ClientError
 
 chime_sdk_meeting_client = boto3.client('chime-sdk-meetings')
+dynamo_client = boto3.resource('dynamodb')
+
+MEETING_TABLE = os.environ['MEETING_TABLE']
+
 # Set LogLevel using environment variable, fallback to INFO if not present
 logger = logging.getLogger()
 try:

@@ -270,6 +270,30 @@ def submit_response(event: dict, context, response_status: str, error_message: s
       },
       "Type": "AWS::IAM::Role",
     },
+    "DatabasecallRecordsTableA61C0BFF": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "MeetingPasscode",
+            "AttributeType": "N",
+          },
+        ],
+        "BillingMode": "PAY_PER_REQUEST",
+        "KeySchema": [
+          {
+            "AttributeName": "MeetingPasscode",
+            "KeyType": "HASH",
+          },
+        ],
+        "TimeToLiveSpecification": {
+          "AttributeName": "TTL",
+          "Enabled": true,
+        },
+      },
+      "Type": "AWS::DynamoDB::Table",
+      "UpdateReplacePolicy": "Delete",
+    },
     "PSTNAudioPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEvent64122BF2": {
       "DependsOn": [
         "PSTNAudioPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicy8CDBF19A",
@@ -778,6 +802,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
     },
     "PSTNAudiosmaHandler5098719C": {
       "DependsOn": [
+        "PSTNAudiosmaLambdaRoleDefaultPolicyB95E6E13",
         "PSTNAudiosmaLambdaRole282FF183",
       ],
       "Properties": {
@@ -788,7 +813,14 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "30739af7631ba884e84e20f62f51629431270fd4cccbb2cc0bc2ff80f1a24036.zip",
+          "S3Key": "888dfefce8861ca2c38b7cc2867485734e4194e1ddaf9be2323efdf0633c5685.zip",
+        },
+        "Environment": {
+          "Variables": {
+            "MEETING_TABLE": {
+              "Ref": "DatabasecallRecordsTableA61C0BFF",
+            },
+          },
         },
         "Handler": "index.handler",
         "Role": {
@@ -838,6 +870,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
                   "Action": [
                     "chime:DeleteAttendee",
                     "chime:DeleteMeeting",
+                    "chime:ListAttendees",
                   ],
                   "Effect": "Allow",
                   "Resource": "*",
@@ -850,6 +883,50 @@ def submit_response(event: dict, context, response_status: str, error_message: s
         ],
       },
       "Type": "AWS::IAM::Role",
+    },
+    "PSTNAudiosmaLambdaRoleDefaultPolicyB95E6E13": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "dynamodb:BatchGetItem",
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator",
+                "dynamodb:Query",
+                "dynamodb:GetItem",
+                "dynamodb:Scan",
+                "dynamodb:ConditionCheckItem",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+                "dynamodb:DescribeTable",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "DatabasecallRecordsTableA61C0BFF",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Ref": "AWS::NoValue",
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "PSTNAudiosmaLambdaRoleDefaultPolicyB95E6E13",
+        "Roles": [
+          {
+            "Ref": "PSTNAudiosmaLambdaRole282FF183",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
     },
     "PSTNResources1DB9F314": {
       "DependsOn": [
@@ -890,15 +967,19 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "582245a3aefb1b4ff550d522b04df39051b90f71df93fbf2fcd2917b778ba5ec.zip",
+          "S3Key": "e42d4e0ee48cd86aae3ea33cedfc79c059e82df23cf020acad3a7c318955c4e7.zip",
         },
         "Environment": {
           "Variables": {
+            "FROM_EMAIL": "",
             "FROM_NUMBER": {
               "Fn::GetAtt": [
                 "PSTNAudioPhoneNumberChimePhoneNumberpstnCustomResource61EF469C",
                 "phoneNumber",
               ],
+            },
+            "MEETING_TABLE": {
+              "Ref": "DatabasecallRecordsTableA61C0BFF",
             },
             "SIP_MEDIA_APPLICATION_ID": {
               "Fn::GetAtt": [
@@ -956,6 +1037,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
                   "Action": [
                     "chime:CreateSipMediaApplicationCall",
                     "chime:CreateMeetingWithAttendees",
+                    "ses:SendEmail",
                   ],
                   "Effect": "Allow",
                   "Resource": "*",
@@ -1000,6 +1082,34 @@ def submit_response(event: dict, context, response_status: str, error_message: s
                       "/*",
                     ],
                   ],
+                },
+              ],
+            },
+            {
+              "Action": [
+                "dynamodb:BatchGetItem",
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator",
+                "dynamodb:Query",
+                "dynamodb:GetItem",
+                "dynamodb:Scan",
+                "dynamodb:ConditionCheckItem",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+                "dynamodb:DescribeTable",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "DatabasecallRecordsTableA61C0BFF",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Ref": "AWS::NoValue",
                 },
               ],
             },

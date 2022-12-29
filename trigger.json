@@ -2,12 +2,9 @@
   "EventId": 12345,
   "Participants": [
     {
-      "Name": "Name",
-      "PhoneNumber": "+13125551212",
-      "Email": "test@example.com"
-    },
-    {
-      "PhoneNumber": "+18155551212"
+      "Name": "Court",
+      "PhoneNumber": "+18154518245",
+      "Email": "schuettc@amazon.com"
     }
   ]
 }

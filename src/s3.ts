@@ -1,4 +1,5 @@
 import { RemovalPolicy, Duration } from 'aws-cdk-lib';
+import { Table } from 'aws-cdk-lib/aws-dynamodb';
 import {
   ServicePrincipal,
   PolicyDocument,
@@ -14,6 +15,7 @@ import { Construct } from 'constructs';
 interface S3ResourcesProps {
   fromNumber: string;
   sipMediaApplicationId: string;
+  meetingTable: Table;
 }
 export class S3Resources extends Construct {
   public triggerBucket: Bucket;
@@ -31,6 +33,7 @@ export class S3Resources extends Construct {
               actions: [
                 'chime:CreateSipMediaApplicationCall',
                 'chime:CreateMeetingWithAttendees',
+                'ses:SendEmail',
               ],
             }),
           ],
@@ -60,6 +63,8 @@ export class S3Resources extends Construct {
       environment: {
         FROM_NUMBER: props.fromNumber,
         SIP_MEDIA_APPLICATION_ID: props.sipMediaApplicationId,
+        FROM_EMAIL: '',
+        MEETING_TABLE: props.meetingTable.tableName,
       },
       role: s3TriggerLambdaRole,
       timeout: Duration.seconds(60),
@@ -72,6 +77,7 @@ export class S3Resources extends Construct {
     });
 
     this.triggerBucket.grantRead(s3TriggerLambda);
+    props.meetingTable.grantReadWriteData(s3TriggerLambda);
 
     s3TriggerLambda.addEventSource(
       new S3EventSource(this.triggerBucket, {

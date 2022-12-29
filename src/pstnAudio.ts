@@ -1,4 +1,5 @@
 import { Duration, Stack } from 'aws-cdk-lib';
+import { Table } from 'aws-cdk-lib/aws-dynamodb';
 import {
   ServicePrincipal,
   Role,
@@ -17,11 +18,15 @@ import {
 } from 'cdk-amazon-chime-resources';
 import { Construct } from 'constructs';
 
+export interface ChimeSipMediaAppProps {
+  meetingTable: Table;
+}
+
 export class PSTNAudio extends Construct {
   public sipMediaApplicationId: string;
   public smaPhoneNumber: string;
 
-  constructor(scope: Construct, id: string) {
+  constructor(scope: Construct, id: string, props: ChimeSipMediaAppProps) {
     super(scope, id);
 
     const smaLambdaRole = new Role(this, 'smaLambdaRole', {
@@ -31,7 +36,11 @@ export class PSTNAudio extends Construct {
           statements: [
             new PolicyStatement({
               resources: ['*'],
-              actions: ['chime:DeleteAttendee', 'chime:DeleteMeeting'],
+              actions: [
+                'chime:DeleteAttendee',
+                'chime:DeleteMeeting',
+                'chime:ListAttendees',
+              ],
             }),
           ],
         }),
@@ -55,12 +64,16 @@ export class PSTNAudio extends Construct {
         },
       }),
       handler: 'index.handler',
+      environment: {
+        MEETING_TABLE: props.meetingTable.tableName,
+      },
       runtime: Runtime.PYTHON_3_9,
       architecture: Architecture.ARM_64,
-      environment: {},
       role: smaLambdaRole,
       timeout: Duration.seconds(60),
     });
+
+    props.meetingTable.grantReadWriteData(smaHandler);
 
     const sipMediaApp = new ChimeSipMediaApp(this, 'SipMediaApplication', {
       endpoint: smaHandler.functionArn,
