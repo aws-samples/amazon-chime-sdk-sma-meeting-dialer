@@ -68,6 +68,7 @@ def handler(event, context):
     for index, participant in enumerate(participant_list):
         participant_list[index]['JoinToken'] = meeting_info['Attendees'][index]['JoinToken']
         participant_list[index]['AttendeeId'] = meeting_info['Attendees'][index]['AttendeeId']
+        participant_list[index]['Attendee'] = meeting_info['Attendees'][index]
     
     logger.info('Participant List: %s', json.dumps(participant_list))
     logger.info('Meeting Info:  %s', json.dumps(meeting_info))
@@ -78,6 +79,7 @@ def handler(event, context):
         meeting_table.put_item(Item={
             'EventId': request_info['EventId'],
             'MeetingId': meeting_info['Meeting']['MeetingId'],
+            'MeetingInfo': {'Meeting': meeting_info['Meeting'], 'Attendee': attendee['Attendee'], },
             'AttendeeId': attendee['AttendeeId'],
             'JoinToken': attendee['JoinToken'],
             'MeetingPasscode': meeting_passcode,
