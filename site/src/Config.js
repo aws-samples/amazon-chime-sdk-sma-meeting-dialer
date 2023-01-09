@@ -20,14 +20,7 @@ export const AmplifyConfig = {
     API: {
         endpoints: [
             {
-                name: 'joinMeetingAPI',
-                endpoint: config.apiUrl,
-                custom_header: async () => {
-                    return { Authorization: `${(await Auth.currentSession()).getIdToken().getJwtToken()}` };
-                },
-            },
-            {
-                name: 'endMeetingAPI',
+                name: 'meetingAPI',
                 endpoint: config.apiUrl,
                 custom_header: async () => {
                     return { Authorization: `${(await Auth.currentSession()).getIdToken().getJwtToken()}` };

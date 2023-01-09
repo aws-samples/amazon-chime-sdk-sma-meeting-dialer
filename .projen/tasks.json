@@ -64,6 +64,14 @@
       "name": "compile",
       "description": "Only compile"
     },
+    "configLocal": {
+      "name": "configLocal",
+      "steps": [
+        {
+          "exec": "aws s3 cp s3://$(yarn run --silent getBucket)/config.json site/public/"
+        }
+      ]
+    },
     "default": {
       "name": "default",
       "description": "Synthesize project files",
@@ -123,11 +131,19 @@
         }
       ]
     },
+    "getBucket": {
+      "name": "getBucket",
+      "steps": [
+        {
+          "exec": "aws cloudformation describe-stacks --stack-name SMAMeetingDialer --region us-east-1 --query 'Stacks[0].Outputs[?OutputKey==`siteBucket`].OutputValue' --output text"
+        }
+      ]
+    },
     "launch": {
       "name": "launch",
       "steps": [
         {
-          "exec": "yarn && yarn projen && yarn build && yarn cdk bootstrap && yarn cdk deploy --hotswap"
+          "exec": "yarn && yarn projen && yarn build && yarn cdk bootstrap && yarn cdk deploy --hotswap && yarn configLocal"
         }
       ]
     },

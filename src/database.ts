@@ -11,7 +11,7 @@ export class Database extends Construct {
     this.meetingTable = new Table(this, 'callRecordsTable', {
       partitionKey: {
         name: 'MeetingPasscode',
-        type: AttributeType.NUMBER,
+        type: AttributeType.STRING,
       },
       removalPolicy: RemovalPolicy.DESTROY,
       timeToLiveAttribute: 'TTL',

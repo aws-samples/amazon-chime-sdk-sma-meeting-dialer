@@ -4,7 +4,8 @@
     {
       "Name": "Court",
       "PhoneNumber": "+18154518245",
-      "Email": "schuettc@amazon.com"
+      "Email": "schuettc@amazon.com",
+      "CallParticipant": "true"
     }
   ]
 }

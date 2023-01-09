@@ -6,8 +6,10 @@ import { Authenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import '@cloudscape-design/global-styles/index.css';
 import VideoMeeting from './VideoMeeting';
+import JoinMeeting from './JoinMeeting';
 import MeetingControlBar from './MeetingControlBar';
 import { MeetingProvider } from 'amazon-chime-sdk-component-library-react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import { ContentLayout, Container, Header, SpaceBetween, Button } from '@cloudscape-design/components';
 
@@ -35,7 +37,7 @@ const App = () => {
                 order: 1,
                 isRequired: true,
             },
-            name: {
+            given_name: {
                 order: 2,
                 isRequired: true,
                 placeholder: 'Name',
@@ -75,11 +77,12 @@ const App = () => {
                             </SpaceBetween>
                         }
                     >
-                        <SpaceBetween direction="vertical" size="l">
-                            <Container className="MeetingContainer" footer={<MeetingControlBar />}>
-                                <VideoMeeting />
-                            </Container>
-                        </SpaceBetween>
+                        {/* <SpaceBetween direction="vertical" size="l"> */}
+                        <Routes>
+                            <Route exact path="/" element={<JoinMeeting />} />
+                            <Route path="/meeting" element={<VideoMeeting />} />
+                        </Routes>
+                        {/* </SpaceBetween> */}
                     </ContentLayout>
                 </MeetingProvider>
             )}

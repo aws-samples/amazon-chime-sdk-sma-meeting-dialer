@@ -1,4 +1,5 @@
 import os
+import decimal
 import json
 import logging
 import time
@@ -28,6 +29,13 @@ try:
 except BaseException:
     log_level = 'INFO'
 logger.setLevel(log_level)
+
+
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, decimal.Decimal):
+            return int(obj)
+        return super(DecimalEncoder, self).default(obj)
 
 
 def handler(event, context):
@@ -74,18 +82,19 @@ def handler(event, context):
     logger.info('Meeting Info:  %s', json.dumps(meeting_info))
     for attendee in participant_list:
         logger.info('Calling attendee at %s for meeting %s', attendee['PhoneNumber'], request_info['EventId'])
-        logger.info('Join Token: %s', attendee['JoinToken'])
         meeting_passcode = randint(100000, 999999)
-        meeting_table.put_item(Item={
-            'EventId': request_info['EventId'],
+        meeting_object = {
+            'EventId': str(request_info['EventId']),
             'MeetingId': meeting_info['Meeting']['MeetingId'],
             'MeetingInfo': {'Meeting': meeting_info['Meeting'], 'Attendee': attendee['Attendee'], },
             'AttendeeId': attendee['AttendeeId'],
             'JoinToken': attendee['JoinToken'],
-            'MeetingPasscode': meeting_passcode,
+            'MeetingPasscode': str(meeting_passcode),
             'PhoneNumber':  attendee['PhoneNumber'],
             'TTL':  int(time.time() + 6000)
-            })
+        }
+        logger.info('Meeting Object: %s', json.dumps(meeting_object, cls=DecimalEncoder))
+        meeting_table.put_item(Item=meeting_object)
         if (attendee['Email'] != 'None' and FROM_EMAIL != ''):
             send_email(request_info['EventId'], attendee['Email'], meeting_passcode)
         chime_sdk_voice_client.create_sip_media_application_call(
@@ -120,7 +129,7 @@ def send_email(event_id, to_email, meeting_passcode):
                         'Data': 
                         (
                             'A meeting has been started. /nTo join the meeting:/n+' + str(FROM_NUMBER) +
-                            ',,' + str(meeting_passcode) + '/nhttps://link.to/meetingId'
+                            ',,' + str(meeting_passcode) + '/nhttp://localhost:8080/meeting?eventId=' + str(event_id) + '&passcode=' + str(meeting_passcode)
                         ),
                         'Charset': 'UTF-8'
                     },
@@ -129,7 +138,7 @@ def send_email(event_id, to_email, meeting_passcode):
                         (
                             '<p>A meeting has been started.</p><p>To join the meeting:</p><p>' +
                             str(FROM_NUMBER) + ',,' + str(meeting_passcode) +
-                            '<p><a href="https://link.to/meeting">https://link.to/meetingId</a></p>'
+                            '<p><a href="http://localhost:8080/meeting?eventId=' + str(event_id) + '&passcode=' + str(meeting_passcode) + '">Meeting Link</a></p>'
                         ),
                         'Charset': 'UTF-8'
                         }

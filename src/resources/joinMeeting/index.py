@@ -48,7 +48,10 @@ def handler(event, context):
         logger.error('Error getting meeting info: %s', error)
         response['statusCode'] = 500
         return response
-
+    logger.info('Meeting info: %s', meeting_info)
+    logger.info('MeetingPasscode: %s  Type: %s', meeting_passcode, type(meeting_passcode))
+    logger.info('PhoneNumber: %s  Type: %s', phone_number, type(phone_number))
+    logger.info('EventId: %s  Type: %s', event_id, type(event_id))
     if meeting_info['Item'] is not None:
         if meeting_info['Item']['MeetingPasscode'] == meeting_passcode and meeting_info['Item']['PhoneNumber'] == phone_number and meeting_info['Item']['EventId'] == event_id:
             response_info = {
