@@ -5,11 +5,8 @@ import {
     useMeetingManager,
     ControlBar,
     ControlBarButton,
-    Meeting,
     LeaveMeeting,
     AudioInputControl,
-    Input,
-    // DeviceLabels,
     Remove,
     VideoInputControl,
     AudioOutputControl,
@@ -18,19 +15,9 @@ import { API, Auth } from 'aws-amplify';
 import '@aws-amplify/ui-react/styles.css';
 import '@cloudscape-design/global-styles/index.css';
 
-import { Loader } from '@aws-amplify/ui-react';
-
 const MeetingControlBar = ({ meetingId }) => {
-    // const [requestId, setRequestId] = useState('');
     const audioVideo = useAudioVideo();
     const meetingManager = useMeetingManager();
-    const [isLoading, setLoading] = useState(false);
-
-    // const JoinButtonProps = {
-    //     icon: <Meeting />,
-    //     onClick: (event) => handleJoin(event),
-    //     label: 'Join',
-    // };
 
     const LeaveButtonProps = {
         icon: <LeaveMeeting />,
@@ -60,25 +47,11 @@ const MeetingControlBar = ({ meetingId }) => {
 
     return (
         <ControlBar showLabels={true} responsive={true} layout="undocked-horizontal">
-            {/* <Input
-                showClear={true}
-                onChange={(e) => setRequestId(e.target.value)}
-                sizing={'md'}
-                value={requestId}
-                placeholder="Request ID"
-                type="text"
-            />
-            {!audioVideo && <ControlBarButton {...JoinButtonProps} />} */}
-            {isLoading && <Loader />}
-            {audioVideo && (
-                <>
-                    <ControlBarButton {...LeaveButtonProps} />
-                    <ControlBarButton {...EndButtonProps} />
-                    <AudioInputControl />
-                    <AudioOutputControl />
-                    <VideoInputControl />
-                </>
-            )}
+            <ControlBarButton {...LeaveButtonProps} />
+            <ControlBarButton {...EndButtonProps} />
+            <AudioInputControl />
+            <AudioOutputControl />
+            <VideoInputControl />
         </ControlBar>
     );
 };

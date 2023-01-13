@@ -59,7 +59,11 @@ def handler(event, context):
     participant_list = []
     for participant in request_info['Participants']:
         logger.info('Adding attendee %s', participant['PhoneNumber'])
-        participant_list.append({"Name":  participant.get('Name', 'None'), "PhoneNumber": participant['PhoneNumber'], 'Email':  participant.get('Email', 'None')})
+        participant_list.append({
+            "Name":  participant.get('Name', 'None'),
+            "PhoneNumber": participant['PhoneNumber'],
+            'Email':  participant.get('Email', 'None'),
+            'CallParticipant': participant.get('CallParticipant', 'None')})
         attendee_list.append({
             'ExternalUserId': participant['PhoneNumber'],
         })
@@ -81,7 +85,6 @@ def handler(event, context):
     logger.info('Participant List: %s', json.dumps(participant_list))
     logger.info('Meeting Info:  %s', json.dumps(meeting_info))
     for attendee in participant_list:
-        logger.info('Calling attendee at %s for meeting %s', attendee['PhoneNumber'], request_info['EventId'])
         meeting_passcode = randint(100000, 999999)
         meeting_object = {
             'EventId': str(request_info['EventId']),
@@ -96,18 +99,21 @@ def handler(event, context):
         logger.info('Meeting Object: %s', json.dumps(meeting_object, cls=DecimalEncoder))
         meeting_table.put_item(Item=meeting_object)
         if (attendee['Email'] != 'None' and FROM_EMAIL != ''):
+            logger.info('Sending email to %s for meeting %s', attendee['Email'], meeting_object['EventId'])
             send_email(request_info['EventId'], attendee['Email'], meeting_passcode)
-        chime_sdk_voice_client.create_sip_media_application_call(
-            FromPhoneNumber=FROM_NUMBER,
-            ToPhoneNumber=attendee['PhoneNumber'],
-            SipMediaApplicationId=SIP_MEDIA_APPLICATION_ID,
-            ArgumentsMap={
-                'meeting_id': meeting_info['Meeting']['MeetingId'],
-                'attendee_id': attendee['AttendeeId'],
-                'join_token': attendee['JoinToken'],
-                'event_id': str(request_info['EventId'])
-            }
-        )
+        if attendee['CallParticipant'] is True:
+            logger.info('Calling attendee at %s for meeting %s', attendee['PhoneNumber'], request_info['EventId'])
+            chime_sdk_voice_client.create_sip_media_application_call(
+                FromPhoneNumber=FROM_NUMBER,
+                ToPhoneNumber=attendee['PhoneNumber'],
+                SipMediaApplicationId=SIP_MEDIA_APPLICATION_ID,
+                ArgumentsMap={
+                    'meeting_id': meeting_info['Meeting']['MeetingId'],
+                    'attendee_id': attendee['AttendeeId'],
+                    'join_token': attendee['JoinToken'],
+                    'event_id': str(request_info['EventId'])
+                }
+            )
 
 
 def send_email(event_id, to_email, meeting_passcode):

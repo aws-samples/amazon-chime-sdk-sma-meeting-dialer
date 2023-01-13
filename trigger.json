@@ -5,7 +5,13 @@
       "Name": "Court",
       "PhoneNumber": "+18154518245",
       "Email": "schuettc@amazon.com",
-      "CallParticipant": "true"
+      "CallParticipant": false
+    },
+    {
+      "Name": "CourtSecond",
+      "PhoneNumber": "+19195551212",
+      "Email": "schuettc+second@amazon.com",
+      "CallParticipant": false
     }
   ]
 }

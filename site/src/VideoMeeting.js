@@ -13,8 +13,9 @@ import '@aws-amplify/ui-react/styles.css';
 import '@cloudscape-design/global-styles/index.css';
 import { MeetingSessionConfiguration } from 'amazon-chime-sdk-js';
 import MeetingControlBar from './MeetingControlBar';
+import RosterContainer from './Roster';
 import { API, Auth } from 'aws-amplify';
-import { Container } from '@cloudscape-design/components';
+import { Container, SpaceBetween } from '@cloudscape-design/components';
 import { useSearchParams } from 'react-router-dom';
 
 const VideoMeeting = ({}) => {
@@ -75,11 +76,18 @@ const VideoMeeting = ({}) => {
 
     return (
         <div className="MeetingContainer">
-            <Container footer={<MeetingControlBar meetingId={meetingId} />}>
-                <div style={{ height: '600px', width: '720px' }}>
-                    <VideoTileGrid />
-                </div>
-            </Container>
+            {audioVideo && (
+                <>
+                    <SpaceBetween direction="horizontal" size="l">
+                        <RosterContainer />
+                        <Container footer={<MeetingControlBar meetingId={meetingId} />}>
+                            <div style={{ height: '600px', width: '720px' }}>
+                                <VideoTileGrid />
+                            </div>
+                        </Container>
+                    </SpaceBetween>
+                </>
+            )}
         </div>
     );
 };
