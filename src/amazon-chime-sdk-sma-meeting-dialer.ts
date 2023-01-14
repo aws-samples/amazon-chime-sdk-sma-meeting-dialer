@@ -7,6 +7,7 @@ import {
   Infrastructure,
   Cognito,
   Site,
+  DistributionResources,
 } from '.';
 
 export class SMAMeetingDialer extends Stack {
@@ -14,6 +15,8 @@ export class SMAMeetingDialer extends Stack {
     super(scope, id, props);
 
     const database = new Database(this, 'Database');
+
+    const distribution = new DistributionResources(this, 'Distribution');
 
     const pstnAudio = new PSTNAudio(this, 'PSTNAudio', {
       meetingTable: database.meetingTable,
@@ -29,16 +32,19 @@ export class SMAMeetingDialer extends Stack {
       userPool: cognito.userPool,
     });
 
-    const site = new Site(this, 'Site', {
+    new Site(this, 'Site', {
       apiUrl: infrastructure.apiUrl,
       userPool: cognito.userPool,
       userPoolClient: cognito.userPoolClient,
+      distribution: distribution.distribution,
+      siteBucket: distribution.siteBucket,
     });
 
     const triggerBucket = new S3Resources(this, 'S3Resources', {
       fromNumber: pstnAudio.smaPhoneNumber,
       sipMediaApplicationId: pstnAudio.sipMediaApplicationId,
       meetingTable: database.meetingTable,
+      distribution: distribution.distribution,
     });
 
     new CfnOutput(this, 'API_URL', { value: infrastructure.apiUrl });
@@ -47,9 +53,11 @@ export class SMAMeetingDialer extends Stack {
     new CfnOutput(this, 'USER_POOL_CLIENT', {
       value: cognito.userPoolClient.userPoolClientId,
     });
-    new CfnOutput(this, 'siteBucket', { value: site.siteBucket.bucketName });
+    new CfnOutput(this, 'siteBucket', {
+      value: distribution.siteBucket.bucketName,
+    });
     new CfnOutput(this, 'site', {
-      value: site.distribution.distributionDomainName,
+      value: distribution.distribution.distributionDomainName,
     });
 
     new CfnOutput(this, 'pstnPhoneNumber', {

@@ -1,4 +1,5 @@
 import { RemovalPolicy, Duration } from 'aws-cdk-lib';
+import { Distribution } from 'aws-cdk-lib/aws-cloudfront';
 import { Table } from 'aws-cdk-lib/aws-dynamodb';
 import {
   ServicePrincipal,
@@ -16,6 +17,7 @@ interface S3ResourcesProps {
   fromNumber: string;
   sipMediaApplicationId: string;
   meetingTable: Table;
+  distribution: Distribution;
 }
 export class S3Resources extends Construct {
   public triggerBucket: Bucket;
@@ -65,6 +67,7 @@ export class S3Resources extends Construct {
         SIP_MEDIA_APPLICATION_ID: props.sipMediaApplicationId,
         FROM_EMAIL: '',
         MEETING_TABLE: props.meetingTable.tableName,
+        DISTRIBUTION: props.distribution.distributionDomainName,
       },
       role: s3TriggerLambdaRole,
       timeout: Duration.seconds(60),

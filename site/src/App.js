@@ -77,12 +77,10 @@ const App = () => {
                             </SpaceBetween>
                         }
                     >
-                        {/* <SpaceBetween direction="vertical" size="l"> */}
                         <Routes>
                             <Route exact path="/" element={<JoinMeeting />} />
                             <Route path="/meeting" element={<VideoMeeting />} />
                         </Routes>
-                        {/* </SpaceBetween> */}
                     </ContentLayout>
                 </MeetingProvider>
             )}

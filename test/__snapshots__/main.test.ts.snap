@@ -81,14 +81,14 @@ exports[`Snapshot 1`] = `
     "site": {
       "Value": {
         "Fn::GetAtt": [
-          "SiteCloudfrontDistribution0794B6B8",
+          "DistributionCloudfrontDistribution6D9237C5",
           "DomainName",
         ],
       },
     },
     "siteBucket": {
       "Value": {
-        "Ref": "SitewebsiteBucketBC20A569",
+        "Ref": "DistributionwebsiteBucketD9047D1D",
       },
     },
     "triggerBucket": {
@@ -789,7 +789,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
               "Resource": [
                 {
                   "Fn::GetAtt": [
-                    "SitewebsiteBucketBC20A569",
+                    "DistributionwebsiteBucketD9047D1D",
                     "Arn",
                   ],
                 },
@@ -799,7 +799,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
                     [
                       {
                         "Fn::GetAtt": [
-                          "SitewebsiteBucketBC20A569",
+                          "DistributionwebsiteBucketD9047D1D",
                           "Arn",
                         ],
                       },
@@ -846,7 +846,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
             [
               "Lambda function for auto-deleting objects in ",
               {
-                "Ref": "SitewebsiteBucketBC20A569",
+                "Ref": "DistributionwebsiteBucketD9047D1D",
               },
               " S3 bucket.",
             ],
@@ -910,6 +910,192 @@ def submit_response(event: dict, context, response_status: str, error_message: s
       },
       "Type": "AWS::DynamoDB::Table",
       "UpdateReplacePolicy": "Delete",
+    },
+    "DistributionCloudfrontDistribution6D9237C5": {
+      "Properties": {
+        "DistributionConfig": {
+          "DefaultCacheBehavior": {
+            "CachePolicyId": "4135ea2d-6df8-44a3-9df3-4b5a84be39ad",
+            "Compress": true,
+            "TargetOriginId": "testDistributionCloudfrontDistributionOrigin1360469E2",
+            "ViewerProtocolPolicy": "redirect-to-https",
+          },
+          "DefaultRootObject": "index.html",
+          "Enabled": true,
+          "HttpVersion": "http2",
+          "IPV6Enabled": true,
+          "Logging": {
+            "Bucket": {
+              "Fn::GetAtt": [
+                "DistributionCloudfrontDistributionLoggingBucket91B6AF79",
+                "RegionalDomainName",
+              ],
+            },
+          },
+          "Origins": [
+            {
+              "DomainName": {
+                "Fn::GetAtt": [
+                  "DistributionwebsiteBucketD9047D1D",
+                  "RegionalDomainName",
+                ],
+              },
+              "Id": "testDistributionCloudfrontDistributionOrigin1360469E2",
+              "S3OriginConfig": {
+                "OriginAccessIdentity": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "origin-access-identity/cloudfront/",
+                      {
+                        "Ref": "DistributionCloudfrontDistributionOrigin1S3Origin5911AB5C",
+                      },
+                    ],
+                  ],
+                },
+              },
+            },
+          ],
+        },
+      },
+      "Type": "AWS::CloudFront::Distribution",
+    },
+    "DistributionCloudfrontDistributionLoggingBucket91B6AF79": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "AES256",
+              },
+            },
+          ],
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "DistributionCloudfrontDistributionOrigin1S3Origin5911AB5C": {
+      "Properties": {
+        "CloudFrontOriginAccessIdentityConfig": {
+          "Comment": "Identity for testDistributionCloudfrontDistributionOrigin1360469E2",
+        },
+      },
+      "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
+    },
+    "DistributionwebsiteBucketAutoDeleteObjectsCustomResourceE47609AC": {
+      "DeletionPolicy": "Delete",
+      "DependsOn": [
+        "DistributionwebsiteBucketPolicy0C1F8BF8",
+      ],
+      "Properties": {
+        "BucketName": {
+          "Ref": "DistributionwebsiteBucketD9047D1D",
+        },
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::S3AutoDeleteObjects",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "DistributionwebsiteBucketD9047D1D": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "aws-cdk:auto-delete-objects",
+            "Value": "true",
+          },
+          {
+            "Key": "aws-cdk:cr-owned:7d2ce709",
+            "Value": "true",
+          },
+        ],
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "DistributionwebsiteBucketPolicy0C1F8BF8": {
+      "Properties": {
+        "Bucket": {
+          "Ref": "DistributionwebsiteBucketD9047D1D",
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::GetAtt": [
+                    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+                    "Arn",
+                  ],
+                },
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "DistributionwebsiteBucketD9047D1D",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "DistributionwebsiteBucketD9047D1D",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "s3:GetObject",
+              "Effect": "Allow",
+              "Principal": {
+                "CanonicalUser": {
+                  "Fn::GetAtt": [
+                    "DistributionCloudfrontDistributionOrigin1S3Origin5911AB5C",
+                    "S3CanonicalUserId",
+                  ],
+                },
+              },
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    {
+                      "Fn::GetAtt": [
+                        "DistributionwebsiteBucketD9047D1D",
+                        "Arn",
+                      ],
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
     },
     "Infrastructureauth4BEB723B": {
       "Properties": {
@@ -2260,10 +2446,16 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "6e8037701101224d668621aff43285a28567ae5ace81c96228b3b3f8673114bf.zip",
+          "S3Key": "c33ce3782f521f439a328ff291575a9e6dd87c5fa634fd87eea4d0d146d32f76.zip",
         },
         "Environment": {
           "Variables": {
+            "DISTRIBUTION": {
+              "Fn::GetAtt": [
+                "DistributionCloudfrontDistribution6D9237C5",
+                "DomainName",
+              ],
+            },
             "FROM_EMAIL": "",
             "FROM_NUMBER": {
               "Fn::GetAtt": [
@@ -2556,79 +2748,6 @@ def submit_response(event: dict, context, response_status: str, error_message: s
       },
       "Type": "AWS::S3::BucketPolicy",
     },
-    "SiteCloudfrontDistribution0794B6B8": {
-      "Properties": {
-        "DistributionConfig": {
-          "DefaultCacheBehavior": {
-            "CachePolicyId": "4135ea2d-6df8-44a3-9df3-4b5a84be39ad",
-            "Compress": true,
-            "TargetOriginId": "testSiteCloudfrontDistributionOrigin14F75D719",
-            "ViewerProtocolPolicy": "redirect-to-https",
-          },
-          "DefaultRootObject": "index.html",
-          "Enabled": true,
-          "HttpVersion": "http2",
-          "IPV6Enabled": true,
-          "Logging": {
-            "Bucket": {
-              "Fn::GetAtt": [
-                "SiteCloudfrontDistributionLoggingBucket0054AC66",
-                "RegionalDomainName",
-              ],
-            },
-          },
-          "Origins": [
-            {
-              "DomainName": {
-                "Fn::GetAtt": [
-                  "SitewebsiteBucketBC20A569",
-                  "RegionalDomainName",
-                ],
-              },
-              "Id": "testSiteCloudfrontDistributionOrigin14F75D719",
-              "S3OriginConfig": {
-                "OriginAccessIdentity": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "origin-access-identity/cloudfront/",
-                      {
-                        "Ref": "SiteCloudfrontDistributionOrigin1S3Origin4F2AB6D1",
-                      },
-                    ],
-                  ],
-                },
-              },
-            },
-          ],
-        },
-      },
-      "Type": "AWS::CloudFront::Distribution",
-    },
-    "SiteCloudfrontDistributionLoggingBucket0054AC66": {
-      "DeletionPolicy": "Retain",
-      "Properties": {
-        "BucketEncryption": {
-          "ServerSideEncryptionConfiguration": [
-            {
-              "ServerSideEncryptionByDefault": {
-                "SSEAlgorithm": "AES256",
-              },
-            },
-          ],
-        },
-      },
-      "Type": "AWS::S3::Bucket",
-      "UpdateReplacePolicy": "Retain",
-    },
-    "SiteCloudfrontDistributionOrigin1S3Origin4F2AB6D1": {
-      "Properties": {
-        "CloudFrontOriginAccessIdentityConfig": {
-          "Comment": "Identity for testSiteCloudfrontDistributionOrigin14F75D719",
-        },
-      },
-      "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
-    },
     "SiteDeployBucketAwsCliLayerB1A3335C": {
       "Properties": {
         "Content": {
@@ -2645,10 +2764,10 @@ def submit_response(event: dict, context, response_status: str, error_message: s
       "DeletionPolicy": "Delete",
       "Properties": {
         "DestinationBucketName": {
-          "Ref": "SitewebsiteBucketBC20A569",
+          "Ref": "DistributionwebsiteBucketD9047D1D",
         },
         "DistributionId": {
-          "Ref": "SiteCloudfrontDistribution0794B6B8",
+          "Ref": "DistributionCloudfrontDistribution6D9237C5",
         },
         "DistributionPaths": [
           "/*",
@@ -2701,119 +2820,6 @@ def submit_response(event: dict, context, response_status: str, error_message: s
       },
       "Type": "Custom::CDKBucketDeployment",
       "UpdateReplacePolicy": "Delete",
-    },
-    "SitewebsiteBucketAutoDeleteObjectsCustomResourceB62EAF63": {
-      "DeletionPolicy": "Delete",
-      "DependsOn": [
-        "SitewebsiteBucketPolicyC20F0243",
-      ],
-      "Properties": {
-        "BucketName": {
-          "Ref": "SitewebsiteBucketBC20A569",
-        },
-        "ServiceToken": {
-          "Fn::GetAtt": [
-            "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "Custom::S3AutoDeleteObjects",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "SitewebsiteBucketBC20A569": {
-      "DeletionPolicy": "Delete",
-      "Properties": {
-        "Tags": [
-          {
-            "Key": "aws-cdk:auto-delete-objects",
-            "Value": "true",
-          },
-          {
-            "Key": "aws-cdk:cr-owned:7d2ce709",
-            "Value": "true",
-          },
-        ],
-      },
-      "Type": "AWS::S3::Bucket",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "SitewebsiteBucketPolicyC20F0243": {
-      "Properties": {
-        "Bucket": {
-          "Ref": "SitewebsiteBucketBC20A569",
-        },
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "s3:GetBucket*",
-                "s3:List*",
-                "s3:DeleteObject*",
-              ],
-              "Effect": "Allow",
-              "Principal": {
-                "AWS": {
-                  "Fn::GetAtt": [
-                    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
-                    "Arn",
-                  ],
-                },
-              },
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "SitewebsiteBucketBC20A569",
-                    "Arn",
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::GetAtt": [
-                          "SitewebsiteBucketBC20A569",
-                          "Arn",
-                        ],
-                      },
-                      "/*",
-                    ],
-                  ],
-                },
-              ],
-            },
-            {
-              "Action": "s3:GetObject",
-              "Effect": "Allow",
-              "Principal": {
-                "CanonicalUser": {
-                  "Fn::GetAtt": [
-                    "SiteCloudfrontDistributionOrigin1S3Origin4F2AB6D1",
-                    "S3CanonicalUserId",
-                  ],
-                },
-              },
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    {
-                      "Fn::GetAtt": [
-                        "SitewebsiteBucketBC20A569",
-                        "Arn",
-                      ],
-                    },
-                    "/*",
-                  ],
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::S3::BucketPolicy",
     },
   },
   "Rules": {

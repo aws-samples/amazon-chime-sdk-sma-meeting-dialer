@@ -17,14 +17,15 @@ interface SiteProps {
   apiUrl: string;
   userPool: IUserPool;
   userPoolClient: IUserPoolClient;
+  siteBucket: Bucket;
+  distribution: Distribution;
 }
-export class Site extends Construct {
+
+export class DistributionResources extends Construct {
   public readonly siteBucket: Bucket;
   public readonly distribution: Distribution;
-
-  constructor(scope: Construct, id: string, props: SiteProps) {
+  constructor(scope: Construct, id: string) {
     super(scope, id);
-
     this.siteBucket = new Bucket(this, 'websiteBucket', {
       publicReadAccess: false,
       removalPolicy: RemovalPolicy.DESTROY,
@@ -41,6 +42,13 @@ export class Site extends Construct {
       },
       defaultRootObject: 'index.html',
     });
+  }
+}
+
+export class Site extends Construct {
+  constructor(scope: Construct, id: string, props: SiteProps) {
+    super(scope, id);
+
     const execOptions: ExecSyncOptions = { stdio: 'inherit' };
 
     const bundle = Source.asset('./site', {
@@ -82,8 +90,8 @@ export class Site extends Construct {
 
     new BucketDeployment(this, 'DeployBucket', {
       sources: [bundle, Source.jsonData('config.json', config)],
-      destinationBucket: this.siteBucket,
-      distribution: this.distribution,
+      destinationBucket: props.siteBucket,
+      distribution: props.distribution,
       distributionPaths: ['/*'],
     });
   }

@@ -70,7 +70,7 @@ def handler(event, context):
             elif transaction_attributes['call_type'] == 'inbound':
                 received_digits = event['ActionData']['ReceivedDigits']
                 try:
-                    meeting_info = meeting_table.get_item(Key={'MeetingPasscode': int(received_digits)})
+                    meeting_info = meeting_table.get_item(Key={'MeetingPasscode': received_digits})
                 except Exception as error:
                     logger.error('Error getting meeting info from DynamoDB: %s', error)
                     raise error

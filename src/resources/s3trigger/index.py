@@ -18,6 +18,7 @@ FROM_NUMBER = os.environ['FROM_NUMBER']
 SIP_MEDIA_APPLICATION_ID = os.environ['SIP_MEDIA_APPLICATION_ID']
 FROM_EMAIL = os.environ['FROM_EMAIL']
 MEETING_TABLE = os.environ['MEETING_TABLE']
+DISTRIBUTION = os.environ['DISTRIBUTION']
 
 meeting_table = dynamo_client.Table(MEETING_TABLE)
 
@@ -135,7 +136,7 @@ def send_email(event_id, to_email, meeting_passcode):
                         'Data': 
                         (
                             'A meeting has been started. /nTo join the meeting:/n+' + str(FROM_NUMBER) +
-                            ',,' + str(meeting_passcode) + '/nhttp://localhost:8080/meeting?eventId=' + str(event_id) + '&passcode=' + str(meeting_passcode)
+                            ',,' + str(meeting_passcode) + '/nhttp://' + DISTRIBUTION + '/meeting?eventId=' + str(event_id) + '&passcode=' + str(meeting_passcode)
                         ),
                         'Charset': 'UTF-8'
                     },
