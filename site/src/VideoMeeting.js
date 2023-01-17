@@ -54,7 +54,6 @@ const VideoMeeting = ({}) => {
                 await meetingManager.start();
                 meetingManager.invokeDeviceProvider(DeviceLabels.AudioAndVideo);
                 setMeetingId(joinResponse.Meeting.MeetingId);
-                setLoading(false);
             } catch (err) {
                 console.log(`err in handleJoin: ${err}`);
             }
@@ -79,7 +78,7 @@ const VideoMeeting = ({}) => {
             {audioVideo && (
                 <>
                     <SpaceBetween direction="horizontal" size="l">
-                        <RosterContainer />
+                        <RosterContainer meetingId={meetingId} />
                         <Container footer={<MeetingControlBar meetingId={meetingId} />}>
                             <div style={{ height: '600px', width: '720px' }}>
                                 <VideoTileGrid />

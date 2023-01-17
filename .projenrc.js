@@ -1,6 +1,6 @@
 const { awscdk } = require('projen');
 const project = new awscdk.AwsCdkTypeScriptApp({
-  cdkVersion: '2.59.0',
+  cdkVersion: '2.60.0',
   defaultReleaseBranch: 'main',
   name: 'amazon-chime-sdk-sma-meeting-dialer',
   license: 'MIT-0',
@@ -35,7 +35,7 @@ const common_exclude = [
 ];
 
 project.addTask('launch', {
-  exec: 'yarn && yarn projen && yarn build && yarn cdk bootstrap && yarn cdk deploy --hotswap && yarn configLocal',
+  exec: 'yarn && yarn projen && yarn build && yarn cdk bootstrap && yarn cdk deploy --require-approval never --hotswap && yarn configLocal',
 });
 project.addTask('getBucket', {
   exec: "aws cloudformation describe-stacks --stack-name SMAMeetingDialer --region us-east-1 --query 'Stacks[0].Outputs[?OutputKey==`siteBucket`].OutputValue' --output text",

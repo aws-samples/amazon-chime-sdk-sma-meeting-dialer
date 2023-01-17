@@ -95,7 +95,8 @@ def handler(event, context):
             'JoinToken': attendee['JoinToken'],
             'MeetingPasscode': str(meeting_passcode),
             'PhoneNumber':  attendee['PhoneNumber'],
-            'TTL':  int(time.time() + 6000)
+            'Name': attendee['Name'],
+            'TTL':  int(time.time() + 86400)
         }
         logger.info('Meeting Object: %s', json.dumps(meeting_object, cls=DecimalEncoder))
         meeting_table.put_item(Item=meeting_object)
@@ -112,7 +113,8 @@ def handler(event, context):
                     'meeting_id': meeting_info['Meeting']['MeetingId'],
                     'attendee_id': attendee['AttendeeId'],
                     'join_token': attendee['JoinToken'],
-                    'event_id': str(request_info['EventId'])
+                    'event_id': str(request_info['EventId']),
+                    'meeting_passcode': str(meeting_passcode)
                 }
             )
 
@@ -135,8 +137,9 @@ def send_email(event_id, to_email, meeting_passcode):
                     'Text': {
                         'Data': 
                         (
-                            'A meeting has been started. /nTo join the meeting:/n+' + str(FROM_NUMBER) +
-                            ',,' + str(meeting_passcode) + '/nhttp://' + DISTRIBUTION + '/meeting?eventId=' + str(event_id) + '&passcode=' + str(meeting_passcode)
+                            'A meeting has been started. /nTo join the meeting:/n+' + 
+                            str(FROM_NUMBER) + ',,' + str(event_id) + ',,' + str(meeting_passcode) +
+                            '/nhttp://' + DISTRIBUTION + '/meeting?eventId=' + str(event_id) + '&passcode=' + str(meeting_passcode)
                         ),
                         'Charset': 'UTF-8'
                     },
@@ -144,8 +147,8 @@ def send_email(event_id, to_email, meeting_passcode):
                         'Data':
                         (
                             '<p>A meeting has been started.</p><p>To join the meeting:</p><p>' +
-                            str(FROM_NUMBER) + ',,' + str(meeting_passcode) +
-                            '<p><a href="http://localhost:8080/meeting?eventId=' + str(event_id) + '&passcode=' + str(meeting_passcode) + '">Meeting Link</a></p>'
+                            str(FROM_NUMBER) + ',,' + str(event_id) + ',,' + str(meeting_passcode) +
+                            '<p><a href="http://' + DISTRIBUTION + '/meeting?eventId=' + str(event_id) + '&passcode=' + str(meeting_passcode) + '">Meeting Link</a></p>'
                         ),
                         'Charset': 'UTF-8'
                         }

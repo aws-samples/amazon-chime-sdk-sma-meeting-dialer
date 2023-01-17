@@ -892,17 +892,46 @@ def submit_response(event: dict, context, response_status: str, error_message: s
       "Properties": {
         "AttributeDefinitions": [
           {
+            "AttributeName": "EventId",
+            "AttributeType": "S",
+          },
+          {
             "AttributeName": "MeetingPasscode",
+            "AttributeType": "S",
+          },
+          {
+            "AttributeName": "MeetingId",
             "AttributeType": "S",
           },
         ],
         "BillingMode": "PAY_PER_REQUEST",
-        "KeySchema": [
+        "GlobalSecondaryIndexes": [
           {
-            "AttributeName": "MeetingPasscode",
-            "KeyType": "HASH",
+            "IndexName": "MeetingIdIndex",
+            "KeySchema": [
+              {
+                "AttributeName": "MeetingId",
+                "KeyType": "HASH",
+              },
+            ],
+            "Projection": {
+              "ProjectionType": "ALL",
+            },
           },
         ],
+        "KeySchema": [
+          {
+            "AttributeName": "EventId",
+            "KeyType": "HASH",
+          },
+          {
+            "AttributeName": "MeetingPasscode",
+            "KeyType": "RANGE",
+          },
+        ],
+        "SSESpecification": {
+          "SSEEnabled": true,
+        },
         "TimeToLiveSpecification": {
           "AttributeName": "TTL",
           "Enabled": true,
@@ -914,6 +943,13 @@ def submit_response(event: dict, context, response_status: str, error_message: s
     "DistributionCloudfrontDistribution6D9237C5": {
       "Properties": {
         "DistributionConfig": {
+          "CustomErrorResponses": [
+            {
+              "ErrorCode": 403,
+              "ResponseCode": 200,
+              "ResponsePagePath": "/index.html",
+            },
+          ],
           "DefaultCacheBehavior": {
             "CachePolicyId": "4135ea2d-6df8-44a3-9df3-4b5a84be39ad",
             "Compress": true,
@@ -1129,7 +1165,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "719797cc6bba05206e16ccba440d8441658d9a248df49fe97e547c3f169ce912.zip",
+          "S3Key": "d486f06aac19d1419c8b253bc373d0c2a05c8b2152b32d31755ea79c2e9ecdfc.zip",
         },
         "Environment": {
           "Variables": {
@@ -1224,7 +1260,18 @@ def submit_response(event: dict, context, response_status: str, error_message: s
                   ],
                 },
                 {
-                  "Ref": "AWS::NoValue",
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "DatabasecallRecordsTableA61C0BFF",
+                          "Arn",
+                        ],
+                      },
+                      "/index/*",
+                    ],
+                  ],
                 },
               ],
             },
@@ -1253,7 +1300,41 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "cefa32354821d80546bb9da85f13310463d39c0449af4081d1bc2ed4bfa6151d.zip",
+          "S3Key": "aafc05129adb841feaa8704ddf81d08d2bd4ece4d8c329cf165117604cdb97ac.zip",
+        },
+        "Environment": {
+          "Variables": {
+            "MEETING_TABLE": {
+              "Ref": "DatabasecallRecordsTableA61C0BFF",
+            },
+          },
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "InfrastructureinfrastructureRole80511D48",
+            "Arn",
+          ],
+        },
+        "Runtime": "python3.9",
+        "Timeout": 60,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "InfrastructurequeryMeetingHandlerA047F2B1": {
+      "DependsOn": [
+        "InfrastructureinfrastructureRoleDefaultPolicy0F2BD00C",
+        "InfrastructureinfrastructureRole80511D48",
+      ],
+      "Properties": {
+        "Architectures": [
+          "arm64",
+        ],
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "847316f8cbabe23d3ec0c07f6a008bb449e6865b977528b5f53edb636642533d.zip",
         },
         "Environment": {
           "Variables": {
@@ -1334,7 +1415,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
       "Type": "AWS::IAM::Role",
       "UpdateReplacePolicy": "Retain",
     },
-    "InfrastructuresmaMeetingDialerApiDeploymentB8B77A59c3d786c6276ec8f928fc6e8ae5bba9e6": {
+    "InfrastructuresmaMeetingDialerApiDeploymentB8B77A599338f507bcc6a23cbac00361b0dbe301": {
       "DependsOn": [
         "InfrastructuresmaMeetingDialerApiendOPTIONSA4D579AC",
         "InfrastructuresmaMeetingDialerApiendPOSTC0332269",
@@ -1343,6 +1424,9 @@ def submit_response(event: dict, context, response_status: str, error_message: s
         "InfrastructuresmaMeetingDialerApijoinPOST952851F3",
         "InfrastructuresmaMeetingDialerApijoinEB7B218C",
         "InfrastructuresmaMeetingDialerApiOPTIONSA3BECC58",
+        "InfrastructuresmaMeetingDialerApiqueryOPTIONSCB148B5A",
+        "InfrastructuresmaMeetingDialerApiqueryPOST612C7653",
+        "InfrastructuresmaMeetingDialerApiquery8FE178B3",
       ],
       "Properties": {
         "Description": "Automatically created by the RestApi construct",
@@ -1358,7 +1442,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
       ],
       "Properties": {
         "DeploymentId": {
-          "Ref": "InfrastructuresmaMeetingDialerApiDeploymentB8B77A59c3d786c6276ec8f928fc6e8ae5bba9e6",
+          "Ref": "InfrastructuresmaMeetingDialerApiDeploymentB8B77A599338f507bcc6a23cbac00361b0dbe301",
         },
         "MethodSettings": [
           {
@@ -1767,6 +1851,183 @@ def submit_response(event: dict, context, response_status: str, error_message: s
                 "Ref": "InfrastructuresmaMeetingDialerApiDeploymentStageprod18D56F1C",
               },
               "/POST/join",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "InfrastructuresmaMeetingDialerApiquery8FE178B3": {
+      "Properties": {
+        "ParentId": {
+          "Fn::GetAtt": [
+            "InfrastructuresmaMeetingDialerApi3B21698F",
+            "RootResourceId",
+          ],
+        },
+        "PathPart": "query",
+        "RestApiId": {
+          "Ref": "InfrastructuresmaMeetingDialerApi3B21698F",
+        },
+      },
+      "Type": "AWS::ApiGateway::Resource",
+    },
+    "InfrastructuresmaMeetingDialerApiqueryOPTIONSCB148B5A": {
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "Integration": {
+          "IntegrationResponses": [
+            {
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Credentials": "'true'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+              },
+              "StatusCode": "204",
+            },
+          ],
+          "RequestTemplates": {
+            "application/json": "{ statusCode: 200 }",
+          },
+          "Type": "MOCK",
+        },
+        "MethodResponses": [
+          {
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Credentials": true,
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Origin": true,
+            },
+            "StatusCode": "204",
+          },
+        ],
+        "ResourceId": {
+          "Ref": "InfrastructuresmaMeetingDialerApiquery8FE178B3",
+        },
+        "RestApiId": {
+          "Ref": "InfrastructuresmaMeetingDialerApi3B21698F",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "InfrastructuresmaMeetingDialerApiqueryPOST612C7653": {
+      "Properties": {
+        "AuthorizationType": "COGNITO_USER_POOLS",
+        "AuthorizerId": {
+          "Ref": "Infrastructureauth4BEB723B",
+        },
+        "HttpMethod": "POST",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region",
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "InfrastructurequeryMeetingHandlerA047F2B1",
+                    "Arn",
+                  ],
+                },
+                "/invocations",
+              ],
+            ],
+          },
+        },
+        "ResourceId": {
+          "Ref": "InfrastructuresmaMeetingDialerApiquery8FE178B3",
+        },
+        "RestApiId": {
+          "Ref": "InfrastructuresmaMeetingDialerApi3B21698F",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "InfrastructuresmaMeetingDialerApiqueryPOSTApiPermissionTesttestInfrastructuresmaMeetingDialerApi7A0FC47EPOSTquery55D55782": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "InfrastructurequeryMeetingHandlerA047F2B1",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              {
+                "Ref": "InfrastructuresmaMeetingDialerApi3B21698F",
+              },
+              "/test-invoke-stage/POST/query",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "InfrastructuresmaMeetingDialerApiqueryPOSTApiPermissiontestInfrastructuresmaMeetingDialerApi7A0FC47EPOSTquery98EFEB9C": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "InfrastructurequeryMeetingHandlerA047F2B1",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              {
+                "Ref": "InfrastructuresmaMeetingDialerApi3B21698F",
+              },
+              "/",
+              {
+                "Ref": "InfrastructuresmaMeetingDialerApiDeploymentStageprod18D56F1C",
+              },
+              "/POST/query",
             ],
           ],
         },
@@ -2292,7 +2553,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "bb5e7d01488102510f2e63d6a9110c0ca60945bf5d505adf2f8a99834783f58f.zip",
+          "S3Key": "6e71d135cce4302d0974d2557605059c08922aaa4bc849d33e7d2ddbcb4d734b.zip",
         },
         "Environment": {
           "Variables": {
@@ -2391,7 +2652,18 @@ def submit_response(event: dict, context, response_status: str, error_message: s
                   ],
                 },
                 {
-                  "Ref": "AWS::NoValue",
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "DatabasecallRecordsTableA61C0BFF",
+                          "Arn",
+                        ],
+                      },
+                      "/index/*",
+                    ],
+                  ],
                 },
               ],
             },
@@ -2446,7 +2718,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "c33ce3782f521f439a328ff291575a9e6dd87c5fa634fd87eea4d0d146d32f76.zip",
+          "S3Key": "1029e060f97b3b8a935a90700ce8904c00cdf796acf9efe1b576d6a47ad1506f.zip",
         },
         "Environment": {
           "Variables": {
@@ -2594,7 +2866,18 @@ def submit_response(event: dict, context, response_status: str, error_message: s
                   ],
                 },
                 {
-                  "Ref": "AWS::NoValue",
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "DatabasecallRecordsTableA61C0BFF",
+                          "Arn",
+                        ],
+                      },
+                      "/index/*",
+                    ],
+                  ],
                 },
               ],
             },
@@ -2814,7 +3097,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           },
         ],
         "SourceObjectKeys": [
-          "dbd86e82ffedda79c35d979b392b40ca22f7d0f44bb8cf8b3be7be86ec932a20.zip",
+          "4eec9d2a34680804b881eb53e945d0e0a213d693d439a2b31960fce8e2450a00.zip",
           "49aa1da69438c6967606bc17f36a99bb9eb94983c166b3602e2c37113e353659.zip",
         ],
       },

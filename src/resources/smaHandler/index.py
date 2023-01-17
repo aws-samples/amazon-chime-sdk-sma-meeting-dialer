@@ -1,4 +1,5 @@
 import os
+import decimal
 import json
 import logging
 import boto3
@@ -22,6 +23,13 @@ except BaseException:
 logger.setLevel(LOG_LEVEL)
 
 
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, decimal.Decimal):
+            return int(obj)
+        return super(DecimalEncoder, self).default(obj)
+
+
 def handler(event, context):
     event_type = event['InvocationEventType']
     transaction_id = event['CallDetails']['TransactionId']
@@ -37,16 +45,16 @@ def handler(event, context):
 
     if event_type == 'NEW_INBOUND_CALL':
         transaction_attributes['call_type'] = 'inbound'
-        return response(inbound_call_speak_and_get_digits_action(), transaction_attributes=transaction_attributes)
+        return response(inbound_call_speak_and_get_digits_action("<speak>Please enter your 6 digit event i d</speak>"), transaction_attributes=transaction_attributes)
     elif event_type == 'HANGUP':
-        if transaction_attributes.get('delete_attendee') != 'false' and transaction_attributes.get('meeting_id') is not None:
-            logger.info('Deleting attendee %s in meeting %s', transaction_attributes['attendee_id'],  transaction_attributes['meeting_id'])
-            chime_sdk_meeting_client.delete_attendee(MeetingId=transaction_attributes['meeting_id'], AttendeeId=transaction_attributes['attendee_id'])
-        current_attendee_list = chime_sdk_meeting_client.list_attendees(MeetingId=transaction_attributes['meeting_id'])
-        logger.info('Current Attendee List: %s', json.dumps(current_attendee_list['Attendees']))
-        if len(current_attendee_list['Attendees']) == 0:
-            logger.info('No more attendees, deleting meeting: %s', transaction_attributes['meeting_id'])
-            chime_sdk_meeting_client.delete_meeting(MeetingId=transaction_attributes['meeting_id'])
+        # if transaction_attributes.get('delete_attendee') != 'false' and transaction_attributes.get('meeting_id') is not None:
+        #     logger.info('Deleting attendee %s in meeting %s', transaction_attributes['attendee_id'],  transaction_attributes['meeting_id'])
+        #     chime_sdk_meeting_client.delete_attendee(MeetingId=transaction_attributes['meeting_id'], AttendeeId=transaction_attributes['attendee_id'])
+        # current_attendee_list = chime_sdk_meeting_client.list_attendees(MeetingId=transaction_attributes['meeting_id'])
+        # logger.info('Current Attendee List: %s', json.dumps(current_attendee_list['Attendees']))
+        # if len(current_attendee_list['Attendees']) == 0:
+        #     logger.info('No more attendees, deleting meeting: %s', transaction_attributes['meeting_id'])
+        #     chime_sdk_meeting_client.delete_meeting(MeetingId=transaction_attributes['meeting_id'])
         return response(transaction_attributes=transaction_attributes)
     elif event_type == 'NEW_OUTBOUND_CALL':
         logger.info('Adding transaction attributes')
@@ -54,6 +62,7 @@ def handler(event, context):
         transaction_attributes['attendee_id'] = event['ActionData']['Parameters']['Arguments']['attendee_id']
         transaction_attributes['join_token'] = event['ActionData']['Parameters']['Arguments']['join_token']
         transaction_attributes['event_id'] = event['ActionData']['Parameters']['Arguments']['event_id']
+        transaction_attributes['meeting_passcode'] = event['ActionData']['Parameters']['Arguments']['meeting_passcode']
         transaction_attributes['call_type'] = 'outbound'
         return response(transaction_attributes=transaction_attributes)
     elif event_type == 'CALL_ANSWERED':
@@ -65,24 +74,38 @@ def handler(event, context):
                 if received_digits == '1':
                     return response(join_chime_meeting_action(call_id, transaction_attributes), transaction_attributes=transaction_attributes)
                 else:
-                    transaction_attributes['delete_attendee'] = 'false'
+                    # transaction_attributes['delete_attendee'] = 'false'
                     return response(speak_action(call_id, "Disconnecting you."), hangup_action(call_id), transaction_attributes=transaction_attributes)
             elif transaction_attributes['call_type'] == 'inbound':
                 received_digits = event['ActionData']['ReceivedDigits']
-                try:
-                    meeting_info = meeting_table.get_item(Key={'MeetingPasscode': received_digits})
-                except Exception as error:
-                    logger.error('Error getting meeting info from DynamoDB: %s', error)
-                    raise error
-                if meeting_info.get('Item'):
-                    transaction_attributes['meeting_id'] = meeting_info['Item']['MeetingId']
-                    transaction_attributes['attendee_id'] = meeting_info['Item']['AttendeeId']
-                    transaction_attributes['join_token'] = meeting_info['Item']['JoinToken']
-                    transaction_attributes['event_id'] = str(meeting_info['Item']['EventId'])
-                    return response(join_chime_meeting_action(call_id, transaction_attributes), transaction_attributes=transaction_attributes)
+                if 'event_id' not in transaction_attributes:
+                    transaction_attributes['event_id'] = received_digits
+                    return response(
+                        inbound_call_speak_and_get_digits_action("<speak>Please enter your 6 digit passcode to join the meeting.</speak>"),
+                        transaction_attributes=transaction_attributes)
                 else:
-                    return response(speak_action(call_id, "Invalid meeting passcode."), hangup_action(call_id), transaction_attributes=transaction_attributes)
+                    try:
+                        meeting_info = meeting_table.get_item(Key={"EventId": transaction_attributes['event_id'], 'MeetingPasscode': received_digits})
+                        logger.info('Meeting info: %s', json.dumps(meeting_info,  cls=DecimalEncoder, indent=4))
+                    except Exception as error:
+                        logger.error('Error getting meeting info from DynamoDB: %s', error)
+                        raise error
+                    if meeting_info.get('Item'):
+                        transaction_attributes['meeting_id'] = meeting_info['Item']['MeetingId']
+                        transaction_attributes['attendee_id'] = meeting_info['Item']['AttendeeId']
+                        transaction_attributes['join_token'] = meeting_info['Item']['JoinToken']
+                        transaction_attributes['event_id'] = str(meeting_info['Item']['EventId'])
+                        transaction_attributes['meeting_passcode'] = received_digits
+                        return response(join_chime_meeting_action(call_id, transaction_attributes), transaction_attributes=transaction_attributes)
+                    else:
+                        return response(speak_action(call_id, "Invalid meeting passcode."), hangup_action(call_id), transaction_attributes=transaction_attributes)
         if event['ActionData']['Type'] == 'JoinChimeMeeting':
+            update_response = meeting_table.update_item(
+                Key={"EventId": transaction_attributes['event_id'], "MeetingPasscode": transaction_attributes['meeting_passcode']},
+                UpdateExpression="set JoinMethod = :j",
+                ExpressionAttributeValues={":j": 'Phone'},
+                ReturnValues="UPDATED_NEW"),
+            logger.info('Update response: %s', json.dumps(update_response, indent=4))
             return response(speak_action(call_id, "You have been joined to the meeting."), transaction_attributes=transaction_attributes)
         else:
             return response(transaction_attributes=transaction_attributes)
@@ -91,7 +114,7 @@ def handler(event, context):
             return response(speak_action(call_id, "Sorry, I could not connect you to the meeting"), hangup_action(call_id), transaction_attributes=transaction_attributes)
         if event['ActionData']['Type'] == 'SpeakAndGetDigits':
             if event['ActionData']['ErrorType'] == 'InvalidDigitsReceived':
-                transaction_attributes['delete_attendee'] = 'false'
+                # transaction_attributes['delete_attendee'] = 'false'
                 return response(hangup_action(call_id), transaction_attributes=transaction_attributes)
         else:
             return response(transaction_attributes=transaction_attributes)
@@ -139,7 +162,7 @@ def outbound_call_speak_and_get_digits_action(transaction_attributes):
     }
 
 
-def inbound_call_speak_and_get_digits_action():
+def inbound_call_speak_and_get_digits_action(text):
     return {
         "Type": "SpeakAndGetDigits",
         "Parameters": {
@@ -151,7 +174,7 @@ def inbound_call_speak_and_get_digits_action():
             "InBetweenDigitsDurationInMilliseconds": 1000,
             "TerminatorDigits": ["#"],
             "SpeechParameters": {
-                "Text": "<speak>Enter your 6 digit code to join the meeting.</speak>",
+                "Text": text,
                 "Engine": "neural",
                 "LanguageCode": "en-US",
                 "TextType": "ssml",

@@ -95,6 +95,29 @@ export class Infrastructure extends Construct {
 
     props.meetingTable.grantReadWriteData(endMeetingHandler);
 
+    const queryMeetingHandler = new Function(this, 'queryMeetingHandler', {
+      code: Code.fromAsset('src/resources/queryMeeting', {
+        bundling: {
+          image: Runtime.PYTHON_3_9.bundlingImage,
+          command: [
+            'bash',
+            '-c',
+            'pip install -r requirements.txt -t /asset-output && cp -au . /asset-output',
+          ],
+        },
+      }),
+      handler: 'index.handler',
+      environment: {
+        MEETING_TABLE: props.meetingTable.tableName,
+      },
+      runtime: Runtime.PYTHON_3_9,
+      architecture: Architecture.ARM_64,
+      role: infrastructureRole,
+      timeout: Duration.seconds(60),
+    });
+
+    props.meetingTable.grantReadWriteData(queryMeetingHandler);
+
     const api = new RestApi(this, 'smaMeetingDialerApi', {
       defaultCorsPreflightOptions: {
         allowHeaders: [
@@ -122,15 +145,21 @@ export class Infrastructure extends Construct {
 
     const join = api.root.addResource('join');
     const end = api.root.addResource('end');
+    const query = api.root.addResource('query');
 
     const joinIntegration = new LambdaIntegration(joinMeetingHandler);
     const endIntegration = new LambdaIntegration(endMeetingHandler);
+    const queryIntegration = new LambdaIntegration(queryMeetingHandler);
 
     join.addMethod('POST', joinIntegration, {
       authorizer: auth,
       authorizationType: AuthorizationType.COGNITO,
     });
     end.addMethod('POST', endIntegration, {
+      authorizer: auth,
+      authorizationType: AuthorizationType.COGNITO,
+    });
+    query.addMethod('POST', queryIntegration, {
       authorizer: auth,
       authorizationType: AuthorizationType.COGNITO,
     });

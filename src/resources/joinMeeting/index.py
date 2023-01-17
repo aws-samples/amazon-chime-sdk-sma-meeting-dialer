@@ -43,7 +43,7 @@ def handler(event, context):
     phone_number = body['PhoneNumber']
 
     try:
-        meeting_info = meeting_table.get_item(Key={"MeetingPasscode": meeting_passcode})
+        meeting_info = meeting_table.get_item(Key={"EventId": event_id, "MeetingPasscode": meeting_passcode})
     except Exception as error:
         logger.error('Error getting meeting info: %s', error)
         response['statusCode'] = 500
@@ -53,11 +53,17 @@ def handler(event, context):
     logger.info('PhoneNumber: %s  Type: %s', phone_number, type(phone_number))
     logger.info('EventId: %s  Type: %s', event_id, type(event_id))
     if meeting_info['Item'] is not None:
-        if meeting_info['Item']['MeetingPasscode'] == meeting_passcode and meeting_info['Item']['PhoneNumber'] == phone_number and meeting_info['Item']['EventId'] == event_id:
+        if meeting_info['Item']['MeetingPasscode'] == meeting_passcode and meeting_info['Item']['EventId'] == event_id:
             response_info = {
                 'Meeting': meeting_info['Item']['MeetingInfo']['Meeting'],
                 'Attendee': meeting_info['Item']['MeetingInfo']['Attendee']
             }
+            update_response = meeting_table.update_item(
+                Key={"EventId": event_id, "MeetingPasscode": meeting_passcode},
+                UpdateExpression="set JoinMethod = :j",
+                ExpressionAttributeValues={":j": 'Web'},
+                ReturnValues="UPDATED_NEW"),
+            logger.info('Update response: %s', json.dumps(update_response, indent=4))
             response['body'] = json.dumps(response_info)
             response['statusCode'] = 200
             return response

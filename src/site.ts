@@ -41,6 +41,13 @@ export class DistributionResources extends Construct {
         cachePolicy: CachePolicy.CACHING_DISABLED,
       },
       defaultRootObject: 'index.html',
+      errorResponses: [
+        {
+          httpStatus: 403,
+          responseHttpStatus: 200,
+          responsePagePath: '/index.html',
+        },
+      ],
     });
   }
 }
