@@ -40,6 +40,7 @@ export class PSTNAudio extends Construct {
                 'chime:DeleteAttendee',
                 'chime:DeleteMeeting',
                 'chime:ListAttendees',
+                'chime:CreateMeetingWithAttendees',
               ],
             }),
           ],

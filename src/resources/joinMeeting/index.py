@@ -43,25 +43,26 @@ def handler(event, context):
     phone_number = body['PhoneNumber']
 
     try:
-        meeting_info = meeting_table.get_item(Key={"EventId": event_id, "MeetingPasscode": meeting_passcode})
+        event_info = meeting_table.get_item(Key={"EventId": event_id, "MeetingPasscode": meeting_passcode})
     except Exception as error:
         logger.error('Error getting meeting info: %s', error)
         response['statusCode'] = 500
         return response
-    logger.info('Meeting info: %s', meeting_info)
+    logger.info('Meeting info: %s', event_info)
     logger.info('MeetingPasscode: %s  Type: %s', meeting_passcode, type(meeting_passcode))
     logger.info('PhoneNumber: %s  Type: %s', phone_number, type(phone_number))
     logger.info('EventId: %s  Type: %s', event_id, type(event_id))
-    if meeting_info['Item'] is not None:
-        if meeting_info['Item']['MeetingPasscode'] == meeting_passcode and meeting_info['Item']['EventId'] == event_id:
+    if 'Item' in event_info:
+        if event_info['Item']['MeetingPasscode'] == meeting_passcode and event_info['Item']['EventId'] == event_id:
+            meeting_info = create_meeting(event_id, phone_number)
             response_info = {
-                'Meeting': meeting_info['Item']['MeetingInfo']['Meeting'],
-                'Attendee': meeting_info['Item']['MeetingInfo']['Attendee']
+                'Meeting': meeting_info['Meeting'],
+                'Attendee': meeting_info['Attendees'][0]
             }
             update_response = meeting_table.update_item(
                 Key={"EventId": event_id, "MeetingPasscode": meeting_passcode},
-                UpdateExpression="set JoinMethod = :j",
-                ExpressionAttributeValues={":j": 'Web'},
+                UpdateExpression="set JoinMethod = :j, MeetingId = :m, AttendeeId = :a",
+                ExpressionAttributeValues={":j": 'Web',  ":m": meeting_info['Meeting']['MeetingId'], ":a": meeting_info['Attendees'][0]['AttendeeId']},
                 ReturnValues="UPDATED_NEW"),
             logger.info('Update response: %s', json.dumps(update_response, indent=4))
             response['body'] = json.dumps(response_info)
@@ -73,3 +74,16 @@ def handler(event, context):
     else:
         response['statusCode'] = 404
         return response
+
+
+def create_meeting(event_id, phone_number):
+    logger.info('Creating meeting for event %s', event_id)
+    meeting_info = chime_sdk_meeting_client.create_meeting_with_attendees(
+        ClientRequestToken=event_id,
+        MediaRegion='us-east-1',
+        ExternalMeetingId=event_id,
+        Attendees=[{
+            'ExternalUserId': phone_number
+        }]
+    )
+    return meeting_info

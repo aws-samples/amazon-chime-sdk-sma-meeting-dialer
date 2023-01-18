@@ -1300,7 +1300,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "aafc05129adb841feaa8704ddf81d08d2bd4ece4d8c329cf165117604cdb97ac.zip",
+          "S3Key": "6d9dad82ff92db4669875a26b515e90ed0418dd46d292e60871673f8988eb53a.zip",
         },
         "Environment": {
           "Variables": {
@@ -2553,7 +2553,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "6e71d135cce4302d0974d2557605059c08922aaa4bc849d33e7d2ddbcb4d734b.zip",
+          "S3Key": "ff037c96f85e9769546b1e1bec15a51337860685ca5914d9abd86c232c8e2808.zip",
         },
         "Environment": {
           "Variables": {
@@ -2611,6 +2611,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
                     "chime:DeleteAttendee",
                     "chime:DeleteMeeting",
                     "chime:ListAttendees",
+                    "chime:CreateMeetingWithAttendees",
                   ],
                   "Effect": "Allow",
                   "Resource": "*",
@@ -2718,7 +2719,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "1029e060f97b3b8a935a90700ce8904c00cdf796acf9efe1b576d6a47ad1506f.zip",
+          "S3Key": "4c8d85a7e64f029c57b3a6a35679582c184ceba60c3549b2ace6cdea8b3b83bf.zip",
         },
         "Environment": {
           "Variables": {
@@ -3097,7 +3098,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           },
         ],
         "SourceObjectKeys": [
-          "4eec9d2a34680804b881eb53e945d0e0a213d693d439a2b31960fce8e2450a00.zip",
+          "70febbd019385327fc6a02c137b26fbb813cdb00d77452c7dd445348f6357427.zip",
           "49aa1da69438c6967606bc17f36a99bb9eb94983c166b3602e2c37113e353659.zip",
         ],
       },

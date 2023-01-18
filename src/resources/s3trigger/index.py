@@ -89,10 +89,10 @@ def handler(event, context):
         meeting_passcode = randint(100000, 999999)
         meeting_object = {
             'EventId': str(request_info['EventId']),
-            'MeetingId': meeting_info['Meeting']['MeetingId'],
-            'MeetingInfo': {'Meeting': meeting_info['Meeting'], 'Attendee': attendee['Attendee'], },
-            'AttendeeId': attendee['AttendeeId'],
-            'JoinToken': attendee['JoinToken'],
+            # 'MeetingId': meeting_info['Meeting']['MeetingId'],
+            # 'MeetingInfo': {'Meeting': meeting_info['Meeting'], 'Attendee': attendee['Attendee'], },
+            # 'AttendeeId': attendee['AttendeeId'],
+            # 'JoinToken': attendee['JoinToken'],
             'MeetingPasscode': str(meeting_passcode),
             'PhoneNumber':  attendee['PhoneNumber'],
             'Name': attendee['Name'],
@@ -110,11 +110,12 @@ def handler(event, context):
                 ToPhoneNumber=attendee['PhoneNumber'],
                 SipMediaApplicationId=SIP_MEDIA_APPLICATION_ID,
                 ArgumentsMap={
-                    'meeting_id': meeting_info['Meeting']['MeetingId'],
-                    'attendee_id': attendee['AttendeeId'],
-                    'join_token': attendee['JoinToken'],
+                    # 'meeting_id': meeting_info['Meeting']['MeetingId'],
+                    # 'attendee_id': attendee['AttendeeId'],
+                    # 'join_token': attendee['JoinToken'],
                     'event_id': str(request_info['EventId']),
-                    'meeting_passcode': str(meeting_passcode)
+                    'meeting_passcode': str(meeting_passcode),
+                    'phone_number': attendee['PhoneNumber'],
                 }
             )
 
