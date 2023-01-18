@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { useMeetingStatus } from 'amazon-chime-sdk-component-library-react';
 import {
     Roster,
     RosterGroup,
@@ -15,9 +14,9 @@ import { API } from 'aws-amplify';
 const RosterContainer = (meetingId) => {
     const { roster } = useRosterState();
     const rosterAttendees = Object.values(roster);
-    const meetingStatus = useMeetingStatus();
     const [mergedAttendees, setMergedAttendees] = useState([]);
     let attendees = [];
+
     useEffect(() => {
         async function queryMeeting() {
             console.log(`MeetingId:  ${JSON.stringify(meetingId)}`);
@@ -38,6 +37,7 @@ const RosterContainer = (meetingId) => {
                     });
                 }
                 console.log(`MergedAttendees:   ${JSON.stringify(attendees)}`);
+
                 setMergedAttendees(attendees);
             }
         }
@@ -46,15 +46,12 @@ const RosterContainer = (meetingId) => {
 
     const attendeeItems = mergedAttendees.map((attendee) => {
         console.log(`Attendee:  ${JSON.stringify(attendee)}`);
-        const { chimeAttendee } = attendee;
-
         return (
             <RosterAttendee
                 key={attendee.AttendeeId}
-                attendeeId={chimeAttendee}
+                attendeeId={attendee.AttendeeId}
                 name={attendee.Name}
                 subtitle={attendee.JoinMethod}
-                // videoEnabled={useAttendeeStatus(chimeAttendee).videoEnabled}
             />
         );
     });
