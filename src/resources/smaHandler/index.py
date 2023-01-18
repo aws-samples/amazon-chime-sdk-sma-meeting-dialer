@@ -47,15 +47,19 @@ def handler(event, context):
         transaction_attributes['call_type'] = 'inbound'
         return response(inbound_call_speak_and_get_digits_action("<speak>Please enter your 6 digit event i d</speak>"), transaction_attributes=transaction_attributes)
     elif event_type == 'HANGUP':
-        # if transaction_attributes.get('delete_attendee') != 'false' and transaction_attributes.get('meeting_id') is not None:
-        logger.info('Deleting attendee %s in meeting %s', transaction_attributes['attendee_id'],  transaction_attributes['meeting_id'])
-        chime_sdk_meeting_client.delete_attendee(MeetingId=transaction_attributes['meeting_id'], AttendeeId=transaction_attributes['attendee_id'])
-        current_attendee_list = chime_sdk_meeting_client.list_attendees(MeetingId=transaction_attributes['meeting_id'])
-        logger.info('Current Attendee List: %s', json.dumps(current_attendee_list['Attendees']))
-        if len(current_attendee_list['Attendees']) == 0:
-            logger.info('No more attendees, deleting meeting: %s', transaction_attributes['meeting_id'])
-            chime_sdk_meeting_client.delete_meeting(MeetingId=transaction_attributes['meeting_id'])
-        return response(transaction_attributes=transaction_attributes)
+        if participants[0]['To'] == '+17035550122':
+            return response(hangup_action(participants[1]['CallId']), transaction_attributes=transaction_attributes)
+        elif len(participants) == 2:
+            logger.info('Deleting attendee %s in meeting %s', transaction_attributes['attendee_id'],  transaction_attributes['meeting_id'])
+            chime_sdk_meeting_client.delete_attendee(MeetingId=transaction_attributes['meeting_id'], AttendeeId=transaction_attributes['attendee_id'])
+            current_attendee_list = chime_sdk_meeting_client.list_attendees(MeetingId=transaction_attributes['meeting_id'])
+            logger.info('Current Attendee List: %s', json.dumps(current_attendee_list['Attendees']))
+            if len(current_attendee_list['Attendees']) == 0:
+                logger.info('No more attendees, deleting meeting: %s', transaction_attributes['meeting_id'])
+                chime_sdk_meeting_client.delete_meeting(MeetingId=transaction_attributes['meeting_id'])
+            return response(transaction_attributes=transaction_attributes)
+        else:
+            return response(hangup_action(call_id), transaction_attributes=transaction_attributes)
     elif event_type == 'NEW_OUTBOUND_CALL':
         logger.info('Adding transaction attributes')
         transaction_attributes['meeting_id'] = event['ActionData']['Parameters']['Arguments']['meeting_id']
