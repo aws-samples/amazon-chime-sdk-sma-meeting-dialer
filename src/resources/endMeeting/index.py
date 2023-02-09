@@ -44,12 +44,15 @@ def handler(event, context):
         if delete_meeting_response:
             response['body'] = json.dumps({'message': 'Meeting deleted successfully'})
             response['statusCode'] = 200
+            return response
         else:
             response['body'] = json.dumps({'message': 'Unable to delete meeting'})
             response['statusCode'] = 503
+            return response
     else:
         response['body'] = json.dumps({'message': 'Meeting ID not provided'})
         response['statusCode'] = 404
+        return response
 
 
 def delete_meeting(meeting_id):
