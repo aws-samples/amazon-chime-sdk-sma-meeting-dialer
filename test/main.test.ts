@@ -25,4 +25,6 @@ test('SnapshotCognito', () => {
     fromEmail: '',
     allowedDomain: '',
   });
+  const template = Template.fromStack(stack);
+  expect(template.toJSON()).toMatchSnapshot();
 });

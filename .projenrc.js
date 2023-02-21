@@ -1,6 +1,6 @@
 const { awscdk } = require('projen');
 const project = new awscdk.AwsCdkTypeScriptApp({
-  cdkVersion: '2.60.0',
+  cdkVersion: '2.65.0',
   defaultReleaseBranch: 'main',
   name: 'amazon-chime-sdk-sma-meeting-dialer',
   license: 'MIT-0',
