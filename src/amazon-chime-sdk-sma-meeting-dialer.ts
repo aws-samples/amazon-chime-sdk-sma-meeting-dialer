@@ -1,4 +1,10 @@
 import { App, CfnOutput, Stack, StackProps } from 'aws-cdk-lib';
+import {
+  IUserPool,
+  IUserPoolClient,
+  UserPool,
+  UserPoolClient,
+} from 'aws-cdk-lib/aws-cognito';
 import { Construct } from 'constructs';
 import {
   PSTNAudio,
@@ -10,8 +16,22 @@ import {
   DistributionResources,
 } from '.';
 
+interface SMAMeetingDialerProps extends StackProps {
+  userPool?: string;
+  userPoolClient?: string;
+  userPoolRegion?: string;
+  allowedDomain: string;
+  fromEmail: string;
+}
+
+interface CognitoOutput {
+  userPool: IUserPool;
+  userPoolClient: IUserPoolClient;
+  userPoolRegion: string;
+}
+
 export class SMAMeetingDialer extends Stack {
-  constructor(scope: Construct, id: string, props: StackProps = {}) {
+  constructor(scope: Construct, id: string, props: SMAMeetingDialerProps) {
     super(scope, id, props);
 
     const database = new Database(this, 'Database');
@@ -22,14 +42,31 @@ export class SMAMeetingDialer extends Stack {
       meetingTable: database.meetingTable,
     });
 
-    const allowedDomain = this.node.tryGetContext('AllowedDomain');
-    const cognito = new Cognito(this, 'Cognito', {
-      allowedDomain: allowedDomain,
-    });
+    let cognito: CognitoOutput;
+
+    if (props.userPoolRegion && props.userPool && props.userPoolClient) {
+      cognito = {
+        userPoolRegion: props.userPoolRegion,
+        userPool: UserPool.fromUserPoolArn(this, 'userPoolId', props.userPool),
+        userPoolClient: UserPoolClient.fromUserPoolClientId(
+          this,
+          'userPoolClientId',
+          props.userPoolClient,
+        ),
+      };
+    } else {
+      cognito = new Cognito(this, 'Cognito', {
+        allowedDomain: props.allowedDomain,
+      });
+    }
 
     const infrastructure = new Infrastructure(this, 'Infrastructure', {
       meetingTable: database.meetingTable,
       userPool: cognito.userPool,
+      distribution: distribution.distribution,
+      fromNumber: pstnAudio.smaPhoneNumber,
+      sipMediaApplicationId: pstnAudio.sipMediaApplicationId,
+      fromEmail: props.fromEmail,
     });
 
     new Site(this, 'Site', {
@@ -41,6 +78,7 @@ export class SMAMeetingDialer extends Stack {
     });
 
     const triggerBucket = new S3Resources(this, 'S3Resources', {
+      createMeetingHandler: infrastructure.createMeetingHandler,
       fromNumber: pstnAudio.smaPhoneNumber,
       sipMediaApplicationId: pstnAudio.sipMediaApplicationId,
       meetingTable: database.meetingTable,
@@ -79,8 +117,16 @@ const devEnv = {
   region: process.env.CDK_DEFAULT_REGION,
 };
 
+const stackProps = {
+  userPool: process.env.USER_POOL || '',
+  userPoolClient: process.env.USER_POOL_CLIENT || '',
+  userPoolRegion: process.env.USER_POOL_REGION || '',
+  allowedDomain: process.env.ALLOWED_DOMAIN || '',
+  fromEmail: process.env.FROM_EMAIL || '',
+};
+
 const app = new App();
 
-new SMAMeetingDialer(app, 'SMAMeetingDialer', { env: devEnv });
+new SMAMeetingDialer(app, 'SMAMeetingDialer', { ...stackProps, env: devEnv });
 
 app.synth();

@@ -2,15 +2,15 @@
   "EventId": 123456,
   "Participants": [
     {
-      "Name": "Court",
-      "PhoneNumber": "+18154518245",
-      "Email": "schuettc@amazon.com",
-      "CallParticipant": false
+      "Name": "Nikki",
+      "PhoneNumber": "+13125551212",
+      "Email": "nikki@example.com",
+      "CallParticipant": true
     },
     {
-      "Name": "CourtSecond",
-      "PhoneNumber": "+19195551212",
-      "Email": "schuettc+second@amazon.com",
+      "Name": "Jane",
+      "PhoneNumber": "+14025551212",
+      "Email": "jane@example.com",
       "CallParticipant": false
     }
   ]

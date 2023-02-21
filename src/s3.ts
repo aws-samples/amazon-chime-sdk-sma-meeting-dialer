@@ -1,14 +1,7 @@
-import { RemovalPolicy, Duration } from 'aws-cdk-lib';
+import { RemovalPolicy } from 'aws-cdk-lib';
 import { Distribution } from 'aws-cdk-lib/aws-cloudfront';
 import { Table } from 'aws-cdk-lib/aws-dynamodb';
-import {
-  ServicePrincipal,
-  PolicyDocument,
-  PolicyStatement,
-  ManagedPolicy,
-  Role,
-} from 'aws-cdk-lib/aws-iam';
-import { Function, Runtime, Architecture, Code } from 'aws-cdk-lib/aws-lambda';
+import { Function } from 'aws-cdk-lib/aws-lambda';
 import { S3EventSource } from 'aws-cdk-lib/aws-lambda-event-sources';
 import { Bucket, EventType } from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
@@ -18,6 +11,7 @@ interface S3ResourcesProps {
   sipMediaApplicationId: string;
   meetingTable: Table;
   distribution: Distribution;
+  createMeetingHandler: Function;
 }
 export class S3Resources extends Construct {
   public triggerBucket: Bucket;
@@ -25,64 +19,16 @@ export class S3Resources extends Construct {
   constructor(scope: Construct, id: string, props: S3ResourcesProps) {
     super(scope, id);
 
-    const s3TriggerLambdaRole = new Role(this, 's3TriggerLambdaRole', {
-      assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
-      inlinePolicies: {
-        ['chimePolicy']: new PolicyDocument({
-          statements: [
-            new PolicyStatement({
-              resources: ['*'],
-              actions: [
-                'chime:CreateSipMediaApplicationCall',
-                'chime:CreateMeetingWithAttendees',
-                'ses:SendEmail',
-              ],
-            }),
-          ],
-        }),
-      },
-      managedPolicies: [
-        ManagedPolicy.fromAwsManagedPolicyName(
-          'service-role/AWSLambdaBasicExecutionRole',
-        ),
-      ],
-    });
-
-    const s3TriggerLambda = new Function(this, 's3TriggerLambda', {
-      code: Code.fromAsset('src/resources/s3trigger', {
-        bundling: {
-          image: Runtime.PYTHON_3_9.bundlingImage,
-          command: [
-            'bash',
-            '-c',
-            'pip install -r requirements.txt -t /asset-output && cp -au . /asset-output',
-          ],
-        },
-      }),
-      handler: 'index.handler',
-      runtime: Runtime.PYTHON_3_9,
-      architecture: Architecture.ARM_64,
-      environment: {
-        FROM_NUMBER: props.fromNumber,
-        SIP_MEDIA_APPLICATION_ID: props.sipMediaApplicationId,
-        FROM_EMAIL: '',
-        MEETING_TABLE: props.meetingTable.tableName,
-        DISTRIBUTION: props.distribution.distributionDomainName,
-      },
-      role: s3TriggerLambdaRole,
-      timeout: Duration.seconds(60),
-    });
-
     this.triggerBucket = new Bucket(this, 'triggerBucket', {
       publicReadAccess: false,
       removalPolicy: RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
     });
 
-    this.triggerBucket.grantRead(s3TriggerLambda);
-    props.meetingTable.grantReadWriteData(s3TriggerLambda);
+    this.triggerBucket.grantRead(props.createMeetingHandler);
+    props.meetingTable.grantReadWriteData(props.createMeetingHandler);
 
-    s3TriggerLambda.addEventSource(
+    props.createMeetingHandler.addEventSource(
       new S3EventSource(this.triggerBucket, {
         events: [EventType.OBJECT_CREATED],
       }),

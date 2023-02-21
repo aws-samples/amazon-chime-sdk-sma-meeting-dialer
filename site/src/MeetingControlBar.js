@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './App.css';
 import {
-    useAudioVideo,
     useMeetingManager,
     ControlBar,
     ControlBarButton,
@@ -16,8 +16,8 @@ import '@aws-amplify/ui-react/styles.css';
 import '@cloudscape-design/global-styles/index.css';
 
 const MeetingControlBar = ({ meetingId }) => {
-    const audioVideo = useAudioVideo();
     const meetingManager = useMeetingManager();
+    const navigate = useNavigate();
 
     const LeaveButtonProps = {
         icon: <LeaveMeeting />,
@@ -33,6 +33,7 @@ const MeetingControlBar = ({ meetingId }) => {
 
     const handleLeave = async (event) => {
         await meetingManager.leave();
+        navigate('/', { replace: true });
     };
 
     const handleEnd = async (event) => {
@@ -43,6 +44,7 @@ const MeetingControlBar = ({ meetingId }) => {
         } catch (err) {
             console.log(`{err in handleEnd: ${err}`);
         }
+        navigate('/', { replace: true });
     };
 
     return (

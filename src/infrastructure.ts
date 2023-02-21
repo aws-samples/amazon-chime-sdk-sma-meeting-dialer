@@ -7,6 +7,7 @@ import {
   CognitoUserPoolsAuthorizer,
   AuthorizationType,
 } from 'aws-cdk-lib/aws-apigateway';
+import { Distribution } from 'aws-cdk-lib/aws-cloudfront';
 import { IUserPool } from 'aws-cdk-lib/aws-cognito';
 import { Table } from 'aws-cdk-lib/aws-dynamodb';
 import {
@@ -22,10 +23,15 @@ import { Construct } from 'constructs';
 interface InfrastructureProps {
   readonly userPool: IUserPool;
   readonly meetingTable: Table;
+  fromNumber: string;
+  fromEmail: string;
+  sipMediaApplicationId: string;
+  distribution: Distribution;
 }
 
 export class Infrastructure extends Construct {
   public readonly apiUrl: string;
+  public createMeetingHandler: Function;
 
   constructor(scope: Construct, id: string, props: InfrastructureProps) {
     super(scope, id);
@@ -47,6 +53,54 @@ export class Infrastructure extends Construct {
           'service-role/AWSLambdaBasicExecutionRole',
         ),
       ],
+    });
+
+    const createMeetingLambdaRole = new Role(this, 'createMeetingLambdaRole', {
+      assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
+      inlinePolicies: {
+        ['chimePolicy']: new PolicyDocument({
+          statements: [
+            new PolicyStatement({
+              resources: ['*'],
+              actions: [
+                'chime:CreateSipMediaApplicationCall',
+                'chime:CreateMeetingWithAttendees',
+                'ses:SendEmail',
+              ],
+            }),
+          ],
+        }),
+      },
+      managedPolicies: [
+        ManagedPolicy.fromAwsManagedPolicyName(
+          'service-role/AWSLambdaBasicExecutionRole',
+        ),
+      ],
+    });
+
+    this.createMeetingHandler = new Function(this, 'createMeetingHandler', {
+      code: Code.fromAsset('src/resources/createMeeting', {
+        bundling: {
+          image: Runtime.PYTHON_3_9.bundlingImage,
+          command: [
+            'bash',
+            '-c',
+            'pip install -r requirements.txt -t /asset-output && cp -au . /asset-output',
+          ],
+        },
+      }),
+      handler: 'index.handler',
+      runtime: Runtime.PYTHON_3_9,
+      architecture: Architecture.ARM_64,
+      environment: {
+        FROM_NUMBER: props.fromNumber,
+        SIP_MEDIA_APPLICATION_ID: props.sipMediaApplicationId,
+        FROM_EMAIL: props.fromEmail,
+        MEETING_TABLE: props.meetingTable.tableName,
+        DISTRIBUTION: props.distribution.distributionDomainName,
+      },
+      role: createMeetingLambdaRole,
+      timeout: Duration.seconds(60),
     });
 
     const joinMeetingHandler = new Function(this, 'joinMeetingHandler', {
@@ -146,10 +200,12 @@ export class Infrastructure extends Construct {
     const join = api.root.addResource('join');
     const end = api.root.addResource('end');
     const query = api.root.addResource('query');
+    const create = api.root.addResource('create');
 
     const joinIntegration = new LambdaIntegration(joinMeetingHandler);
     const endIntegration = new LambdaIntegration(endMeetingHandler);
     const queryIntegration = new LambdaIntegration(queryMeetingHandler);
+    const createIntegration = new LambdaIntegration(this.createMeetingHandler);
 
     join.addMethod('POST', joinIntegration, {
       authorizer: auth,
@@ -160,6 +216,10 @@ export class Infrastructure extends Construct {
       authorizationType: AuthorizationType.COGNITO,
     });
     query.addMethod('POST', queryIntegration, {
+      authorizer: auth,
+      authorizationType: AuthorizationType.COGNITO,
+    });
+    create.addMethod('POST', createIntegration, {
       authorizer: auth,
       authorizationType: AuthorizationType.COGNITO,
     });
