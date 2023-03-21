@@ -4,3 +4,4 @@ export * from './database';
 export * from './cognito';
 export * from './infrastructure';
 export * from './site';
+export * from './cloudwatch';

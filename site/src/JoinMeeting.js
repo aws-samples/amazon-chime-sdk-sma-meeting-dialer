@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API } from 'aws-amplify';
-import { Link } from 'react-router-dom';
 import './App.css';
 import '@aws-amplify/ui-react/styles.css';
 import '@cloudscape-design/global-styles/index.css';

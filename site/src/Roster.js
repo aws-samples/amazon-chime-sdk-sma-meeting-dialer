@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import {
-    Roster,
-    RosterGroup,
-    RosterAttendee,
-    useRosterState,
-    useAttendeeStatus,
-} from 'amazon-chime-sdk-component-library-react';
+import { Roster, RosterGroup, RosterAttendee, useRosterState } from 'amazon-chime-sdk-component-library-react';
 import '@aws-amplify/ui-react/styles.css';
 import '@cloudscape-design/global-styles/index.css';
 import { API } from 'aws-amplify';

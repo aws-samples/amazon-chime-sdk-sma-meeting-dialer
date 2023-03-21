@@ -35,7 +35,7 @@ const common_exclude = [
 ];
 
 project.addTask('launch', {
-  exec: 'yarn && yarn projen && yarn build && yarn cdk bootstrap && yarn cdk deploy --require-approval never --hotswap && yarn configLocal',
+  exec: 'yarn && yarn projen && yarn build && yarn cdk bootstrap && yarn cdk deploy --require-approval never && yarn configLocal',
 });
 project.addTask('getBucket', {
   exec: "aws cloudformation describe-stacks --stack-name SMAMeetingDialer --region us-east-1 --query 'Stacks[0].Outputs[?OutputKey==`siteBucket`].OutputValue' --output text",

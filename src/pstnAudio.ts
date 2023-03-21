@@ -25,6 +25,7 @@ export interface ChimeSipMediaAppProps {
 export class PSTNAudio extends Construct {
   public sipMediaApplicationId: string;
   public smaPhoneNumber: string;
+  public smaHandler: Function;
 
   constructor(scope: Construct, id: string, props: ChimeSipMediaAppProps) {
     super(scope, id);
@@ -53,7 +54,7 @@ export class PSTNAudio extends Construct {
       ],
     });
 
-    const smaHandler = new Function(this, 'smaHandler', {
+    this.smaHandler = new Function(this, 'smaHandler', {
       code: Code.fromAsset('src/resources/smaHandler', {
         bundling: {
           image: Runtime.PYTHON_3_9.bundlingImage,
@@ -74,10 +75,10 @@ export class PSTNAudio extends Construct {
       timeout: Duration.seconds(60),
     });
 
-    props.meetingTable.grantReadWriteData(smaHandler);
+    props.meetingTable.grantReadWriteData(this.smaHandler);
 
     const sipMediaApp = new ChimeSipMediaApp(this, 'SipMediaApplication', {
-      endpoint: smaHandler.functionArn,
+      endpoint: this.smaHandler.functionArn,
       region: Stack.of(this).region,
     });
 

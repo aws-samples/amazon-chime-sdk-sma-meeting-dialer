@@ -29,6 +29,11 @@ exports[`Snapshot 1`] = `
         ],
       },
     },
+    "Dashboard": {
+      "Value": {
+        "Ref": "CloudWatchResourcesDashboard41221379",
+      },
+    },
     "InfrastructuresmaMeetingDialerApiEndpoint3ACA72AF": {
       "Value": {
         "Fn::Join": [
@@ -291,6 +296,59 @@ def submit_response(event: dict, context, response_status: str, error_message: s
         ],
       },
       "Type": "AWS::IAM::Policy",
+    },
+    "CloudWatchResourcesDashboard41221379": {
+      "Properties": {
+        "DashboardBody": {
+          "Fn::Join": [
+            "",
+            [
+              "{"widgets":[{"type":"log","width":24,"height":6,"x":0,"y":0,"properties":{"view":"table","title":"SMADialer Logs","region":"",
+              {
+                "Ref": "AWS::Region",
+              },
+              "","query":"SOURCE '",
+              {
+                "Fn::GetAtt": [
+                  "InfrastructurecreateMeetingHandlerLogRetention67C8891D",
+                  "LogGroupName",
+                ],
+              },
+              "' | SOURCE '",
+              {
+                "Fn::GetAtt": [
+                  "InfrastructurecreateMeetingHandlerLogRetention67C8891D",
+                  "LogGroupName",
+                ],
+              },
+              "' | SOURCE '",
+              {
+                "Fn::GetAtt": [
+                  "InfrastructurejoinMeetingHandlerLogRetentionA8871F4D",
+                  "LogGroupName",
+                ],
+              },
+              "' | SOURCE '",
+              {
+                "Fn::GetAtt": [
+                  "InfrastructurequeryMeetingHandlerLogRetention2E61353C",
+                  "LogGroupName",
+                ],
+              },
+              "' | SOURCE '",
+              {
+                "Fn::GetAtt": [
+                  "PSTNAudiosmaHandlerLogRetentionD78D8812",
+                  "LogGroupName",
+                ],
+              },
+              "' | fields @timestamp, @message\\n| sort @timestamp desc\\n| limit 200"}}]}",
+            ],
+          ],
+        },
+        "DashboardName": "SMADialer",
+      },
+      "Type": "AWS::CloudWatch::Dashboard",
     },
     "CognitoCognitoDefaultAuthenticatedRole162BCBED": {
       "Properties": {
@@ -839,7 +897,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "2332a8953f2d92ebffdc01cf20d5a2fb5bf2ef29764cda4186f01c55edee8c73.zip",
+          "S3Key": "350185a1069fa20a23a583e20c77f6844218bd73097902362dc94f1a108f5d89.zip",
         },
         "Description": {
           "Fn::Join": [
@@ -1166,7 +1224,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "2d89918fe36cb958a498feba8ac4c216446d552ab8c3904b026316360865d24d.zip",
+          "S3Key": "57296a21160185dd8fef6e7ba35642c3178ee80f421bd7575fa9f175f5769745.zip",
         },
         "Environment": {
           "Variables": {
@@ -1205,6 +1263,28 @@ def submit_response(event: dict, context, response_status: str, error_message: s
         "Timeout": 60,
       },
       "Type": "AWS::Lambda::Function",
+    },
+    "InfrastructurecreateMeetingHandlerLogRetention67C8891D": {
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Join": [
+            "",
+            [
+              "/aws/lambda/",
+              {
+                "Ref": "InfrastructurecreateMeetingHandler9514859E",
+              },
+            ],
+          ],
+        },
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::LogRetention",
     },
     "InfrastructurecreateMeetingLambdaRole2925E64C": {
       "Properties": {
@@ -1354,7 +1434,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "5c55eae529d5f24a7df5615c64045215af1c10149538b755d2e56d6ce59c74a3.zip",
+          "S3Key": "45a03b5f5a11f07c091d8a0390e8ecb4ac1fac077060638a3f39361599256614.zip",
         },
         "Environment": {
           "Variables": {
@@ -1489,7 +1569,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "6d9dad82ff92db4669875a26b515e90ed0418dd46d292e60871673f8988eb53a.zip",
+          "S3Key": "27fd5cb5ab7bbb85e2e08e3659f0b6ecbf814ef98b536baa310f8b8bf02c5743.zip",
         },
         "Environment": {
           "Variables": {
@@ -1510,6 +1590,28 @@ def submit_response(event: dict, context, response_status: str, error_message: s
       },
       "Type": "AWS::Lambda::Function",
     },
+    "InfrastructurejoinMeetingHandlerLogRetentionA8871F4D": {
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Join": [
+            "",
+            [
+              "/aws/lambda/",
+              {
+                "Ref": "InfrastructurejoinMeetingHandlerEBE5DBC1",
+              },
+            ],
+          ],
+        },
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::LogRetention",
+    },
     "InfrastructurequeryMeetingHandlerA047F2B1": {
       "DependsOn": [
         "InfrastructureinfrastructureRoleDefaultPolicy0F2BD00C",
@@ -1523,7 +1625,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "847316f8cbabe23d3ec0c07f6a008bb449e6865b977528b5f53edb636642533d.zip",
+          "S3Key": "9991ff3243cb03688c996e596d168c2b29d49ed566b847e3ff0772186ccfd47d.zip",
         },
         "Environment": {
           "Variables": {
@@ -1543,6 +1645,28 @@ def submit_response(event: dict, context, response_status: str, error_message: s
         "Timeout": 60,
       },
       "Type": "AWS::Lambda::Function",
+    },
+    "InfrastructurequeryMeetingHandlerLogRetention2E61353C": {
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Join": [
+            "",
+            [
+              "/aws/lambda/",
+              {
+                "Ref": "InfrastructurequeryMeetingHandlerA047F2B1",
+              },
+            ],
+          ],
+        },
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::LogRetention",
     },
     "InfrastructuresmaMeetingDialerApi3B21698F": {
       "Properties": {
@@ -2403,6 +2527,84 @@ def submit_response(event: dict, context, response_status: str, error_message: s
       },
       "Type": "AWS::Lambda::Permission",
     },
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A": {
+      "DependsOn": [
+        "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
+        "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "5fa1330271b8967d9254ba2d4a07144f8acefe8b77e6d6bba38261373a50d5f8.zip",
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "logs:PutRetentionPolicy",
+                "logs:DeleteRetentionPolicy",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
+        "Roles": [
+          {
+            "Ref": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
     "PSTNAudioPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEvent64122BF2": {
       "DependsOn": [
         "PSTNAudioPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicy8CDBF19A",
@@ -2413,14 +2615,14 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "53c95d71cfd280747d971a38505aea07f812fdba75874a090358a2fc4f58f79b.zip",
+          "S3Key": "e8fea7e029780f03a78580d41b7ffbc4551d6e7d6caa190a451880191c166189.zip",
         },
         "Description": "AWS CDK resource provider framework - onEvent (test/PSTNAudio/PhoneNumber/ChimePhoneNumber/PSTNResourceProvider)",
         "Environment": {
           "Variables": {
             "USER_ON_EVENT_FUNCTION_ARN": {
               "Fn::GetAtt": [
-                "PSTNResources1DB9F314",
+                "PSTNAudioPhoneNumberChimePhoneNumberpstnResourcesFunction701B22EE",
                 "Arn",
               ],
             },
@@ -2479,7 +2681,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
               "Resource": [
                 {
                   "Fn::GetAtt": [
-                    "PSTNResources1DB9F314",
+                    "PSTNAudioPhoneNumberChimePhoneNumberpstnResourcesFunction701B22EE",
                     "Arn",
                   ],
                 },
@@ -2489,7 +2691,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
                     [
                       {
                         "Fn::GetAtt": [
-                          "PSTNResources1DB9F314",
+                          "PSTNAudioPhoneNumberChimePhoneNumberpstnResourcesFunction701B22EE",
                           "Arn",
                         ],
                       },
@@ -2532,6 +2734,141 @@ def submit_response(event: dict, context, response_status: str, error_message: s
       "Type": "AWS::CloudFormation::CustomResource",
       "UpdateReplacePolicy": "Delete",
     },
+    "PSTNAudioPhoneNumberChimePhoneNumberpstnCustomResourceRole3E48ED67": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Description": "Amazon Chime PSTN Resources",
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+        "Policies": [
+          {
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Action": [
+                    "chime:CreateSipRule",
+                    "chime:DeleteSipRule",
+                    "chime:UpdateSipRule",
+                    "chime:GetSipRule",
+                    "chime:CreateSipMediaApplication",
+                    "chime:DeleteSipMediaApplication",
+                    "chime:GetPhoneNumberOrder",
+                    "chime:SearchAvailablePhoneNumbers",
+                    "chime:CreatePhoneNumberOrder",
+                    "chime:DeletePhoneNumber",
+                    "chime:GetPhoneNumber",
+                    "chime:CreateVoiceConnector",
+                    "chime:PutVoiceConnectorStreamingConfiguration",
+                    "chime:PutVoiceConnectorTermination",
+                    "chime:PutVoiceConnectorOrigination",
+                    "chime:PutVoiceConnectorLoggingConfiguration",
+                    "chime:ListPhoneNumbers",
+                    "chime:AssociatePhoneNumbersWithVoiceConnector",
+                    "chime:DisassociatePhoneNumbersFromVoiceConnector",
+                    "chime:DeleteVoiceConnector",
+                    "chime:PutSipMediaApplicationAlexaSkillConfiguration",
+                    "chime:PutSipMediaApplicationLoggingConfiguration",
+                    "logs:GetLogDelivery",
+                    "logs:DeleteLogDelivery",
+                    "logs:ListLogDeliveries",
+                    "logs:CreateLogGroup",
+                    "logs:DescribeResourcePolicies",
+                    "logs:PutResourcePolicy",
+                    "logs:DescribeLogGroups",
+                    "logs:CreateLogDelivery",
+                    "lambda:GetPolicy",
+                    "lambda:AddPermission",
+                    "iam:PutRolePolicy",
+                    "iam:CreateServiceLinkedRole",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": "*",
+                },
+                {
+                  "Action": [
+                    "ssm:PutParameter",
+                    "ssm:GetParameter",
+                    "ssm:DeleteParameter",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "arn:aws:ssm:",
+                        {
+                          "Ref": "AWS::Region",
+                        },
+                        ":",
+                        {
+                          "Ref": "AWS::AccountId",
+                        },
+                        ":parameter/chime/*",
+                      ],
+                    ],
+                  },
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "chimePolicy",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "PSTNAudioPhoneNumberChimePhoneNumberpstnResourcesFunction701B22EE": {
+      "DependsOn": [
+        "PSTNAudioPhoneNumberChimePhoneNumberpstnCustomResourceRole3E48ED67",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "0d03da0e53e0d3b28dc82f28cf1d74ef138a0aed8a4f12fa459cdc7ac2afe20d.zip",
+        },
+        "Description": "src/resources/pstn/pstn.lambda.ts",
+        "Environment": {
+          "Variables": {
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+          },
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "PSTNAudioPhoneNumberChimePhoneNumberpstnCustomResourceRole3E48ED67",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs18.x",
+        "Timeout": 60,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
     "PSTNAudioSipMediaApplicationsipMediaAppRequestPSTNResourceProviderframeworkonEvent06E23F02": {
       "DependsOn": [
         "PSTNAudioSipMediaApplicationsipMediaAppRequestPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicyA0F54BAB",
@@ -2542,14 +2879,14 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "53c95d71cfd280747d971a38505aea07f812fdba75874a090358a2fc4f58f79b.zip",
+          "S3Key": "e8fea7e029780f03a78580d41b7ffbc4551d6e7d6caa190a451880191c166189.zip",
         },
         "Description": "AWS CDK resource provider framework - onEvent (test/PSTNAudio/SipMediaApplication/sipMediaAppRequest/PSTNResourceProvider)",
         "Environment": {
           "Variables": {
             "USER_ON_EVENT_FUNCTION_ARN": {
               "Fn::GetAtt": [
-                "PSTNResources1DB9F314",
+                "PSTNAudioSipMediaApplicationsipMediaAppRequestpstnResourcesFunctionEB8AF622",
                 "Arn",
               ],
             },
@@ -2608,7 +2945,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
               "Resource": [
                 {
                   "Fn::GetAtt": [
-                    "PSTNResources1DB9F314",
+                    "PSTNAudioSipMediaApplicationsipMediaAppRequestpstnResourcesFunctionEB8AF622",
                     "Arn",
                   ],
                 },
@@ -2618,7 +2955,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
                     [
                       {
                         "Fn::GetAtt": [
-                          "PSTNResources1DB9F314",
+                          "PSTNAudioSipMediaApplicationsipMediaAppRequestpstnResourcesFunctionEB8AF622",
                           "Arn",
                         ],
                       },
@@ -2717,10 +3054,21 @@ def submit_response(event: dict, context, response_status: str, error_message: s
                     "chime:PutVoiceConnectorStreamingConfiguration",
                     "chime:PutVoiceConnectorTermination",
                     "chime:PutVoiceConnectorOrigination",
+                    "chime:PutVoiceConnectorLoggingConfiguration",
                     "chime:ListPhoneNumbers",
                     "chime:AssociatePhoneNumbersWithVoiceConnector",
                     "chime:DisassociatePhoneNumbersFromVoiceConnector",
                     "chime:DeleteVoiceConnector",
+                    "chime:PutSipMediaApplicationAlexaSkillConfiguration",
+                    "chime:PutSipMediaApplicationLoggingConfiguration",
+                    "logs:GetLogDelivery",
+                    "logs:DeleteLogDelivery",
+                    "logs:ListLogDeliveries",
+                    "logs:CreateLogGroup",
+                    "logs:DescribeResourcePolicies",
+                    "logs:PutResourcePolicy",
+                    "logs:DescribeLogGroups",
+                    "logs:CreateLogDelivery",
                     "lambda:GetPolicy",
                     "lambda:AddPermission",
                     "iam:PutRolePolicy",
@@ -2762,6 +3110,35 @@ def submit_response(event: dict, context, response_status: str, error_message: s
       },
       "Type": "AWS::IAM::Role",
     },
+    "PSTNAudioSipMediaApplicationsipMediaAppRequestpstnResourcesFunctionEB8AF622": {
+      "DependsOn": [
+        "PSTNAudioSipMediaApplicationsipMediaAppRequestpstnCustomResourceRoleF2E0D637",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "0d03da0e53e0d3b28dc82f28cf1d74ef138a0aed8a4f12fa459cdc7ac2afe20d.zip",
+        },
+        "Description": "src/resources/pstn/pstn.lambda.ts",
+        "Environment": {
+          "Variables": {
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+          },
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "PSTNAudioSipMediaApplicationsipMediaAppRequestpstnCustomResourceRoleF2E0D637",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs18.x",
+        "Timeout": 60,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
     "PSTNAudioSipRulesipRuleRequestPSTNResourceProviderframeworkonEvent4F5C7D51": {
       "DependsOn": [
         "PSTNAudioSipRulesipRuleRequestPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicyF50203FE",
@@ -2772,14 +3149,14 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "53c95d71cfd280747d971a38505aea07f812fdba75874a090358a2fc4f58f79b.zip",
+          "S3Key": "e8fea7e029780f03a78580d41b7ffbc4551d6e7d6caa190a451880191c166189.zip",
         },
         "Description": "AWS CDK resource provider framework - onEvent (test/PSTNAudio/SipRule/sipRuleRequest/PSTNResourceProvider)",
         "Environment": {
           "Variables": {
             "USER_ON_EVENT_FUNCTION_ARN": {
               "Fn::GetAtt": [
-                "PSTNResources1DB9F314",
+                "PSTNAudioSipRulesipRuleRequestpstnResourcesFunction3F447675",
                 "Arn",
               ],
             },
@@ -2838,7 +3215,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
               "Resource": [
                 {
                   "Fn::GetAtt": [
-                    "PSTNResources1DB9F314",
+                    "PSTNAudioSipRulesipRuleRequestpstnResourcesFunction3F447675",
                     "Arn",
                   ],
                 },
@@ -2848,7 +3225,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
                     [
                       {
                         "Fn::GetAtt": [
-                          "PSTNResources1DB9F314",
+                          "PSTNAudioSipRulesipRuleRequestpstnResourcesFunction3F447675",
                           "Arn",
                         ],
                       },
@@ -2909,6 +3286,141 @@ def submit_response(event: dict, context, response_status: str, error_message: s
       "Type": "AWS::CloudFormation::CustomResource",
       "UpdateReplacePolicy": "Delete",
     },
+    "PSTNAudioSipRulesipRuleRequestpstnCustomResourceRoleA7AACD96": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Description": "Amazon Chime PSTN Resources",
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+        "Policies": [
+          {
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Action": [
+                    "chime:CreateSipRule",
+                    "chime:DeleteSipRule",
+                    "chime:UpdateSipRule",
+                    "chime:GetSipRule",
+                    "chime:CreateSipMediaApplication",
+                    "chime:DeleteSipMediaApplication",
+                    "chime:GetPhoneNumberOrder",
+                    "chime:SearchAvailablePhoneNumbers",
+                    "chime:CreatePhoneNumberOrder",
+                    "chime:DeletePhoneNumber",
+                    "chime:GetPhoneNumber",
+                    "chime:CreateVoiceConnector",
+                    "chime:PutVoiceConnectorStreamingConfiguration",
+                    "chime:PutVoiceConnectorTermination",
+                    "chime:PutVoiceConnectorOrigination",
+                    "chime:PutVoiceConnectorLoggingConfiguration",
+                    "chime:ListPhoneNumbers",
+                    "chime:AssociatePhoneNumbersWithVoiceConnector",
+                    "chime:DisassociatePhoneNumbersFromVoiceConnector",
+                    "chime:DeleteVoiceConnector",
+                    "chime:PutSipMediaApplicationAlexaSkillConfiguration",
+                    "chime:PutSipMediaApplicationLoggingConfiguration",
+                    "logs:GetLogDelivery",
+                    "logs:DeleteLogDelivery",
+                    "logs:ListLogDeliveries",
+                    "logs:CreateLogGroup",
+                    "logs:DescribeResourcePolicies",
+                    "logs:PutResourcePolicy",
+                    "logs:DescribeLogGroups",
+                    "logs:CreateLogDelivery",
+                    "lambda:GetPolicy",
+                    "lambda:AddPermission",
+                    "iam:PutRolePolicy",
+                    "iam:CreateServiceLinkedRole",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": "*",
+                },
+                {
+                  "Action": [
+                    "ssm:PutParameter",
+                    "ssm:GetParameter",
+                    "ssm:DeleteParameter",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "arn:aws:ssm:",
+                        {
+                          "Ref": "AWS::Region",
+                        },
+                        ":",
+                        {
+                          "Ref": "AWS::AccountId",
+                        },
+                        ":parameter/chime/*",
+                      ],
+                    ],
+                  },
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "chimePolicy",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "PSTNAudioSipRulesipRuleRequestpstnResourcesFunction3F447675": {
+      "DependsOn": [
+        "PSTNAudioSipRulesipRuleRequestpstnCustomResourceRoleA7AACD96",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "0d03da0e53e0d3b28dc82f28cf1d74ef138a0aed8a4f12fa459cdc7ac2afe20d.zip",
+        },
+        "Description": "src/resources/pstn/pstn.lambda.ts",
+        "Environment": {
+          "Variables": {
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+          },
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "PSTNAudioSipRulesipRuleRequestpstnCustomResourceRoleA7AACD96",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs18.x",
+        "Timeout": 60,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
     "PSTNAudiosmaHandler5098719C": {
       "DependsOn": [
         "PSTNAudiosmaLambdaRoleDefaultPolicyB95E6E13",
@@ -2922,7 +3434,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "85a6101f0498930e3f87894c4b3b62f74292f04bbb70c01ca6b3888fd9328751.zip",
+          "S3Key": "245c9c94541fc0f2efc824a8e4c2b3f13972018433c73c48a9a33e9712a773e1.zip",
         },
         "Environment": {
           "Variables": {
@@ -2942,6 +3454,28 @@ def submit_response(event: dict, context, response_status: str, error_message: s
         "Timeout": 60,
       },
       "Type": "AWS::Lambda::Function",
+    },
+    "PSTNAudiosmaHandlerLogRetentionD78D8812": {
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Join": [
+            "",
+            [
+              "/aws/lambda/",
+              {
+                "Ref": "PSTNAudiosmaHandler5098719C",
+              },
+            ],
+          ],
+        },
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::LogRetention",
     },
     "PSTNAudiosmaLambdaRole282FF183": {
       "Properties": {
@@ -3048,32 +3582,6 @@ def submit_response(event: dict, context, response_status: str, error_message: s
         ],
       },
       "Type": "AWS::IAM::Policy",
-    },
-    "PSTNResources1DB9F314": {
-      "DependsOn": [
-        "PSTNAudioSipMediaApplicationsipMediaAppRequestpstnCustomResourceRoleF2E0D637",
-      ],
-      "Properties": {
-        "Architectures": [
-          "arm64",
-        ],
-        "Code": {
-          "S3Bucket": {
-            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
-          },
-          "S3Key": "1e85bcd7774f4f9e640d34759bef652508e0ebc55cb6d2b6cdb8600fa9ab8e3b.zip",
-        },
-        "Handler": "index.handler",
-        "Role": {
-          "Fn::GetAtt": [
-            "PSTNAudioSipMediaApplicationsipMediaAppRequestpstnCustomResourceRoleF2E0D637",
-            "Arn",
-          ],
-        },
-        "Runtime": "python3.9",
-        "Timeout": 60,
-      },
-      "Type": "AWS::Lambda::Function",
     },
     "S3ResourcestriggerBucket8073A445": {
       "DeletionPolicy": "Delete",
@@ -3219,7 +3727,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "5d8d1d0aacea23824c62f362e1e3c14b7dd14a31c71b53bfae4d14a6373c5510.zip",
+          "S3Key": "679066847909511778943bd4d081cd2468b890d5fc1272dd1fb101adb17c9b0d.zip",
         },
         "Description": "/opt/awscli/aws",
       },
@@ -3279,7 +3787,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           },
         ],
         "SourceObjectKeys": [
-          "c6465084aa2af7a3da63c320339163f5e1e36cb3d854864a5b674f4c9ee6471e.zip",
+          "b3aca78f8809f218c33314145f38b334a8561a2c40fe31c613d34784e6d94a2e.zip",
           "49aa1da69438c6967606bc17f36a99bb9eb94983c166b3602e2c37113e353659.zip",
         ],
       },
@@ -3344,6 +3852,11 @@ exports[`SnapshotCognito 1`] = `
             "/",
           ],
         ],
+      },
+    },
+    "Dashboard": {
+      "Value": {
+        "Ref": "CloudWatchResourcesDashboard41221379",
       },
     },
     "InfrastructuresmaMeetingDialerApiEndpoint3ACA72AF": {
@@ -3603,6 +4116,59 @@ def submit_response(event: dict, context, response_status: str, error_message: s
       },
       "Type": "AWS::IAM::Policy",
     },
+    "CloudWatchResourcesDashboard41221379": {
+      "Properties": {
+        "DashboardBody": {
+          "Fn::Join": [
+            "",
+            [
+              "{"widgets":[{"type":"log","width":24,"height":6,"x":0,"y":0,"properties":{"view":"table","title":"SMADialer Logs","region":"",
+              {
+                "Ref": "AWS::Region",
+              },
+              "","query":"SOURCE '",
+              {
+                "Fn::GetAtt": [
+                  "InfrastructurecreateMeetingHandlerLogRetention67C8891D",
+                  "LogGroupName",
+                ],
+              },
+              "' | SOURCE '",
+              {
+                "Fn::GetAtt": [
+                  "InfrastructurecreateMeetingHandlerLogRetention67C8891D",
+                  "LogGroupName",
+                ],
+              },
+              "' | SOURCE '",
+              {
+                "Fn::GetAtt": [
+                  "InfrastructurejoinMeetingHandlerLogRetentionA8871F4D",
+                  "LogGroupName",
+                ],
+              },
+              "' | SOURCE '",
+              {
+                "Fn::GetAtt": [
+                  "InfrastructurequeryMeetingHandlerLogRetention2E61353C",
+                  "LogGroupName",
+                ],
+              },
+              "' | SOURCE '",
+              {
+                "Fn::GetAtt": [
+                  "PSTNAudiosmaHandlerLogRetentionD78D8812",
+                  "LogGroupName",
+                ],
+              },
+              "' | fields @timestamp, @message\\n| sort @timestamp desc\\n| limit 200"}}]}",
+            ],
+          ],
+        },
+        "DashboardName": "SMADialer",
+      },
+      "Type": "AWS::CloudWatch::Dashboard",
+    },
     "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536": {
       "DependsOn": [
         "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRoleDefaultPolicy88902FDF",
@@ -3774,7 +4340,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "2332a8953f2d92ebffdc01cf20d5a2fb5bf2ef29764cda4186f01c55edee8c73.zip",
+          "S3Key": "350185a1069fa20a23a583e20c77f6844218bd73097902362dc94f1a108f5d89.zip",
         },
         "Description": {
           "Fn::Join": [
@@ -4096,7 +4662,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "2d89918fe36cb958a498feba8ac4c216446d552ab8c3904b026316360865d24d.zip",
+          "S3Key": "57296a21160185dd8fef6e7ba35642c3178ee80f421bd7575fa9f175f5769745.zip",
         },
         "Environment": {
           "Variables": {
@@ -4135,6 +4701,28 @@ def submit_response(event: dict, context, response_status: str, error_message: s
         "Timeout": 60,
       },
       "Type": "AWS::Lambda::Function",
+    },
+    "InfrastructurecreateMeetingHandlerLogRetention67C8891D": {
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Join": [
+            "",
+            [
+              "/aws/lambda/",
+              {
+                "Ref": "InfrastructurecreateMeetingHandler9514859E",
+              },
+            ],
+          ],
+        },
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::LogRetention",
     },
     "InfrastructurecreateMeetingLambdaRole2925E64C": {
       "Properties": {
@@ -4284,7 +4872,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "5c55eae529d5f24a7df5615c64045215af1c10149538b755d2e56d6ce59c74a3.zip",
+          "S3Key": "45a03b5f5a11f07c091d8a0390e8ecb4ac1fac077060638a3f39361599256614.zip",
         },
         "Environment": {
           "Variables": {
@@ -4419,7 +5007,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "6d9dad82ff92db4669875a26b515e90ed0418dd46d292e60871673f8988eb53a.zip",
+          "S3Key": "27fd5cb5ab7bbb85e2e08e3659f0b6ecbf814ef98b536baa310f8b8bf02c5743.zip",
         },
         "Environment": {
           "Variables": {
@@ -4440,6 +5028,28 @@ def submit_response(event: dict, context, response_status: str, error_message: s
       },
       "Type": "AWS::Lambda::Function",
     },
+    "InfrastructurejoinMeetingHandlerLogRetentionA8871F4D": {
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Join": [
+            "",
+            [
+              "/aws/lambda/",
+              {
+                "Ref": "InfrastructurejoinMeetingHandlerEBE5DBC1",
+              },
+            ],
+          ],
+        },
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::LogRetention",
+    },
     "InfrastructurequeryMeetingHandlerA047F2B1": {
       "DependsOn": [
         "InfrastructureinfrastructureRoleDefaultPolicy0F2BD00C",
@@ -4453,7 +5063,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "847316f8cbabe23d3ec0c07f6a008bb449e6865b977528b5f53edb636642533d.zip",
+          "S3Key": "9991ff3243cb03688c996e596d168c2b29d49ed566b847e3ff0772186ccfd47d.zip",
         },
         "Environment": {
           "Variables": {
@@ -4473,6 +5083,28 @@ def submit_response(event: dict, context, response_status: str, error_message: s
         "Timeout": 60,
       },
       "Type": "AWS::Lambda::Function",
+    },
+    "InfrastructurequeryMeetingHandlerLogRetention2E61353C": {
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Join": [
+            "",
+            [
+              "/aws/lambda/",
+              {
+                "Ref": "InfrastructurequeryMeetingHandlerA047F2B1",
+              },
+            ],
+          ],
+        },
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::LogRetention",
     },
     "InfrastructuresmaMeetingDialerApi3B21698F": {
       "Properties": {
@@ -5333,6 +5965,84 @@ def submit_response(event: dict, context, response_status: str, error_message: s
       },
       "Type": "AWS::Lambda::Permission",
     },
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A": {
+      "DependsOn": [
+        "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
+        "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "5fa1330271b8967d9254ba2d4a07144f8acefe8b77e6d6bba38261373a50d5f8.zip",
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "logs:PutRetentionPolicy",
+                "logs:DeleteRetentionPolicy",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
+        "Roles": [
+          {
+            "Ref": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
     "PSTNAudioPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEvent64122BF2": {
       "DependsOn": [
         "PSTNAudioPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicy8CDBF19A",
@@ -5343,14 +6053,14 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "53c95d71cfd280747d971a38505aea07f812fdba75874a090358a2fc4f58f79b.zip",
+          "S3Key": "e8fea7e029780f03a78580d41b7ffbc4551d6e7d6caa190a451880191c166189.zip",
         },
         "Description": "AWS CDK resource provider framework - onEvent (test/PSTNAudio/PhoneNumber/ChimePhoneNumber/PSTNResourceProvider)",
         "Environment": {
           "Variables": {
             "USER_ON_EVENT_FUNCTION_ARN": {
               "Fn::GetAtt": [
-                "PSTNResources1DB9F314",
+                "PSTNAudioPhoneNumberChimePhoneNumberpstnResourcesFunction701B22EE",
                 "Arn",
               ],
             },
@@ -5409,7 +6119,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
               "Resource": [
                 {
                   "Fn::GetAtt": [
-                    "PSTNResources1DB9F314",
+                    "PSTNAudioPhoneNumberChimePhoneNumberpstnResourcesFunction701B22EE",
                     "Arn",
                   ],
                 },
@@ -5419,7 +6129,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
                     [
                       {
                         "Fn::GetAtt": [
-                          "PSTNResources1DB9F314",
+                          "PSTNAudioPhoneNumberChimePhoneNumberpstnResourcesFunction701B22EE",
                           "Arn",
                         ],
                       },
@@ -5462,6 +6172,141 @@ def submit_response(event: dict, context, response_status: str, error_message: s
       "Type": "AWS::CloudFormation::CustomResource",
       "UpdateReplacePolicy": "Delete",
     },
+    "PSTNAudioPhoneNumberChimePhoneNumberpstnCustomResourceRole3E48ED67": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Description": "Amazon Chime PSTN Resources",
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+        "Policies": [
+          {
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Action": [
+                    "chime:CreateSipRule",
+                    "chime:DeleteSipRule",
+                    "chime:UpdateSipRule",
+                    "chime:GetSipRule",
+                    "chime:CreateSipMediaApplication",
+                    "chime:DeleteSipMediaApplication",
+                    "chime:GetPhoneNumberOrder",
+                    "chime:SearchAvailablePhoneNumbers",
+                    "chime:CreatePhoneNumberOrder",
+                    "chime:DeletePhoneNumber",
+                    "chime:GetPhoneNumber",
+                    "chime:CreateVoiceConnector",
+                    "chime:PutVoiceConnectorStreamingConfiguration",
+                    "chime:PutVoiceConnectorTermination",
+                    "chime:PutVoiceConnectorOrigination",
+                    "chime:PutVoiceConnectorLoggingConfiguration",
+                    "chime:ListPhoneNumbers",
+                    "chime:AssociatePhoneNumbersWithVoiceConnector",
+                    "chime:DisassociatePhoneNumbersFromVoiceConnector",
+                    "chime:DeleteVoiceConnector",
+                    "chime:PutSipMediaApplicationAlexaSkillConfiguration",
+                    "chime:PutSipMediaApplicationLoggingConfiguration",
+                    "logs:GetLogDelivery",
+                    "logs:DeleteLogDelivery",
+                    "logs:ListLogDeliveries",
+                    "logs:CreateLogGroup",
+                    "logs:DescribeResourcePolicies",
+                    "logs:PutResourcePolicy",
+                    "logs:DescribeLogGroups",
+                    "logs:CreateLogDelivery",
+                    "lambda:GetPolicy",
+                    "lambda:AddPermission",
+                    "iam:PutRolePolicy",
+                    "iam:CreateServiceLinkedRole",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": "*",
+                },
+                {
+                  "Action": [
+                    "ssm:PutParameter",
+                    "ssm:GetParameter",
+                    "ssm:DeleteParameter",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "arn:aws:ssm:",
+                        {
+                          "Ref": "AWS::Region",
+                        },
+                        ":",
+                        {
+                          "Ref": "AWS::AccountId",
+                        },
+                        ":parameter/chime/*",
+                      ],
+                    ],
+                  },
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "chimePolicy",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "PSTNAudioPhoneNumberChimePhoneNumberpstnResourcesFunction701B22EE": {
+      "DependsOn": [
+        "PSTNAudioPhoneNumberChimePhoneNumberpstnCustomResourceRole3E48ED67",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "0d03da0e53e0d3b28dc82f28cf1d74ef138a0aed8a4f12fa459cdc7ac2afe20d.zip",
+        },
+        "Description": "src/resources/pstn/pstn.lambda.ts",
+        "Environment": {
+          "Variables": {
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+          },
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "PSTNAudioPhoneNumberChimePhoneNumberpstnCustomResourceRole3E48ED67",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs18.x",
+        "Timeout": 60,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
     "PSTNAudioSipMediaApplicationsipMediaAppRequestPSTNResourceProviderframeworkonEvent06E23F02": {
       "DependsOn": [
         "PSTNAudioSipMediaApplicationsipMediaAppRequestPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicyA0F54BAB",
@@ -5472,14 +6317,14 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "53c95d71cfd280747d971a38505aea07f812fdba75874a090358a2fc4f58f79b.zip",
+          "S3Key": "e8fea7e029780f03a78580d41b7ffbc4551d6e7d6caa190a451880191c166189.zip",
         },
         "Description": "AWS CDK resource provider framework - onEvent (test/PSTNAudio/SipMediaApplication/sipMediaAppRequest/PSTNResourceProvider)",
         "Environment": {
           "Variables": {
             "USER_ON_EVENT_FUNCTION_ARN": {
               "Fn::GetAtt": [
-                "PSTNResources1DB9F314",
+                "PSTNAudioSipMediaApplicationsipMediaAppRequestpstnResourcesFunctionEB8AF622",
                 "Arn",
               ],
             },
@@ -5538,7 +6383,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
               "Resource": [
                 {
                   "Fn::GetAtt": [
-                    "PSTNResources1DB9F314",
+                    "PSTNAudioSipMediaApplicationsipMediaAppRequestpstnResourcesFunctionEB8AF622",
                     "Arn",
                   ],
                 },
@@ -5548,7 +6393,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
                     [
                       {
                         "Fn::GetAtt": [
-                          "PSTNResources1DB9F314",
+                          "PSTNAudioSipMediaApplicationsipMediaAppRequestpstnResourcesFunctionEB8AF622",
                           "Arn",
                         ],
                       },
@@ -5647,10 +6492,21 @@ def submit_response(event: dict, context, response_status: str, error_message: s
                     "chime:PutVoiceConnectorStreamingConfiguration",
                     "chime:PutVoiceConnectorTermination",
                     "chime:PutVoiceConnectorOrigination",
+                    "chime:PutVoiceConnectorLoggingConfiguration",
                     "chime:ListPhoneNumbers",
                     "chime:AssociatePhoneNumbersWithVoiceConnector",
                     "chime:DisassociatePhoneNumbersFromVoiceConnector",
                     "chime:DeleteVoiceConnector",
+                    "chime:PutSipMediaApplicationAlexaSkillConfiguration",
+                    "chime:PutSipMediaApplicationLoggingConfiguration",
+                    "logs:GetLogDelivery",
+                    "logs:DeleteLogDelivery",
+                    "logs:ListLogDeliveries",
+                    "logs:CreateLogGroup",
+                    "logs:DescribeResourcePolicies",
+                    "logs:PutResourcePolicy",
+                    "logs:DescribeLogGroups",
+                    "logs:CreateLogDelivery",
                     "lambda:GetPolicy",
                     "lambda:AddPermission",
                     "iam:PutRolePolicy",
@@ -5692,6 +6548,35 @@ def submit_response(event: dict, context, response_status: str, error_message: s
       },
       "Type": "AWS::IAM::Role",
     },
+    "PSTNAudioSipMediaApplicationsipMediaAppRequestpstnResourcesFunctionEB8AF622": {
+      "DependsOn": [
+        "PSTNAudioSipMediaApplicationsipMediaAppRequestpstnCustomResourceRoleF2E0D637",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "0d03da0e53e0d3b28dc82f28cf1d74ef138a0aed8a4f12fa459cdc7ac2afe20d.zip",
+        },
+        "Description": "src/resources/pstn/pstn.lambda.ts",
+        "Environment": {
+          "Variables": {
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+          },
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "PSTNAudioSipMediaApplicationsipMediaAppRequestpstnCustomResourceRoleF2E0D637",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs18.x",
+        "Timeout": 60,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
     "PSTNAudioSipRulesipRuleRequestPSTNResourceProviderframeworkonEvent4F5C7D51": {
       "DependsOn": [
         "PSTNAudioSipRulesipRuleRequestPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicyF50203FE",
@@ -5702,14 +6587,14 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "53c95d71cfd280747d971a38505aea07f812fdba75874a090358a2fc4f58f79b.zip",
+          "S3Key": "e8fea7e029780f03a78580d41b7ffbc4551d6e7d6caa190a451880191c166189.zip",
         },
         "Description": "AWS CDK resource provider framework - onEvent (test/PSTNAudio/SipRule/sipRuleRequest/PSTNResourceProvider)",
         "Environment": {
           "Variables": {
             "USER_ON_EVENT_FUNCTION_ARN": {
               "Fn::GetAtt": [
-                "PSTNResources1DB9F314",
+                "PSTNAudioSipRulesipRuleRequestpstnResourcesFunction3F447675",
                 "Arn",
               ],
             },
@@ -5768,7 +6653,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
               "Resource": [
                 {
                   "Fn::GetAtt": [
-                    "PSTNResources1DB9F314",
+                    "PSTNAudioSipRulesipRuleRequestpstnResourcesFunction3F447675",
                     "Arn",
                   ],
                 },
@@ -5778,7 +6663,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
                     [
                       {
                         "Fn::GetAtt": [
-                          "PSTNResources1DB9F314",
+                          "PSTNAudioSipRulesipRuleRequestpstnResourcesFunction3F447675",
                           "Arn",
                         ],
                       },
@@ -5839,6 +6724,141 @@ def submit_response(event: dict, context, response_status: str, error_message: s
       "Type": "AWS::CloudFormation::CustomResource",
       "UpdateReplacePolicy": "Delete",
     },
+    "PSTNAudioSipRulesipRuleRequestpstnCustomResourceRoleA7AACD96": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Description": "Amazon Chime PSTN Resources",
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+        "Policies": [
+          {
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Action": [
+                    "chime:CreateSipRule",
+                    "chime:DeleteSipRule",
+                    "chime:UpdateSipRule",
+                    "chime:GetSipRule",
+                    "chime:CreateSipMediaApplication",
+                    "chime:DeleteSipMediaApplication",
+                    "chime:GetPhoneNumberOrder",
+                    "chime:SearchAvailablePhoneNumbers",
+                    "chime:CreatePhoneNumberOrder",
+                    "chime:DeletePhoneNumber",
+                    "chime:GetPhoneNumber",
+                    "chime:CreateVoiceConnector",
+                    "chime:PutVoiceConnectorStreamingConfiguration",
+                    "chime:PutVoiceConnectorTermination",
+                    "chime:PutVoiceConnectorOrigination",
+                    "chime:PutVoiceConnectorLoggingConfiguration",
+                    "chime:ListPhoneNumbers",
+                    "chime:AssociatePhoneNumbersWithVoiceConnector",
+                    "chime:DisassociatePhoneNumbersFromVoiceConnector",
+                    "chime:DeleteVoiceConnector",
+                    "chime:PutSipMediaApplicationAlexaSkillConfiguration",
+                    "chime:PutSipMediaApplicationLoggingConfiguration",
+                    "logs:GetLogDelivery",
+                    "logs:DeleteLogDelivery",
+                    "logs:ListLogDeliveries",
+                    "logs:CreateLogGroup",
+                    "logs:DescribeResourcePolicies",
+                    "logs:PutResourcePolicy",
+                    "logs:DescribeLogGroups",
+                    "logs:CreateLogDelivery",
+                    "lambda:GetPolicy",
+                    "lambda:AddPermission",
+                    "iam:PutRolePolicy",
+                    "iam:CreateServiceLinkedRole",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": "*",
+                },
+                {
+                  "Action": [
+                    "ssm:PutParameter",
+                    "ssm:GetParameter",
+                    "ssm:DeleteParameter",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "arn:aws:ssm:",
+                        {
+                          "Ref": "AWS::Region",
+                        },
+                        ":",
+                        {
+                          "Ref": "AWS::AccountId",
+                        },
+                        ":parameter/chime/*",
+                      ],
+                    ],
+                  },
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "chimePolicy",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "PSTNAudioSipRulesipRuleRequestpstnResourcesFunction3F447675": {
+      "DependsOn": [
+        "PSTNAudioSipRulesipRuleRequestpstnCustomResourceRoleA7AACD96",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "0d03da0e53e0d3b28dc82f28cf1d74ef138a0aed8a4f12fa459cdc7ac2afe20d.zip",
+        },
+        "Description": "src/resources/pstn/pstn.lambda.ts",
+        "Environment": {
+          "Variables": {
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+          },
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "PSTNAudioSipRulesipRuleRequestpstnCustomResourceRoleA7AACD96",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs18.x",
+        "Timeout": 60,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
     "PSTNAudiosmaHandler5098719C": {
       "DependsOn": [
         "PSTNAudiosmaLambdaRoleDefaultPolicyB95E6E13",
@@ -5852,7 +6872,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "85a6101f0498930e3f87894c4b3b62f74292f04bbb70c01ca6b3888fd9328751.zip",
+          "S3Key": "245c9c94541fc0f2efc824a8e4c2b3f13972018433c73c48a9a33e9712a773e1.zip",
         },
         "Environment": {
           "Variables": {
@@ -5872,6 +6892,28 @@ def submit_response(event: dict, context, response_status: str, error_message: s
         "Timeout": 60,
       },
       "Type": "AWS::Lambda::Function",
+    },
+    "PSTNAudiosmaHandlerLogRetentionD78D8812": {
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Join": [
+            "",
+            [
+              "/aws/lambda/",
+              {
+                "Ref": "PSTNAudiosmaHandler5098719C",
+              },
+            ],
+          ],
+        },
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::LogRetention",
     },
     "PSTNAudiosmaLambdaRole282FF183": {
       "Properties": {
@@ -5978,32 +7020,6 @@ def submit_response(event: dict, context, response_status: str, error_message: s
         ],
       },
       "Type": "AWS::IAM::Policy",
-    },
-    "PSTNResources1DB9F314": {
-      "DependsOn": [
-        "PSTNAudioSipMediaApplicationsipMediaAppRequestpstnCustomResourceRoleF2E0D637",
-      ],
-      "Properties": {
-        "Architectures": [
-          "arm64",
-        ],
-        "Code": {
-          "S3Bucket": {
-            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
-          },
-          "S3Key": "1e85bcd7774f4f9e640d34759bef652508e0ebc55cb6d2b6cdb8600fa9ab8e3b.zip",
-        },
-        "Handler": "index.handler",
-        "Role": {
-          "Fn::GetAtt": [
-            "PSTNAudioSipMediaApplicationsipMediaAppRequestpstnCustomResourceRoleF2E0D637",
-            "Arn",
-          ],
-        },
-        "Runtime": "python3.9",
-        "Timeout": 60,
-      },
-      "Type": "AWS::Lambda::Function",
     },
     "S3ResourcestriggerBucket8073A445": {
       "DeletionPolicy": "Delete",
@@ -6149,7 +7165,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "5d8d1d0aacea23824c62f362e1e3c14b7dd14a31c71b53bfae4d14a6373c5510.zip",
+          "S3Key": "679066847909511778943bd4d081cd2468b890d5fc1272dd1fb101adb17c9b0d.zip",
         },
         "Description": "/opt/awscli/aws",
       },
@@ -6203,7 +7219,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           },
         ],
         "SourceObjectKeys": [
-          "c6465084aa2af7a3da63c320339163f5e1e36cb3d854864a5b674f4c9ee6471e.zip",
+          "b3aca78f8809f218c33314145f38b334a8561a2c40fe31c613d34784e6d94a2e.zip",
           "39d66d2d079fafbec39c2027030cecd7731a016c364c7ca5ed550a920d21589b.zip",
         ],
       },

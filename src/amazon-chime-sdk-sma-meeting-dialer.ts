@@ -14,6 +14,7 @@ import {
   Cognito,
   Site,
   DistributionResources,
+  CloudWatchResources,
 } from '.';
 
 interface SMAMeetingDialerProps extends StackProps {
@@ -69,6 +70,18 @@ export class SMAMeetingDialer extends Stack {
       fromEmail: props.fromEmail,
     });
 
+    const cloudwatchResources = new CloudWatchResources(
+      this,
+      'CloudWatchResources',
+      {
+        joinMeetingHandler: infrastructure.joinMeetingHandler,
+        endMeetingHandler: infrastructure.endMeetingHandler,
+        queryMeetingHandler: infrastructure.queryMeetingHandler,
+        createMeetingHandler: infrastructure.createMeetingHandler,
+        smaHandler: pstnAudio.smaHandler,
+      },
+    );
+
     new Site(this, 'Site', {
       apiUrl: infrastructure.apiUrl,
       userPool: cognito.userPool,
@@ -108,6 +121,10 @@ export class SMAMeetingDialer extends Stack {
 
     new CfnOutput(this, 'uploadToS3', {
       value: `aws s3 cp trigger.json s3://${triggerBucket.triggerBucket.bucketName}`,
+    });
+
+    new CfnOutput(this, 'Dashboard', {
+      value: cloudwatchResources.dashboard.dashboardName,
     });
   }
 }

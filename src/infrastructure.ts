@@ -32,6 +32,9 @@ interface InfrastructureProps {
 export class Infrastructure extends Construct {
   public readonly apiUrl: string;
   public createMeetingHandler: Function;
+  public joinMeetingHandler: Function;
+  public queryMeetingHandler: Function;
+  public endMeetingHandler: Function;
 
   constructor(scope: Construct, id: string, props: InfrastructureProps) {
     super(scope, id);
@@ -103,7 +106,7 @@ export class Infrastructure extends Construct {
       timeout: Duration.seconds(60),
     });
 
-    const joinMeetingHandler = new Function(this, 'joinMeetingHandler', {
+    this.joinMeetingHandler = new Function(this, 'joinMeetingHandler', {
       code: Code.fromAsset('src/resources/joinMeeting', {
         bundling: {
           image: Runtime.PYTHON_3_9.bundlingImage,
@@ -124,9 +127,9 @@ export class Infrastructure extends Construct {
       timeout: Duration.seconds(60),
     });
 
-    props.meetingTable.grantReadWriteData(joinMeetingHandler);
+    props.meetingTable.grantReadWriteData(this.joinMeetingHandler);
 
-    const endMeetingHandler = new Function(this, 'endMeetingHandler', {
+    this.endMeetingHandler = new Function(this, 'endMeetingHandler', {
       code: Code.fromAsset('src/resources/endMeeting', {
         bundling: {
           image: Runtime.PYTHON_3_9.bundlingImage,
@@ -147,9 +150,9 @@ export class Infrastructure extends Construct {
       timeout: Duration.seconds(60),
     });
 
-    props.meetingTable.grantReadWriteData(endMeetingHandler);
+    props.meetingTable.grantReadWriteData(this.endMeetingHandler);
 
-    const queryMeetingHandler = new Function(this, 'queryMeetingHandler', {
+    this.queryMeetingHandler = new Function(this, 'queryMeetingHandler', {
       code: Code.fromAsset('src/resources/queryMeeting', {
         bundling: {
           image: Runtime.PYTHON_3_9.bundlingImage,
@@ -170,7 +173,7 @@ export class Infrastructure extends Construct {
       timeout: Duration.seconds(60),
     });
 
-    props.meetingTable.grantReadWriteData(queryMeetingHandler);
+    props.meetingTable.grantReadWriteData(this.queryMeetingHandler);
 
     const api = new RestApi(this, 'smaMeetingDialerApi', {
       defaultCorsPreflightOptions: {
@@ -202,9 +205,9 @@ export class Infrastructure extends Construct {
     const query = api.root.addResource('query');
     const create = api.root.addResource('create');
 
-    const joinIntegration = new LambdaIntegration(joinMeetingHandler);
-    const endIntegration = new LambdaIntegration(endMeetingHandler);
-    const queryIntegration = new LambdaIntegration(queryMeetingHandler);
+    const joinIntegration = new LambdaIntegration(this.joinMeetingHandler);
+    const endIntegration = new LambdaIntegration(this.endMeetingHandler);
+    const queryIntegration = new LambdaIntegration(this.queryMeetingHandler);
     const createIntegration = new LambdaIntegration(this.createMeetingHandler);
 
     join.addMethod('POST', joinIntegration, {

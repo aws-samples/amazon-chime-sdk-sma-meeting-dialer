@@ -21,10 +21,10 @@ response = {
     }
 }
 
-# Set LogLevel using environment variable, fallback to INFO if not present
+# Set LOG_LEVEL using environment variable, fallback to INFO if not present
 logger = logging.getLogger()
 try:
-    LOG_LEVEL = os.environ['LogLevel']
+    LOG_LEVEL = os.environ['LOG_LEVEL']
     if LOG_LEVEL not in ['INFO', 'DEBUG']:
         LOG_LEVEL = 'INFO'
 except BaseException:
@@ -35,23 +35,26 @@ logger.setLevel(LOG_LEVEL)
 def handler(event, context):
     global LOG_PREFIX
     LOG_PREFIX = 'End Meeting: '
-    logger.info('RECV %s \nEvent: %s', LOG_PREFIX, json.dumps(event, indent=4))
+    logger.info('%s RECV Event: %s', LOG_PREFIX, json.dumps(event, indent=4))
   
     body = json.loads(event['body'])
     if body['meetingId']:
-        logger.info('Deleting meeting: %s', body['meetingId'])
+        logger.info('%s Deleting meeting: %s', LOG_PREFIX, body['meetingId'])
         delete_meeting_response = delete_meeting(body['meetingId'])
         if delete_meeting_response:
             response['body'] = json.dumps({'message': 'Meeting deleted successfully'})
             response['statusCode'] = 200
+            logger.info('%s Response: %s', LOG_PREFIX, json.dumps(response, indent=4))
             return response
         else:
             response['body'] = json.dumps({'message': 'Unable to delete meeting'})
             response['statusCode'] = 503
+            logger.info('%s Response: %s', LOG_PREFIX, json.dumps(response, indent=4))
             return response
     else:
         response['body'] = json.dumps({'message': 'Meeting ID not provided'})
         response['statusCode'] = 404
+        logger.info('%s Response: %s', LOG_PREFIX, json.dumps(response, indent=4))
         return response
 
 
@@ -60,8 +63,8 @@ def delete_meeting(meeting_id):
         delete_meeting_response = chime_sdk_meeting_client.delete_meeting(
             MeetingId=meeting_id
         )
-        logger.info('Delete meeting response: %s', delete_meeting_response)
+        logger.info('%s Delete meeting response: %s', LOG_PREFIX, json.dumps(delete_meeting_response, indent=4))
         return True
     except ClientError as error:
-        logger.error('Error deleting meeting: %s', error)
+        logger.error('%s Error deleting meeting: %s', LOG_PREFIX, error)
         return False

@@ -7,11 +7,10 @@ import '@aws-amplify/ui-react/styles.css';
 import '@cloudscape-design/global-styles/index.css';
 import VideoMeeting from './VideoMeeting';
 import JoinMeeting from './JoinMeeting';
-import MeetingControlBar from './MeetingControlBar';
 import { MeetingProvider } from 'amazon-chime-sdk-component-library-react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
-import { ContentLayout, Container, Header, SpaceBetween, Button } from '@cloudscape-design/components';
+import { ContentLayout, Header, SpaceBetween, Button } from '@cloudscape-design/components';
 
 Amplify.configure(AmplifyConfig);
 API.configure(AmplifyConfig);
