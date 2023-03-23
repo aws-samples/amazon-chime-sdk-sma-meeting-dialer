@@ -25,7 +25,7 @@ meeting_table = dynamo_client.Table(MEETING_TABLE)
 logger = logging.getLogger()
 try:
     LOG_LEVEL = os.environ['LOG_LEVEL']
-    if LOG_LEVEL not in ['INFO', 'DEBUG']:
+    if LOG_LEVEL not in ['INFO', 'DEBUG', 'WARN', 'ERROR']:
         LOG_LEVEL = 'INFO'
 except BaseException:
     LOG_LEVEL = 'INFO'
@@ -52,16 +52,16 @@ response = {
 
 
 def handler(event, context):
-    global log_prefix
-    log_prefix = 'Create Meeting: '
+    global LOG_PREFIX
+    LOG_PREFIX = 'Create Meeting: '
     if 'Records' in event:
-        logger.info('%s RECV Event: %s', log_prefix, json.dumps(event))
+        logger.info('%s RECV Event: %s', LOG_PREFIX, json.dumps(event))
         participants, event_id = get_records(event)
         create_meeting(participants, event_id)
     else:
-        logger.info('%s RECV Event: %s', log_prefix, json.dumps(event))
+        logger.info('%s RECV Event: %s', LOG_PREFIX, json.dumps(event))
         participant_request = json.loads(event['body'])
-        logger.info('%s Participant Request: %s', log_prefix, json.dumps(participant_request, indent=4))
+        logger.info('%s Participant Request: %s', LOG_PREFIX, json.dumps(participant_request, indent=4))
         participants = [{
             "Name": participant_request['attendeeName'],
             "PhoneNumber": participant_request['attendeePhoneNumber'],
@@ -83,7 +83,7 @@ def create_meeting(participants, event_id):
     attendee_list = []
     participant_list = []
     for participant in participants:
-        logger.info('%s Adding attendee %s', log_prefix, participant['PhoneNumber'])
+        logger.info('%s Adding attendee %s', LOG_PREFIX, participant['PhoneNumber'])
         participant_list.append({
             "Name":  participant.get('Name', 'None'),
             "PhoneNumber": participant['PhoneNumber'],
@@ -92,9 +92,9 @@ def create_meeting(participants, event_id):
         attendee_list.append({
             'ExternalUserId': participant['PhoneNumber'],
         })
-    logger.info('%s Attendee List: %s', log_prefix, json.dumps(attendee_list))
-    logger.info('%s Participant List: %s', log_prefix, json.dumps(participant_list))
-    logger.info('%s Event ID: %s', log_prefix, event_id)
+    logger.info('%s Attendee List: %s', LOG_PREFIX, json.dumps(attendee_list))
+    logger.info('%s Participant List: %s', LOG_PREFIX, json.dumps(participant_list))
+    logger.info('%s Event ID: %s', LOG_PREFIX, event_id)
 
     try:
         meeting_info = chime_sdk_meeting_client.create_meeting_with_attendees(
@@ -104,7 +104,7 @@ def create_meeting(participants, event_id):
             Attendees=attendee_list
         )
     except Exception as error:
-        logger.error('%s Error creating meeting: %s', log_prefix, error)
+        logger.error('%s Error creating meeting: %s', LOG_PREFIX, error)
         raise error
     for index, participant in enumerate(participant_list):
         participant_list[index]['JoinToken'] = meeting_info['Attendees'][index]['JoinToken']
@@ -112,53 +112,58 @@ def create_meeting(participants, event_id):
         participant_list[index]['Attendee'] = meeting_info['Attendees'][index]
         participant_list[index]['MeetingId'] = meeting_info['Meeting']['MeetingId']
 
-    logger.info('%s Meeting Info: %s', log_prefix, json.dumps(meeting_info))
+    logger.info('%s Meeting Info: %s', LOG_PREFIX, json.dumps(meeting_info))
 
-    try:
-        for attendee in participant_list:
-            meeting_passcode = randint(100000, 999999)
-            meeting_object = {
-                'EventId': str(event_id),
-                'MeetingPasscode': str(meeting_passcode),
-                'PhoneNumber':  attendee['PhoneNumber'],
-                'Name': attendee['Name'],
-                'TTL':  int(time.time() + 86400)
-            }
-            logger.info('Meeting Object: %s', json.dumps(meeting_object, cls=DecimalEncoder))
-            meeting_table.put_item(Item=meeting_object)
-            if (attendee['Email'] != 'None' and FROM_EMAIL != ''):
-                logger.info('Sending email to %s for meeting %s', attendee['Email'], meeting_object['EventId'])
-                send_email(event_id, attendee['Email'], meeting_passcode)
-            if attendee['CallParticipant'] is True:
-                logger.info('Calling attendee at %s for meeting %s', attendee['PhoneNumber'], event_id)
-                call_participant(attendee, event_id, meeting_passcode)
-    except Exception as error:
-        logger.error('%s Error updating Database: %s', log_prefix, error)
-        raise error
+    for attendee in participant_list:
+        meeting_passcode = randint(100000, 999999)
+        meeting_object = {
+            'EventId': str(event_id),
+            'MeetingId': meeting_info['Meeting']['MeetingId'],
+            'MeetingPasscode': str(meeting_passcode),
+            'PhoneNumber':  attendee['PhoneNumber'],
+            'Name': attendee['Name'],
+            'TTL':  int(time.time() + 86400)
+        }
+        update_db(meeting_object)
+        if ((attendee['Email'] != '' or attendee['Email'] != 'None') and FROM_EMAIL != ''):
+            send_email(event_id, attendee['Email'], meeting_passcode)
+        if attendee['CallParticipant'] is True:
+            call_participant(attendee, event_id, meeting_passcode)
     if len(participants) == 1:
         return meeting_passcode
     else:
         return True
 
 
+def update_db(meeting_object):
+    try:
+        logger.info('%s Updating Database: %s', LOG_PREFIX, json.dumps(meeting_object, cls=DecimalEncoder))
+        meeting_table.put_item(Item=meeting_object)
+        logger.info('%s Updated Database', LOG_PREFIX)
+        return
+    except Exception as error:
+        logger.error('%s Error updating Database: %s', LOG_PREFIX, error)
+        raise error
+
+
 def get_records(event):
     bucket = event['Records'][0]['s3']['bucket']['name']
     key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding='utf-8')
-    logger.info('%s Getting S3 Object: %s/%s', log_prefix, bucket, key)
+    logger.info('%s Getting S3 Object: %s/%s', LOG_PREFIX, bucket, key)
     try:
         meeting_request = s3_client.get_object(Bucket=bucket, Key=key)
-        logger.info("%s CONTENT TYPE: %s", log_prefix, meeting_request['ContentType'])
+        logger.info("%s CONTENT TYPE: %s", LOG_PREFIX, meeting_request['ContentType'])
     except Exception as error:
-        logger.error('%s S3 GetObject Error: %s', log_prefix, error)
+        logger.error('%s S3 GetObject Error: %s', LOG_PREFIX, error)
         raise error
 
     request_info = json.loads(meeting_request['Body'].read().decode('utf-8'))
-    logger.info('%s S3 GetObject Info: %s', log_prefix, json.dumps(request_info))
+    logger.info('%s S3 GetObject Info: %s', LOG_PREFIX, json.dumps(request_info))
     return request_info['Participants'], request_info['EventId']
 
 
 def call_participant(attendee, event_id, meeting_passcode):
-    logger.info('%s Calling attendee: %s', log_prefix, attendee['PhoneNumber'])
+    logger.info('%s Calling %s for meeting %s', LOG_PREFIX, attendee['PhoneNumber'], event_id)
     try:
         chime_sdk_voice_client.create_sip_media_application_call(
             FromPhoneNumber=FROM_NUMBER,
@@ -174,12 +179,12 @@ def call_participant(attendee, event_id, meeting_passcode):
             }
         )
     except Exception as error:
-        logger.error('%s Error calling attendee: %s', log_prefix, error)
+        logger.error('%s Error calling attendee: %s', LOG_PREFIX, error)
         raise error
 
 
 def send_email(event_id, to_email, meeting_passcode):
-    logger.info('%s Sending email to %s for meeting %s', log_prefix, to_email, event_id)
+    logger.info('%s Sending email to %s for meeting %s', LOG_PREFIX, to_email, event_id)
     try:
         ses_client.send_email(
             Source=FROM_EMAIL,
@@ -195,9 +200,9 @@ def send_email(event_id, to_email, meeting_passcode):
                 },
                 'Body': {
                     'Text': {
-                        'Data': 
+                        'Data':
                         (
-                            'A meeting has been started. /nTo join the meeting:/n+' + 
+                            'A meeting has been started. /nTo join the meeting:/n+' +
                             str(FROM_NUMBER) + ',,' + str(event_id) + ',,' + str(meeting_passcode) +
                             '/nhttp://' + DISTRIBUTION + '/meeting?eventId=' + str(event_id) + '&passcode=' + str(meeting_passcode)
                         ),
@@ -216,5 +221,5 @@ def send_email(event_id, to_email, meeting_passcode):
                 },
         )
     except Exception as error:
-        logger.error('%s SES SendEmail Error: %s', log_prefix, error)
+        logger.error('%s SES SendEmail Error: %s', LOG_PREFIX, error)
         raise error

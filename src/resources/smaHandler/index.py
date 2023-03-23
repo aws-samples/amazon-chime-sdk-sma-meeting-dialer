@@ -3,7 +3,7 @@ import decimal
 import json
 import logging
 import boto3
-from botocore.exceptions import ClientError
+import botocore.exceptions
 
 chime_sdk_meeting_client = boto3.client('chime-sdk-meetings')
 dynamo_client = boto3.resource('dynamodb')
@@ -16,7 +16,7 @@ meeting_table = dynamo_client.Table(MEETING_TABLE)
 logger = logging.getLogger()
 try:
     LOG_LEVEL = os.environ['LOG_LEVEL']
-    if LOG_LEVEL not in ['INFO', 'DEBUG']:
+    if LOG_LEVEL not in ['INFO', 'DEBUG', 'WARN', 'ERROR']:
         LOG_LEVEL = 'INFO'
 except BaseException:
     LOG_LEVEL = 'INFO'
@@ -98,6 +98,7 @@ def handler(event, context):
                 else:
                     logger.info('%s Event ID is in transaction attributes', LOG_PREFIX)
                     try:
+                        logger.info('%s Getting Item from DynamoDB for Event ID: %s and Passcode: %s', LOG_PREFIX, transaction_attributes['event_id'], received_digits)
                         event_info = meeting_table.get_item(Key={"EventId": transaction_attributes['event_id'], 'MeetingPasscode': received_digits})
                         logger.info('%s Event Info: %s', LOG_PREFIX, json.dumps(event_info,  cls=DecimalEncoder, indent=4))
                     except Exception as error:
@@ -108,8 +109,9 @@ def handler(event, context):
                         transaction_attributes['phone_number'] = event_info['Item']['PhoneNumber']
                         transaction_attributes['event_id'] = str(event_info['Item']['EventId'])
                         transaction_attributes['meeting_passcode'] = received_digits
+                        transaction_attributes['meeting_id'] = event_info['Item']['MeetingId']
                         meeting_info = create_meeting(transaction_attributes)
-                        transaction_attributes['meeting_id'] = meeting_info['Meeting']['MeetingId']
+                        # transaction_attributes['meeting_id'] = meeting_info['Meeting']['MeetingId']
                         transaction_attributes['attendee_id'] = meeting_info['Attendees'][0]['AttendeeId']
                         transaction_attributes['join_token'] = meeting_info['Attendees'][0]['JoinToken']
                         return response(join_chime_meeting_action(call_id, transaction_attributes), transaction_attributes=transaction_attributes)
@@ -242,6 +244,9 @@ def join_chime_meeting_action(call_id, transaction_attributes):
 
 def create_meeting(transaction_attributes):
     logger.info('%s Creating meeting for event %s', LOG_PREFIX, transaction_attributes['event_id'])
+
+    check_attendee(transaction_attributes)
+
     try:
         meeting_info = chime_sdk_meeting_client.create_meeting_with_attendees(
             ClientRequestToken=transaction_attributes['event_id'],
@@ -251,11 +256,43 @@ def create_meeting(transaction_attributes):
                 'ExternalUserId': transaction_attributes['phone_number']
             }]
         )
-        update_table(transaction_attributes,  meeting_info['Meeting']['MeetingId'],meeting_info['Attendees'][0]['AttendeeId'] )
+        update_table(transaction_attributes,  meeting_info['Meeting']['MeetingId'], meeting_info['Attendees'][0]['AttendeeId'])
         logger.info('%s Meeting created: %s', LOG_PREFIX, meeting_info)
         return meeting_info
     except Exception as error:
         logger.error('%s Error creating meeting: %s', LOG_PREFIX, error)
+        return error
+
+
+def check_attendee(transaction_attributes):
+    logger.info('%s Getting attendee list for meeting %s', LOG_PREFIX, transaction_attributes['meeting_id'])
+    try:
+        attendee_info = chime_sdk_meeting_client.list_attendees(
+            MeetingId=transaction_attributes['meeting_id'],
+        )
+        for attendee in attendee_info['Attendees']:
+            if attendee['ExternalUserId'] == transaction_attributes['phone_number']:
+                logger.info('%s Attendee already exists', LOG_PREFIX)
+                delete_attendee(transaction_attributes['meeting_id'],  attendee['AttendeeId'])
+            else:
+                continue
+        return True
+    except Exception as error:
+        logger.error('%s Error getting attendee: %s', LOG_PREFIX, error)
+        return error
+
+
+def delete_attendee(meeting_id, attendee_id):
+    logger.info('%s Deleting attendee %s for meeting %s', LOG_PREFIX, attendee_id, meeting_id)
+    try:
+        chime_sdk_meeting_client.delete_attendee(
+            MeetingId=meeting_id,
+            AttendeeId=attendee_id
+        )
+        logger.info('%s Attendee deleted', LOG_PREFIX)
+        return True
+    except Exception as error:
+        logger.error('%s Error deleting attendee: %s', LOG_PREFIX, error)
         return error
 
 
@@ -267,7 +304,7 @@ def update_table(transaction_attributes, meeting_id, attendee_id):
                     UpdateExpression="set JoinMethod = :j, MeetingId = :m, AttendeeId = :a",
                     ExpressionAttributeValues={":j": 'Phone',  ":m": meeting_id, ":a": attendee_id},
                     ReturnValues="UPDATED_NEW"),
-        logger.info('Table update: %s', json.dumps(table_update, cls=DecimalEncoder, indent=4))
+        logger.info('%s s Table update: %s', LOG_PREFIX, json.dumps(table_update, cls=DecimalEncoder, indent=4))
         return True
     except Exception as error:
         logger.error('%s Error updating table: %s', LOG_PREFIX, error)

@@ -20,6 +20,7 @@ import { Construct } from 'constructs';
 
 export interface ChimeSipMediaAppProps {
   meetingTable: Table;
+  logLevel: string;
 }
 
 export class PSTNAudio extends Construct {
@@ -68,6 +69,7 @@ export class PSTNAudio extends Construct {
       handler: 'index.handler',
       environment: {
         MEETING_TABLE: props.meetingTable.tableName,
+        LOG_LEVEL: props.logLevel,
       },
       runtime: Runtime.PYTHON_3_9,
       architecture: Architecture.ARM_64,
