@@ -6,7 +6,7 @@ This demo combines several different components to produce an application that w
 
 - AWS Account
 - Deployed to `us-east-1`
-- Docker installed
+- Docker installed and running
 - Good understanding of Python
 
 ## Creating a Meeting
