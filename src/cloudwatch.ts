@@ -13,6 +13,7 @@ interface CloudWatchResourcesProps {
   queryMeetingHandler: Function;
   endMeetingHandler: Function;
   smaHandler: Function;
+  eventBridge: Function;
 }
 
 export class CloudWatchResources extends Construct {
@@ -34,6 +35,7 @@ export class CloudWatchResources extends Construct {
           props.joinMeetingHandler.logGroup.logGroupName,
           props.queryMeetingHandler.logGroup.logGroupName,
           props.smaHandler.logGroup.logGroupName,
+          props.eventBridge.logGroup.logGroupName,
         ],
         width: 24,
         region: Stack.of(this).region,

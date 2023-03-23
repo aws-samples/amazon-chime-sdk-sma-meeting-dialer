@@ -27,6 +27,7 @@ interface InfrastructureProps {
   fromEmail: string;
   sipMediaApplicationId: string;
   distribution: Distribution;
+  logLevel: string;
 }
 
 export class Infrastructure extends Construct {
@@ -101,6 +102,7 @@ export class Infrastructure extends Construct {
         FROM_EMAIL: props.fromEmail,
         MEETING_TABLE: props.meetingTable.tableName,
         DISTRIBUTION: props.distribution.distributionDomainName,
+        LOG_LEVEL: props.logLevel,
       },
       role: createMeetingLambdaRole,
       timeout: Duration.seconds(60),
@@ -120,6 +122,7 @@ export class Infrastructure extends Construct {
       handler: 'index.handler',
       environment: {
         MEETING_TABLE: props.meetingTable.tableName,
+        LOG_LEVEL: props.logLevel,
       },
       runtime: Runtime.PYTHON_3_9,
       architecture: Architecture.ARM_64,
@@ -143,6 +146,7 @@ export class Infrastructure extends Construct {
       handler: 'index.handler',
       environment: {
         MEETING_TABLE: props.meetingTable.tableName,
+        LOG_LEVEL: props.logLevel,
       },
       runtime: Runtime.PYTHON_3_9,
       architecture: Architecture.ARM_64,
@@ -166,6 +170,7 @@ export class Infrastructure extends Construct {
       handler: 'index.handler',
       environment: {
         MEETING_TABLE: props.meetingTable.tableName,
+        LOG_LEVEL: props.logLevel,
       },
       runtime: Runtime.PYTHON_3_9,
       architecture: Architecture.ARM_64,

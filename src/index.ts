@@ -5,3 +5,4 @@ export * from './cognito';
 export * from './infrastructure';
 export * from './site';
 export * from './cloudwatch';
+export * from './eventbridge';

@@ -24,27 +24,33 @@ const JoinMeeting = ({}) => {
     const [attendeeEmail, setAttendeeEmail] = useState('');
     const [attendeeCall, setAttendeeCall] = useState(false);
     const [attendeeCreated, setAttendeeCreated] = useState(false);
+    const [errorCreating, setErrorCreating] = useState(false);
     const navigate = useNavigate();
 
     const handleCreate = async (event) => {
         event.preventDefault();
         console.log('Handling Create');
-        try {
-            const createResponse = await API.post('meetingAPI', 'create', {
-                body: {
-                    attendeeName: attendeeName,
-                    attendeeEmail: attendeeEmail,
-                    attendeePhoneNumber: attendeePhoneNumber,
-                    attendeeCall: attendeeCall,
-                    eventId: eventId,
-                },
-            });
-            if (createResponse) {
-                setAttendeeCreated(true);
+        if (!(eventId && attendeeName && attendeePhoneNumber)) {
+            setErrorCreating(true);
+        } else {
+            setErrorCreating(false);
+            try {
+                const createResponse = await API.post('meetingAPI', 'create', {
+                    body: {
+                        attendeeName: attendeeName,
+                        attendeeEmail: attendeeEmail,
+                        attendeePhoneNumber: attendeePhoneNumber,
+                        attendeeCall: attendeeCall,
+                        eventId: eventId,
+                    },
+                });
+                if (createResponse) {
+                    setAttendeeCreated(true);
+                }
+                setPasscode(createResponse.passcode);
+            } catch (err) {
+                console.log(`{err in handleEnd: ${err}`);
             }
-            setPasscode(createResponse.passcode);
-        } catch (err) {
-            console.log(`{err in handleEnd: ${err}`);
         }
     };
 
@@ -93,6 +99,23 @@ const JoinMeeting = ({}) => {
                     </SpaceBetween>
                 </Container>
                 <Container header={<Header variant="h2">Create Meeting/Attendee</Header>}>
+                    {errorCreating && (
+                        <Flashbar
+                            items={[
+                                {
+                                    type: 'error',
+                                    dismissible: true,
+                                    statusIconAriaLabel: 'error',
+                                    dismissLabel: 'Dismiss message',
+                                    content: `Missing required fields: ${eventId ? '' : 'Event ID, '} ${
+                                        attendeeName ? '' : 'Attendee Name, '
+                                    }  ${attendeePhoneNumber ? '' : 'Attendee Phone Number'}`,
+                                    onDismiss: () => setErrorCreating(false),
+                                    id: 'errorFlashMessageId',
+                                },
+                            ]}
+                        />
+                    )}
                     {attendeeCreated && (
                         <Flashbar
                             items={[

@@ -7,6 +7,7 @@ test('Snapshot', () => {
   const stack = new SMAMeetingDialer(app, 'test', {
     fromEmail: 'test@example',
     allowedDomain: 'example.com',
+    logLevel: '',
   });
 
   const template = Template.fromStack(stack);
@@ -24,6 +25,7 @@ test('SnapshotCognito', () => {
     userPoolRegion: 'string',
     fromEmail: '',
     allowedDomain: '',
+    logLevel: 'info',
   });
   const template = Template.fromStack(stack);
   expect(template.toJSON()).toMatchSnapshot();

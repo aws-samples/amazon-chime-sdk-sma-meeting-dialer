@@ -342,6 +342,13 @@ def submit_response(event: dict, context, response_status: str, error_message: s
                   "LogGroupName",
                 ],
               },
+              "' | SOURCE '",
+              {
+                "Fn::GetAtt": [
+                  "EventBridgeResourceseventBridgeLambdaLogRetentionC528054F",
+                  "LogGroupName",
+                ],
+              },
               "' | fields @timestamp, @message\\n| sort @timestamp desc\\n| limit 200"}}]}",
             ],
           ],
@@ -574,13 +581,9 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "ALLOW_REFRESH_TOKEN_AUTH",
         ],
         "GenerateSecret": false,
-        "RefreshTokenValidity": 60,
         "SupportedIdentityProviders": [
           "COGNITO",
         ],
-        "TokenValidityUnits": {
-          "RefreshToken": "minutes",
-        },
         "UserPoolId": {
           "Ref": "CognitoUserPool279BBD48",
         },
@@ -1192,6 +1195,131 @@ def submit_response(event: dict, context, response_status: str, error_message: s
       },
       "Type": "AWS::S3::BucketPolicy",
     },
+    "EventBridgeResourceschimeSdkRule66D118CF": {
+      "Properties": {
+        "EventPattern": {
+          "source": [
+            "aws.chime",
+          ],
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "EventBridgeResourceseventBridgeLambda8B29C72C",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "EventBridgeResourceschimeSdkRuleAllowEventRuletestEventBridgeResourceseventBridgeLambdaFA51F2036EC21218": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "EventBridgeResourceseventBridgeLambda8B29C72C",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "EventBridgeResourceschimeSdkRule66D118CF",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "EventBridgeResourceseventBridgeLambda8B29C72C": {
+      "DependsOn": [
+        "EventBridgeResourceseventBridgeLambdaServiceRole4EAED5E7",
+      ],
+      "Properties": {
+        "Architectures": [
+          "arm64",
+        ],
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "44cd3b710d68fb2d2cdde5d8dea4120803e54885e875980ac6aff350360ef888.zip",
+        },
+        "Environment": {
+          "Variables": {
+            "LOG_LEVEL": "",
+          },
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "EventBridgeResourceseventBridgeLambdaServiceRole4EAED5E7",
+            "Arn",
+          ],
+        },
+        "Runtime": "python3.9",
+        "Timeout": 60,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "EventBridgeResourceseventBridgeLambdaLogRetentionC528054F": {
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Join": [
+            "",
+            [
+              "/aws/lambda/",
+              {
+                "Ref": "EventBridgeResourceseventBridgeLambda8B29C72C",
+              },
+            ],
+          ],
+        },
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::LogRetention",
+    },
+    "EventBridgeResourceseventBridgeLambdaServiceRole4EAED5E7": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
     "Infrastructureauth4BEB723B": {
       "Properties": {
         "IdentitySource": "method.request.header.Authorization",
@@ -1224,7 +1352,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "57296a21160185dd8fef6e7ba35642c3178ee80f421bd7575fa9f175f5769745.zip",
+          "S3Key": "11bcbe89da3b02bf29a8527f46828b09ce904a030b2648f7069895ae77c92e15.zip",
         },
         "Environment": {
           "Variables": {
@@ -1241,6 +1369,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
                 "phoneNumber",
               ],
             },
+            "LOG_LEVEL": "",
             "MEETING_TABLE": {
               "Ref": "DatabasecallRecordsTableA61C0BFF",
             },
@@ -1434,10 +1563,11 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "45a03b5f5a11f07c091d8a0390e8ecb4ac1fac077060638a3f39361599256614.zip",
+          "S3Key": "b406bbe3a72490c61fb9c757ef777f3f80c5dddb3e166b72544ed79d4c270b75.zip",
         },
         "Environment": {
           "Variables": {
+            "LOG_LEVEL": "",
             "MEETING_TABLE": {
               "Ref": "DatabasecallRecordsTableA61C0BFF",
             },
@@ -1569,10 +1699,11 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "27fd5cb5ab7bbb85e2e08e3659f0b6ecbf814ef98b536baa310f8b8bf02c5743.zip",
+          "S3Key": "77c9630269df42388d553f1d37c539b125c60425451867aa49c72dbb30246325.zip",
         },
         "Environment": {
           "Variables": {
+            "LOG_LEVEL": "",
             "MEETING_TABLE": {
               "Ref": "DatabasecallRecordsTableA61C0BFF",
             },
@@ -1625,10 +1756,11 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "9991ff3243cb03688c996e596d168c2b29d49ed566b847e3ff0772186ccfd47d.zip",
+          "S3Key": "de8c0273a25d379ef59f7df058b5a008a084b377476ceb7b105a334cd6a9d5ce.zip",
         },
         "Environment": {
           "Variables": {
+            "LOG_LEVEL": "",
             "MEETING_TABLE": {
               "Ref": "DatabasecallRecordsTableA61C0BFF",
             },
@@ -3434,10 +3566,11 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "245c9c94541fc0f2efc824a8e4c2b3f13972018433c73c48a9a33e9712a773e1.zip",
+          "S3Key": "7d69e9fefe424a8c76832cd8889582922ba2341e02bb294c1885d1366591085f.zip",
         },
         "Environment": {
           "Variables": {
+            "LOG_LEVEL": "",
             "MEETING_TABLE": {
               "Ref": "DatabasecallRecordsTableA61C0BFF",
             },
@@ -3787,7 +3920,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           },
         ],
         "SourceObjectKeys": [
-          "b3aca78f8809f218c33314145f38b334a8561a2c40fe31c613d34784e6d94a2e.zip",
+          "581da6270b7332edfde9b703d1b98d49c6ec8d00b19e824fd8f3b17340b89c72.zip",
           "49aa1da69438c6967606bc17f36a99bb9eb94983c166b3602e2c37113e353659.zip",
         ],
       },
@@ -4158,6 +4291,13 @@ def submit_response(event: dict, context, response_status: str, error_message: s
               {
                 "Fn::GetAtt": [
                   "PSTNAudiosmaHandlerLogRetentionD78D8812",
+                  "LogGroupName",
+                ],
+              },
+              "' | SOURCE '",
+              {
+                "Fn::GetAtt": [
+                  "EventBridgeResourceseventBridgeLambdaLogRetentionC528054F",
                   "LogGroupName",
                 ],
               },
@@ -4635,6 +4775,131 @@ def submit_response(event: dict, context, response_status: str, error_message: s
       },
       "Type": "AWS::S3::BucketPolicy",
     },
+    "EventBridgeResourceschimeSdkRule66D118CF": {
+      "Properties": {
+        "EventPattern": {
+          "source": [
+            "aws.chime",
+          ],
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "EventBridgeResourceseventBridgeLambda8B29C72C",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "EventBridgeResourceschimeSdkRuleAllowEventRuletestEventBridgeResourceseventBridgeLambdaFA51F2036EC21218": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "EventBridgeResourceseventBridgeLambda8B29C72C",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "EventBridgeResourceschimeSdkRule66D118CF",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "EventBridgeResourceseventBridgeLambda8B29C72C": {
+      "DependsOn": [
+        "EventBridgeResourceseventBridgeLambdaServiceRole4EAED5E7",
+      ],
+      "Properties": {
+        "Architectures": [
+          "arm64",
+        ],
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "44cd3b710d68fb2d2cdde5d8dea4120803e54885e875980ac6aff350360ef888.zip",
+        },
+        "Environment": {
+          "Variables": {
+            "LOG_LEVEL": "info",
+          },
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "EventBridgeResourceseventBridgeLambdaServiceRole4EAED5E7",
+            "Arn",
+          ],
+        },
+        "Runtime": "python3.9",
+        "Timeout": 60,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "EventBridgeResourceseventBridgeLambdaLogRetentionC528054F": {
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Join": [
+            "",
+            [
+              "/aws/lambda/",
+              {
+                "Ref": "EventBridgeResourceseventBridgeLambda8B29C72C",
+              },
+            ],
+          ],
+        },
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::LogRetention",
+    },
+    "EventBridgeResourceseventBridgeLambdaServiceRole4EAED5E7": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
     "Infrastructureauth4BEB723B": {
       "Properties": {
         "IdentitySource": "method.request.header.Authorization",
@@ -4662,7 +4927,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "57296a21160185dd8fef6e7ba35642c3178ee80f421bd7575fa9f175f5769745.zip",
+          "S3Key": "11bcbe89da3b02bf29a8527f46828b09ce904a030b2648f7069895ae77c92e15.zip",
         },
         "Environment": {
           "Variables": {
@@ -4679,6 +4944,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
                 "phoneNumber",
               ],
             },
+            "LOG_LEVEL": "info",
             "MEETING_TABLE": {
               "Ref": "DatabasecallRecordsTableA61C0BFF",
             },
@@ -4872,10 +5138,11 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "45a03b5f5a11f07c091d8a0390e8ecb4ac1fac077060638a3f39361599256614.zip",
+          "S3Key": "b406bbe3a72490c61fb9c757ef777f3f80c5dddb3e166b72544ed79d4c270b75.zip",
         },
         "Environment": {
           "Variables": {
+            "LOG_LEVEL": "info",
             "MEETING_TABLE": {
               "Ref": "DatabasecallRecordsTableA61C0BFF",
             },
@@ -5007,10 +5274,11 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "27fd5cb5ab7bbb85e2e08e3659f0b6ecbf814ef98b536baa310f8b8bf02c5743.zip",
+          "S3Key": "77c9630269df42388d553f1d37c539b125c60425451867aa49c72dbb30246325.zip",
         },
         "Environment": {
           "Variables": {
+            "LOG_LEVEL": "info",
             "MEETING_TABLE": {
               "Ref": "DatabasecallRecordsTableA61C0BFF",
             },
@@ -5063,10 +5331,11 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "9991ff3243cb03688c996e596d168c2b29d49ed566b847e3ff0772186ccfd47d.zip",
+          "S3Key": "de8c0273a25d379ef59f7df058b5a008a084b377476ceb7b105a334cd6a9d5ce.zip",
         },
         "Environment": {
           "Variables": {
+            "LOG_LEVEL": "info",
             "MEETING_TABLE": {
               "Ref": "DatabasecallRecordsTableA61C0BFF",
             },
@@ -6872,10 +7141,11 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "245c9c94541fc0f2efc824a8e4c2b3f13972018433c73c48a9a33e9712a773e1.zip",
+          "S3Key": "7d69e9fefe424a8c76832cd8889582922ba2341e02bb294c1885d1366591085f.zip",
         },
         "Environment": {
           "Variables": {
+            "LOG_LEVEL": "info",
             "MEETING_TABLE": {
               "Ref": "DatabasecallRecordsTableA61C0BFF",
             },
@@ -7219,7 +7489,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           },
         ],
         "SourceObjectKeys": [
-          "b3aca78f8809f218c33314145f38b334a8561a2c40fe31c613d34784e6d94a2e.zip",
+          "581da6270b7332edfde9b703d1b98d49c6ec8d00b19e824fd8f3b17340b89c72.zip",
           "39d66d2d079fafbec39c2027030cecd7731a016c364c7ca5ed550a920d21589b.zip",
         ],
       },

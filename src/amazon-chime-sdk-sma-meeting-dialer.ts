@@ -15,6 +15,7 @@ import {
   Site,
   DistributionResources,
   CloudWatchResources,
+  EventBridgeResources,
 } from '.';
 
 interface SMAMeetingDialerProps extends StackProps {
@@ -23,6 +24,7 @@ interface SMAMeetingDialerProps extends StackProps {
   userPoolRegion?: string;
   allowedDomain: string;
   fromEmail: string;
+  logLevel: string;
 }
 
 interface CognitoOutput {
@@ -41,6 +43,7 @@ export class SMAMeetingDialer extends Stack {
 
     const pstnAudio = new PSTNAudio(this, 'PSTNAudio', {
       meetingTable: database.meetingTable,
+      logLevel: props.logLevel,
     });
 
     let cognito: CognitoOutput;
@@ -61,6 +64,9 @@ export class SMAMeetingDialer extends Stack {
       });
     }
 
+    const eventBridge = new EventBridgeResources(this, 'EventBridgeResources', {
+      logLevel: props.logLevel,
+    });
     const infrastructure = new Infrastructure(this, 'Infrastructure', {
       meetingTable: database.meetingTable,
       userPool: cognito.userPool,
@@ -68,6 +74,7 @@ export class SMAMeetingDialer extends Stack {
       fromNumber: pstnAudio.smaPhoneNumber,
       sipMediaApplicationId: pstnAudio.sipMediaApplicationId,
       fromEmail: props.fromEmail,
+      logLevel: props.logLevel,
     });
 
     const cloudwatchResources = new CloudWatchResources(
@@ -79,6 +86,7 @@ export class SMAMeetingDialer extends Stack {
         queryMeetingHandler: infrastructure.queryMeetingHandler,
         createMeetingHandler: infrastructure.createMeetingHandler,
         smaHandler: pstnAudio.smaHandler,
+        eventBridge: eventBridge.eventBridgeLambda,
       },
     );
 
@@ -140,6 +148,7 @@ const stackProps = {
   userPoolRegion: process.env.USER_POOL_REGION || '',
   allowedDomain: process.env.ALLOWED_DOMAIN || '',
   fromEmail: process.env.FROM_EMAIL || '',
+  logLevel: process.env.LOG_LEVEL || 'info',
 };
 
 const app = new App();

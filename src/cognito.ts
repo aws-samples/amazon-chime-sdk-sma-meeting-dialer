@@ -99,7 +99,6 @@ export class Cognito extends Construct {
         userSrp: true,
         custom: true,
       },
-      refreshTokenValidity: Duration.hours(1),
     });
 
     const identityPool = new CfnIdentityPool(this, 'cognitoIdentityPool', {

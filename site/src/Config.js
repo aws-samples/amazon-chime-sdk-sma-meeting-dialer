@@ -7,6 +7,7 @@ export const AmplifyConfig = {
         userPoolId: config.userPoolId,
         userPoolWebClientId: config.userPoolClientId,
         mandatorySignIn: true,
+
         cookieStorage: {
             domain: `${window.location.hostname}`,
             path: '/',
