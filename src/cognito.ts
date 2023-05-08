@@ -1,3 +1,4 @@
+// eslint-disable-file quote-props
 import { RemovalPolicy, Duration, Stack } from 'aws-cdk-lib';
 import {
   CfnIdentityPool,
@@ -119,8 +120,7 @@ export class Cognito extends Construct {
         assumedBy: new FederatedPrincipal(
           'cognito-identity.amazonaws.com',
           {
-            // eslint-disable-next-line quote-props
-            StringEquals: {
+            'StringEquals': {
               'cognito-identity.amazonaws.com:aud': identityPool.ref,
             },
             'ForAnyValue:StringLike': {
