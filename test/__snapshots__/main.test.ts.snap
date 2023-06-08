@@ -1975,7 +1975,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
       "Type": "AWS::IAM::Role",
       "UpdateReplacePolicy": "Retain",
     },
-    "InfrastructuresmaMeetingDialerApiDeploymentB8B77A59d3e64c75a136c53d7af85b1785932b3a": {
+    "InfrastructuresmaMeetingDialerApiDeploymentB8B77A5968f8e2a3f2757c67b2868cd30240f50c": {
       "DependsOn": [
         "InfrastructuresmaMeetingDialerApicreateOPTIONS48721866",
         "InfrastructuresmaMeetingDialerApicreatePOSTA237C789",
@@ -2005,7 +2005,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
       ],
       "Properties": {
         "DeploymentId": {
-          "Ref": "InfrastructuresmaMeetingDialerApiDeploymentB8B77A59d3e64c75a136c53d7af85b1785932b3a",
+          "Ref": "InfrastructuresmaMeetingDialerApiDeploymentB8B77A5968f8e2a3f2757c67b2868cd30240f50c",
         },
         "MethodSettings": [
           {
@@ -2024,6 +2024,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
     },
     "InfrastructuresmaMeetingDialerApiOPTIONSA3BECC58": {
       "Properties": {
+        "ApiKeyRequired": false,
         "AuthorizationType": "NONE",
         "HttpMethod": "OPTIONS",
         "Integration": {
@@ -2083,6 +2084,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
     },
     "InfrastructuresmaMeetingDialerApicreateOPTIONS48721866": {
       "Properties": {
+        "ApiKeyRequired": false,
         "AuthorizationType": "NONE",
         "HttpMethod": "OPTIONS",
         "Integration": {
@@ -2260,6 +2262,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
     },
     "InfrastructuresmaMeetingDialerApiendOPTIONSA4D579AC": {
       "Properties": {
+        "ApiKeyRequired": false,
         "AuthorizationType": "NONE",
         "HttpMethod": "OPTIONS",
         "Integration": {
@@ -2437,6 +2440,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
     },
     "InfrastructuresmaMeetingDialerApijoinOPTIONS9B070674": {
       "Properties": {
+        "ApiKeyRequired": false,
         "AuthorizationType": "NONE",
         "HttpMethod": "OPTIONS",
         "Integration": {
@@ -2614,6 +2618,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
     },
     "InfrastructuresmaMeetingDialerApiqueryOPTIONSCB148B5A": {
       "Properties": {
+        "ApiKeyRequired": false,
         "AuthorizationType": "NONE",
         "HttpMethod": "OPTIONS",
         "Integration": {
@@ -3995,7 +4000,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "0e38c73676c042efb04d698981ab7a9706991a146e59250a537916db0e9bde39.zip",
+          "S3Key": "88b83f5f61fe6f85ffcd0a37a09a8f3be90e7c090964b0b62b062eb8a5a1a3a7.zip",
         },
         "Description": "/opt/awscli/aws",
       },
@@ -5685,7 +5690,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
       "Type": "AWS::IAM::Role",
       "UpdateReplacePolicy": "Retain",
     },
-    "InfrastructuresmaMeetingDialerApiDeploymentB8B77A59d3e64c75a136c53d7af85b1785932b3a": {
+    "InfrastructuresmaMeetingDialerApiDeploymentB8B77A5968f8e2a3f2757c67b2868cd30240f50c": {
       "DependsOn": [
         "InfrastructuresmaMeetingDialerApicreateOPTIONS48721866",
         "InfrastructuresmaMeetingDialerApicreatePOSTA237C789",
@@ -5715,7 +5720,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
       ],
       "Properties": {
         "DeploymentId": {
-          "Ref": "InfrastructuresmaMeetingDialerApiDeploymentB8B77A59d3e64c75a136c53d7af85b1785932b3a",
+          "Ref": "InfrastructuresmaMeetingDialerApiDeploymentB8B77A5968f8e2a3f2757c67b2868cd30240f50c",
         },
         "MethodSettings": [
           {
@@ -5734,6 +5739,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
     },
     "InfrastructuresmaMeetingDialerApiOPTIONSA3BECC58": {
       "Properties": {
+        "ApiKeyRequired": false,
         "AuthorizationType": "NONE",
         "HttpMethod": "OPTIONS",
         "Integration": {
@@ -5793,6 +5799,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
     },
     "InfrastructuresmaMeetingDialerApicreateOPTIONS48721866": {
       "Properties": {
+        "ApiKeyRequired": false,
         "AuthorizationType": "NONE",
         "HttpMethod": "OPTIONS",
         "Integration": {
@@ -5970,6 +5977,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
     },
     "InfrastructuresmaMeetingDialerApiendOPTIONSA4D579AC": {
       "Properties": {
+        "ApiKeyRequired": false,
         "AuthorizationType": "NONE",
         "HttpMethod": "OPTIONS",
         "Integration": {
@@ -6147,6 +6155,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
     },
     "InfrastructuresmaMeetingDialerApijoinOPTIONS9B070674": {
       "Properties": {
+        "ApiKeyRequired": false,
         "AuthorizationType": "NONE",
         "HttpMethod": "OPTIONS",
         "Integration": {
@@ -6324,6 +6333,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
     },
     "InfrastructuresmaMeetingDialerApiqueryOPTIONSCB148B5A": {
       "Properties": {
+        "ApiKeyRequired": false,
         "AuthorizationType": "NONE",
         "HttpMethod": "OPTIONS",
         "Integration": {
@@ -7705,7 +7715,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "0e38c73676c042efb04d698981ab7a9706991a146e59250a537916db0e9bde39.zip",
+          "S3Key": "88b83f5f61fe6f85ffcd0a37a09a8f3be90e7c090964b0b62b062eb8a5a1a3a7.zip",
         },
         "Description": "/opt/awscli/aws",
       },
