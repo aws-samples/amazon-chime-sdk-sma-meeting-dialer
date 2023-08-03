@@ -3566,9 +3566,9 @@
     tslib "^2.3.1"
 
 "@cloudscape-design/components@^3.0.65":
-  version "3.0.351"
-  resolved "https://registry.yarnpkg.com/@cloudscape-design/components/-/components-3.0.351.tgz#19a269ba4ca14be0d20e7701496e78ad185f6a18"
-  integrity sha512-YImhRkqH5BypFvCf9Na/rKJlA35XmnfGxvTZCrNCqpOba96Q3wbfGI5aCCKvsClA5xZM1wNpPouyks/a5KvlgQ==
+  version "3.0.352"
+  resolved "https://registry.yarnpkg.com/@cloudscape-design/components/-/components-3.0.352.tgz#eaa1e1f7c1bd860d8a79cebeb0090dd026018555"
+  integrity sha512-6VMphCJ2Wu1+Z5lHbxFItbVCrAf0HuHG0wWDsaRHdlXopAREi5NWzeFgCp93+UigFcjnHnQZDUKO/1nEVC9+Ig==
   dependencies:
     "@cloudscape-design/collection-hooks" "^1.0.0"
     "@cloudscape-design/component-toolkit" "^1.0.0-beta"
@@ -3597,9 +3597,9 @@
   integrity sha512-MIe4QBH8pztGrfKpmky38d8OKGxtPbZGeFu/1RPlub12lnI7Dwf+U2E2DVw0vS7tUFAxUscBHZY000XpWHK0fg==
 
 "@cloudscape-design/test-utils-core@^1.0.0":
-  version "1.0.13"
-  resolved "https://registry.yarnpkg.com/@cloudscape-design/test-utils-core/-/test-utils-core-1.0.13.tgz#d35373dc1097bf4e9cd9c59f088516edd076f234"
-  integrity sha512-f7E8HwEXjMjgVE2OGzkwWZNGRIBIa3yTqwndriemZpGTCzi8kcKxU8E5IyCoPkxIdSb0NtUPkATo1LzZPIccOQ==
+  version "1.0.14"
+  resolved "https://registry.yarnpkg.com/@cloudscape-design/test-utils-core/-/test-utils-core-1.0.14.tgz#8c77c1e2ecea2dd17e18868cb9ada9f240157662"
+  integrity sha512-4VTCFJq3RXUFNPT6jsYDsjwgVNtBP/E1Iuwjnp7ZszqY7vLlPMTP2AbFImGPMbN9h2oB3mAzxM7wK+TSw0xvxA==
   dependencies:
     css-selector-tokenizer "^0.8.0"
     css.escape "^1.5.1"
