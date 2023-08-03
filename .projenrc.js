@@ -57,9 +57,11 @@ upgradeSite.addJobs({
           'node-version': '16',
         },
       },
-      { run: 'cd site' },
-      { run: 'yarn install --check-files --frozen-lockfile' },
-      { run: 'yarn upgrade' },
+      {
+        run: 'yarn install --check-files --frozen-lockfile',
+        workingDirectory: 'site',
+      },
+      { run: 'yarn upgrade', workingDirectory: 'site' },
       {
         name: 'Create Pull Request',
         uses: 'peter-evans/create-pull-request@v4',

@@ -19,9 +19,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "16"
-      - run: cd site
       - run: yarn install --check-files --frozen-lockfile
+        working-directory: site
       - run: yarn upgrade
+        working-directory: site
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
         with:
