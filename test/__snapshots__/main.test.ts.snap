@@ -4060,7 +4060,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           },
         ],
         "SourceObjectKeys": [
-          "bf129bc3b899477edcbae9394086465df04200f44eacd420dea307351db40f03.zip",
+          "0348cc5b35a9d0fd7b003ea807fd090e0b8c4bb66f9de3c683bf1006024e8b06.zip",
           "49aa1da69438c6967606bc17f36a99bb9eb94983c166b3602e2c37113e353659.zip",
         ],
       },
@@ -7769,7 +7769,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           },
         ],
         "SourceObjectKeys": [
-          "bf129bc3b899477edcbae9394086465df04200f44eacd420dea307351db40f03.zip",
+          "0348cc5b35a9d0fd7b003ea807fd090e0b8c4bb66f9de3c683bf1006024e8b06.zip",
           "39d66d2d079fafbec39c2027030cecd7731a016c364c7ca5ed550a920d21589b.zip",
         ],
       },
