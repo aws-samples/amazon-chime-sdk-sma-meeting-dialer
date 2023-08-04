@@ -17,18 +17,21 @@ API.configure(AmplifyConfig);
 Amplify.Logger.LOG_LEVEL = 'DEBUG';
 
 const App = () => {
-    const [currentCredentials, setCurrentCredentials] = useState({});
-    const [currentSession, setCurrentSession] = useState({});
+    // const [currentCredentials, setCurrentCredentials] = useState({});
+    // const [currentSession, setCurrentSession] = useState({});
 
-    useEffect(() => {
-        async function getAuth() {
-            setCurrentSession(await Auth.currentSession());
-            setCurrentCredentials(await Auth.currentUserCredentials());
-            console.log(`authState: ${JSON.stringify(currentSession)}`);
-            console.log(`currentCredentials: ${JSON.stringify(currentCredentials)}`);
-        }
-        getAuth();
-    }, []);
+    // useEffect(() => {
+    //     console.log(`useEffect: currentCredentials: ${JSON.stringify(currentCredentials)}`);
+    //     console.log(`useEffect: currentSession: ${JSON.stringify(currentSession)}`);
+
+    //     async function getAuth() {
+    //         setCurrentSession(await Auth.currentSession());
+    //         setCurrentCredentials(await Auth.currentUserCredentials());
+    //         console.log(`authState: ${JSON.stringify(currentSession)}`);
+    //         console.log(`currentCredentials: ${JSON.stringify(currentCredentials)}`);
+    //     }
+    //     getAuth();
+    // }, []);
 
     const formFields = {
         signUp: {

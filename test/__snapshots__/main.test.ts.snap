@@ -785,7 +785,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
         },
         "Environment": {
           "Variables": {
-            "ALLOWED_DOMAIN": "example.com",
+            "ALLOWED_DOMAIN": "",
             "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
           },
         },
@@ -1367,7 +1367,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
         },
         "Environment": {
           "Variables": {
-            "LOG_LEVEL": "",
+            "LOG_LEVEL": "info",
           },
         },
         "Handler": "index.handler",
@@ -1477,14 +1477,14 @@ def submit_response(event: dict, context, response_status: str, error_message: s
                 "DomainName",
               ],
             },
-            "FROM_EMAIL": "test@example",
+            "FROM_EMAIL": "",
             "FROM_NUMBER": {
               "Fn::GetAtt": [
                 "PSTNAudioPhoneNumberChimePhoneNumberpstnCustomResource61EF469C",
                 "phoneNumber",
               ],
             },
-            "LOG_LEVEL": "",
+            "LOG_LEVEL": "info",
             "MEETING_TABLE": {
               "Ref": "DatabasecallRecordsTableA61C0BFF",
             },
@@ -1682,7 +1682,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
         },
         "Environment": {
           "Variables": {
-            "LOG_LEVEL": "",
+            "LOG_LEVEL": "info",
             "MEETING_TABLE": {
               "Ref": "DatabasecallRecordsTableA61C0BFF",
             },
@@ -1818,7 +1818,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
         },
         "Environment": {
           "Variables": {
-            "LOG_LEVEL": "",
+            "LOG_LEVEL": "info",
             "MEETING_TABLE": {
               "Ref": "DatabasecallRecordsTableA61C0BFF",
             },
@@ -1875,7 +1875,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
         },
         "Environment": {
           "Variables": {
-            "LOG_LEVEL": "",
+            "LOG_LEVEL": "info",
             "MEETING_TABLE": {
               "Ref": "DatabasecallRecordsTableA61C0BFF",
             },
@@ -3710,7 +3710,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
         },
         "Environment": {
           "Variables": {
-            "LOG_LEVEL": "",
+            "LOG_LEVEL": "info",
             "MEETING_TABLE": {
               "Ref": "DatabasecallRecordsTableA61C0BFF",
             },
@@ -4057,11 +4057,14 @@ def submit_response(event: dict, context, response_status: str, error_message: s
             "<<marker:0xbaba:6>>": {
               "Ref": "CognitoUserPoolClientEF2538C4",
             },
+            "<<marker:0xbaba:7>>": {
+              "Ref": "CognitocognitoIdentityPool626065C7",
+            },
           },
         ],
         "SourceObjectKeys": [
-          "0348cc5b35a9d0fd7b003ea807fd090e0b8c4bb66f9de3c683bf1006024e8b06.zip",
-          "49aa1da69438c6967606bc17f36a99bb9eb94983c166b3602e2c37113e353659.zip",
+          "a12a3efc0fa82454f07774c547154e8a01cf330ab3c53fce3f4f2d90e686a0d8.zip",
+          "7e2723da3d38f7cfb88b2c953d1b5da26dfd4aa7361cdb0bfcdf6041e0a71cad.zip",
         ],
       },
       "Type": "Custom::CDKBucketDeployment",
@@ -7769,8 +7772,8 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           },
         ],
         "SourceObjectKeys": [
-          "0348cc5b35a9d0fd7b003ea807fd090e0b8c4bb66f9de3c683bf1006024e8b06.zip",
-          "39d66d2d079fafbec39c2027030cecd7731a016c364c7ca5ed550a920d21589b.zip",
+          "a12a3efc0fa82454f07774c547154e8a01cf330ab3c53fce3f4f2d90e686a0d8.zip",
+          "63aeec175be72eeae25596aa0bc3371139c1c37c55d554068b7b0a9cc5fb6c0f.zip",
         ],
       },
       "Type": "Custom::CDKBucketDeployment",

@@ -19,6 +19,7 @@ interface SiteProps {
   userPoolClient: IUserPoolClient;
   siteBucket: Bucket;
   distribution: Distribution;
+  identityPool: string;
 }
 
 export class DistributionResources extends Construct {
@@ -93,6 +94,7 @@ export class Site extends Construct {
       userPoolRegion: Stack.of(this).region,
       userPoolId: props.userPool.userPoolId,
       userPoolClientId: props.userPoolClient.userPoolClientId,
+      identityPoolId: props.identityPool,
     };
 
     new BucketDeployment(this, 'DeployBucket', {
