@@ -22,6 +22,7 @@ interface SMAMeetingDialerProps extends StackProps {
   userPool?: string;
   userPoolClient?: string;
   userPoolRegion?: string;
+  identityPool: string;
   allowedDomain: string;
   fromEmail: string;
   logLevel: string;
@@ -31,6 +32,7 @@ interface CognitoOutput {
   userPool: IUserPool;
   userPoolClient: IUserPoolClient;
   userPoolRegion: string;
+  identityPool: string;
 }
 
 export class SMAMeetingDialer extends Stack {
@@ -51,6 +53,7 @@ export class SMAMeetingDialer extends Stack {
     if (props.userPoolRegion && props.userPool && props.userPoolClient) {
       cognito = {
         userPoolRegion: props.userPoolRegion,
+        identityPool: props.identityPool,
         userPool: UserPool.fromUserPoolArn(this, 'userPoolId', props.userPool),
         userPoolClient: UserPoolClient.fromUserPoolClientId(
           this,
@@ -96,6 +99,7 @@ export class SMAMeetingDialer extends Stack {
       userPoolClient: cognito.userPoolClient,
       distribution: distribution.distribution,
       siteBucket: distribution.siteBucket,
+      identityPool: cognito.identityPool,
     });
 
     const triggerBucket = new S3Resources(this, 'S3Resources', {
@@ -146,6 +150,7 @@ const stackProps = {
   userPool: process.env.USER_POOL || '',
   userPoolClient: process.env.USER_POOL_CLIENT || '',
   userPoolRegion: process.env.USER_POOL_REGION || '',
+  identityPool: process.env.IDENTITY_POOL || '',
   allowedDomain: process.env.ALLOWED_DOMAIN || '',
   fromEmail: process.env.FROM_EMAIL || '',
   logLevel: process.env.LOG_LEVEL || 'info',
