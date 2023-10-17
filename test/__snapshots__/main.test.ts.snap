@@ -802,6 +802,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
               "Action": [
                 "s3:GetObject*",
                 "s3:GetBucket*",
+                "s3:HeadObject",
                 "s3:List*",
               ],
               "Effect": "Allow",
@@ -843,6 +844,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
               "Action": [
                 "s3:GetObject*",
                 "s3:GetBucket*",
+                "s3:HeadObject",
                 "s3:List*",
                 "s3:DeleteObject*",
                 "s3:PutObject",
@@ -905,7 +907,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "a657308e723bb9460b800cb3b47dadb74e28243edfe246bf7755c45ec312eb97.zip",
+          "S3Key": "b7f33614a69548d6bafe224d751a7ef238cde19097415e553fe8b63a4c8fd8a6.zip",
         },
         "Description": {
           "Fn::Join": [
@@ -1139,6 +1141,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "Statement": [
             {
               "Action": [
+                "s3:PutBucketPolicy",
                 "s3:GetBucket*",
                 "s3:List*",
                 "s3:DeleteObject*",
@@ -1485,6 +1488,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
               "Action": [
                 "s3:GetObject*",
                 "s3:GetBucket*",
+                "s3:HeadObject",
                 "s3:List*",
               ],
               "Effect": "Allow",
@@ -2686,7 +2690,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "1039a174afbf09cd27e3b215f53b9e80b1bd66df24547e5746f0e5bcb9204cf3.zip",
+          "S3Key": "5bc602ecde93c947efe5899ae355f999986a1acbe610b1c0b9c468d738857555.zip",
         },
         "Handler": "index.handler",
         "Role": {
@@ -2696,6 +2700,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           ],
         },
         "Runtime": "nodejs18.x",
+        "Timeout": 900,
       },
       "Type": "AWS::Lambda::Function",
     },
@@ -2764,7 +2769,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "f2d30cfc360482320a52a4fcde8a70f3569df79ab30be24650fda58eb60052cf.zip",
+          "S3Key": "7382a0addb9f34974a1ea6c6c9b063882af874828f366f5c93b2b7b64db15c94.zip",
         },
         "Description": "AWS CDK resource provider framework - onEvent (test/PSTNAudio/PhoneNumber/ChimePhoneNumber/PSTNResourceProvider)",
         "Environment": {
@@ -3032,7 +3037,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "f2d30cfc360482320a52a4fcde8a70f3569df79ab30be24650fda58eb60052cf.zip",
+          "S3Key": "7382a0addb9f34974a1ea6c6c9b063882af874828f366f5c93b2b7b64db15c94.zip",
         },
         "Description": "AWS CDK resource provider framework - onEvent (test/PSTNAudio/SipMediaApplication/sipMediaAppRequest/PSTNResourceProvider)",
         "Environment": {
@@ -3306,7 +3311,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "f2d30cfc360482320a52a4fcde8a70f3569df79ab30be24650fda58eb60052cf.zip",
+          "S3Key": "7382a0addb9f34974a1ea6c6c9b063882af874828f366f5c93b2b7b64db15c94.zip",
         },
         "Description": "AWS CDK resource provider framework - onEvent (test/PSTNAudio/SipRule/sipRuleRequest/PSTNResourceProvider)",
         "Environment": {
@@ -3841,6 +3846,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "Statement": [
             {
               "Action": [
+                "s3:PutBucketPolicy",
                 "s3:GetBucket*",
                 "s3:List*",
                 "s3:DeleteObject*",
@@ -3952,7 +3958,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           },
         ],
         "SourceObjectKeys": [
-          "cf6af9c44069ec6304dcb509d6a6c6aad61b426c56023d30b823a4ee412e928d.zip",
+          "493d02f5475596a82775ff4cb110b90146e3c405cfa0fd88af8bebbce15ffa1c.zip",
           "7e2723da3d38f7cfb88b2c953d1b5da26dfd4aa7361cdb0bfcdf6041e0a71cad.zip",
         ],
       },
@@ -4414,6 +4420,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
               "Action": [
                 "s3:GetObject*",
                 "s3:GetBucket*",
+                "s3:HeadObject",
                 "s3:List*",
               ],
               "Effect": "Allow",
@@ -4455,6 +4462,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
               "Action": [
                 "s3:GetObject*",
                 "s3:GetBucket*",
+                "s3:HeadObject",
                 "s3:List*",
                 "s3:DeleteObject*",
                 "s3:PutObject",
@@ -4517,7 +4525,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "a657308e723bb9460b800cb3b47dadb74e28243edfe246bf7755c45ec312eb97.zip",
+          "S3Key": "b7f33614a69548d6bafe224d751a7ef238cde19097415e553fe8b63a4c8fd8a6.zip",
         },
         "Description": {
           "Fn::Join": [
@@ -4751,6 +4759,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "Statement": [
             {
               "Action": [
+                "s3:PutBucketPolicy",
                 "s3:GetBucket*",
                 "s3:List*",
                 "s3:DeleteObject*",
@@ -5092,6 +5101,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
               "Action": [
                 "s3:GetObject*",
                 "s3:GetBucket*",
+                "s3:HeadObject",
                 "s3:List*",
               ],
               "Effect": "Allow",
@@ -6293,7 +6303,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "1039a174afbf09cd27e3b215f53b9e80b1bd66df24547e5746f0e5bcb9204cf3.zip",
+          "S3Key": "5bc602ecde93c947efe5899ae355f999986a1acbe610b1c0b9c468d738857555.zip",
         },
         "Handler": "index.handler",
         "Role": {
@@ -6303,6 +6313,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           ],
         },
         "Runtime": "nodejs18.x",
+        "Timeout": 900,
       },
       "Type": "AWS::Lambda::Function",
     },
@@ -6371,7 +6382,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "f2d30cfc360482320a52a4fcde8a70f3569df79ab30be24650fda58eb60052cf.zip",
+          "S3Key": "7382a0addb9f34974a1ea6c6c9b063882af874828f366f5c93b2b7b64db15c94.zip",
         },
         "Description": "AWS CDK resource provider framework - onEvent (test/PSTNAudio/PhoneNumber/ChimePhoneNumber/PSTNResourceProvider)",
         "Environment": {
@@ -6639,7 +6650,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "f2d30cfc360482320a52a4fcde8a70f3569df79ab30be24650fda58eb60052cf.zip",
+          "S3Key": "7382a0addb9f34974a1ea6c6c9b063882af874828f366f5c93b2b7b64db15c94.zip",
         },
         "Description": "AWS CDK resource provider framework - onEvent (test/PSTNAudio/SipMediaApplication/sipMediaAppRequest/PSTNResourceProvider)",
         "Environment": {
@@ -6913,7 +6924,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "f2d30cfc360482320a52a4fcde8a70f3569df79ab30be24650fda58eb60052cf.zip",
+          "S3Key": "7382a0addb9f34974a1ea6c6c9b063882af874828f366f5c93b2b7b64db15c94.zip",
         },
         "Description": "AWS CDK resource provider framework - onEvent (test/PSTNAudio/SipRule/sipRuleRequest/PSTNResourceProvider)",
         "Environment": {
@@ -7448,6 +7459,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "Statement": [
             {
               "Action": [
+                "s3:PutBucketPolicy",
                 "s3:GetBucket*",
                 "s3:List*",
                 "s3:DeleteObject*",
@@ -7550,7 +7562,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           },
         ],
         "SourceObjectKeys": [
-          "cf6af9c44069ec6304dcb509d6a6c6aad61b426c56023d30b823a4ee412e928d.zip",
+          "493d02f5475596a82775ff4cb110b90146e3c405cfa0fd88af8bebbce15ffa1c.zip",
           "63aeec175be72eeae25596aa0bc3371139c1c37c55d554068b7b0a9cc5fb6c0f.zip",
         ],
       },
