@@ -885,6 +885,138 @@ def submit_response(event: dict, context, response_status: str, error_message: s
       },
       "Type": "AWS::IAM::Policy",
     },
+    "CustomPSTNResourcesCustomResourceProviderHandlerD046A72D": {
+      "DependsOn": [
+        "CustomPSTNResourcesCustomResourceProviderRole536C0E76",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "f3d44f37ba2f91b38a20981188b9928ee3c53f5d331bdd14ab2918006bd9859d.zip",
+        },
+        "Handler": "__entrypoint__.handler",
+        "MemorySize": 128,
+        "Role": {
+          "Fn::GetAtt": [
+            "CustomPSTNResourcesCustomResourceProviderRole536C0E76",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs18.x",
+        "Timeout": 300,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "CustomPSTNResourcesCustomResourceProviderRole536C0E76": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Sub": "arn:\${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+          },
+        ],
+        "Policies": [
+          {
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Action": [
+                    "chime:CreatePhoneNumberOrder",
+                    "chime:CreateSipMediaApplication",
+                    "chime:CreateSipRule",
+                    "chime:CreateVoiceConnector",
+                    "chime:CreateVoiceProfileDomain",
+                    "chime:DeletePhoneNumber",
+                    "chime:DeleteSipMediaApplication",
+                    "chime:DeleteSipRule",
+                    "chime:DeleteVoiceConnector",
+                    "chime:DeleteVoiceProfileDomain",
+                    "chime:GetPhoneNumber",
+                    "chime:GetPhoneNumberOrder",
+                    "chime:GetSipRule",
+                    "chime:ListPhoneNumbers",
+                    "chime:PutSipMediaApplicationLoggingConfiguration",
+                    "chime:PutVoiceConnectorLoggingConfiguration",
+                    "chime:PutVoiceConnectorOrigination",
+                    "chime:PutVoiceConnectorStreamingConfiguration",
+                    "chime:PutVoiceConnectorTermination",
+                    "chime:*MediaInsightsPipelineConfiguration",
+                    "chime:SearchAvailablePhoneNumbers",
+                    "chime:UpdateSipRule",
+                    "chime:AssociatePhoneNumbersWithVoiceConnector",
+                    "chime:DisassociatePhoneNumbersFromVoiceConnector",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": "*",
+                },
+                {
+                  "Action": [
+                    "logs:DescribeLogGroups",
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:ListLogDeliveries",
+                    "logs:CreateLogDelivery",
+                    "logs:GetLogDelivery",
+                    "logs:DeleteLogDelivery",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": "*",
+                },
+                {
+                  "Action": "iam:CreateServiceLinkedRole",
+                  "Effect": "Allow",
+                  "Resource": "*",
+                },
+                {
+                  "Action": [
+                    "lambda:GetPolicy",
+                    "lambda:AddPermission",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": "*",
+                },
+                {
+                  "Action": "ssm:*Parameter*",
+                  "Effect": "Allow",
+                  "Resource": {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "arn:aws:ssm:",
+                        {
+                          "Ref": "AWS::Region",
+                        },
+                        ":",
+                        {
+                          "Ref": "AWS::AccountId",
+                        },
+                        ":parameter/chime/*",
+                      ],
+                    ],
+                  },
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "Inline",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
     "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F": {
       "DependsOn": [
         "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
@@ -2745,120 +2877,12 @@ def submit_response(event: dict, context, response_status: str, error_message: s
       },
       "Type": "AWS::IAM::Policy",
     },
-    "PSTNAudioPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEvent64122BF2": {
-      "DependsOn": [
-        "PSTNAudioPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicy8CDBF19A",
-        "PSTNAudioPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRole98E2764D",
-      ],
-      "Properties": {
-        "Code": {
-          "S3Bucket": {
-            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
-          },
-          "S3Key": "4b8313cdc235017293aeaa9b32282f38142f7e6923fd0ac5322de1edf4b426d7.zip",
-        },
-        "Description": "AWS CDK resource provider framework - onEvent (test/PSTNAudio/PhoneNumber/ChimePhoneNumber/PSTNResourceProvider)",
-        "Environment": {
-          "Variables": {
-            "USER_ON_EVENT_FUNCTION_ARN": {
-              "Fn::GetAtt": [
-                "PSTNAudioPhoneNumberChimePhoneNumberpstnResourcesFunction701B22EE",
-                "Arn",
-              ],
-            },
-          },
-        },
-        "Handler": "framework.onEvent",
-        "Role": {
-          "Fn::GetAtt": [
-            "PSTNAudioPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRole98E2764D",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs18.x",
-        "Timeout": 900,
-      },
-      "Type": "AWS::Lambda::Function",
-    },
-    "PSTNAudioPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRole98E2764D": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "lambda.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-              ],
-            ],
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "PSTNAudioPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicy8CDBF19A": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "lambda:InvokeFunction",
-              "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "PSTNAudioPhoneNumberChimePhoneNumberpstnResourcesFunction701B22EE",
-                    "Arn",
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::GetAtt": [
-                          "PSTNAudioPhoneNumberChimePhoneNumberpstnResourcesFunction701B22EE",
-                          "Arn",
-                        ],
-                      },
-                      ":*",
-                    ],
-                  ],
-                },
-              ],
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "PSTNAudioPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicy8CDBF19A",
-        "Roles": [
-          {
-            "Ref": "PSTNAudioPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRole98E2764D",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
     "PSTNAudioPhoneNumberChimePhoneNumberpstnCustomResource61EF469C": {
       "DeletionPolicy": "Delete",
       "Properties": {
         "ServiceToken": {
           "Fn::GetAtt": [
-            "PSTNAudioPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEvent64122BF2",
+            "CustomPSTNResourcesCustomResourceProviderHandlerD046A72D",
             "Arn",
           ],
         },
@@ -2871,262 +2895,15 @@ def submit_response(event: dict, context, response_status: str, error_message: s
         "resourceType": "PhoneNumber",
         "uid": "testPSTNAudioPhoneNumber74BA1A22",
       },
-      "Type": "AWS::CloudFormation::CustomResource",
+      "Type": "Custom::PSTNResources",
       "UpdateReplacePolicy": "Delete",
-    },
-    "PSTNAudioPhoneNumberChimePhoneNumberpstnCustomResourceRole3E48ED67": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "lambda.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "Description": "Amazon Chime PSTN Resources",
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-              ],
-            ],
-          },
-        ],
-        "Policies": [
-          {
-            "PolicyDocument": {
-              "Statement": [
-                {
-                  "Action": [
-                    "chime:*VoiceProfileDomain*",
-                    "kms:CreateGrant",
-                    "kms:DescribeKey",
-                    "chime:*MediaInsightsPipelineConfiguration*",
-                    "chime:CreateSipRule",
-                    "chime:DeleteSipRule",
-                    "chime:UpdateSipRule",
-                    "chime:GetSipRule",
-                    "chime:CreateSipMediaApplication",
-                    "chime:DeleteSipMediaApplication",
-                    "chime:GetPhoneNumberOrder",
-                    "chime:SearchAvailablePhoneNumbers",
-                    "chime:CreatePhoneNumberOrder",
-                    "chime:DeletePhoneNumber",
-                    "chime:GetPhoneNumber",
-                    "chime:CreateVoiceConnector",
-                    "chime:PutVoiceConnectorStreamingConfiguration",
-                    "chime:PutVoiceConnectorTermination",
-                    "chime:PutVoiceConnectorOrigination",
-                    "chime:PutVoiceConnectorLoggingConfiguration",
-                    "chime:ListPhoneNumbers",
-                    "chime:AssociatePhoneNumbersWithVoiceConnector",
-                    "chime:DisassociatePhoneNumbersFromVoiceConnector",
-                    "chime:DeleteVoiceConnector",
-                    "chime:PutSipMediaApplicationAlexaSkillConfiguration",
-                    "chime:PutSipMediaApplicationLoggingConfiguration",
-                    "logs:GetLogDelivery",
-                    "logs:DeleteLogDelivery",
-                    "logs:ListLogDeliveries",
-                    "logs:CreateLogGroup",
-                    "logs:DescribeResourcePolicies",
-                    "logs:PutResourcePolicy",
-                    "logs:DescribeLogGroups",
-                    "logs:CreateLogDelivery",
-                    "lambda:GetPolicy",
-                    "lambda:AddPermission",
-                    "iam:PutRolePolicy",
-                    "iam:CreateServiceLinkedRole",
-                  ],
-                  "Effect": "Allow",
-                  "Resource": "*",
-                },
-                {
-                  "Action": [
-                    "ssm:PutParameter",
-                    "ssm:GetParameter",
-                    "ssm:DeleteParameter",
-                  ],
-                  "Effect": "Allow",
-                  "Resource": {
-                    "Fn::Join": [
-                      "",
-                      [
-                        "arn:aws:ssm:",
-                        {
-                          "Ref": "AWS::Region",
-                        },
-                        ":",
-                        {
-                          "Ref": "AWS::AccountId",
-                        },
-                        ":parameter/chime/*",
-                      ],
-                    ],
-                  },
-                },
-              ],
-              "Version": "2012-10-17",
-            },
-            "PolicyName": "chimePolicy",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "PSTNAudioPhoneNumberChimePhoneNumberpstnResourcesFunction701B22EE": {
-      "DependsOn": [
-        "PSTNAudioPhoneNumberChimePhoneNumberpstnCustomResourceRole3E48ED67",
-      ],
-      "Properties": {
-        "Code": {
-          "S3Bucket": {
-            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
-          },
-          "S3Key": "a2fa004ede5cf7f1a3c75206d899edb5a8f9ef2e42f1585dea277d05efbb4115.zip",
-        },
-        "Description": "src/resources/pstn/pstn.lambda.ts",
-        "Environment": {
-          "Variables": {
-            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
-          },
-        },
-        "Handler": "index.handler",
-        "Role": {
-          "Fn::GetAtt": [
-            "PSTNAudioPhoneNumberChimePhoneNumberpstnCustomResourceRole3E48ED67",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs18.x",
-        "Timeout": 60,
-      },
-      "Type": "AWS::Lambda::Function",
-    },
-    "PSTNAudioSipMediaApplicationsipMediaAppRequestPSTNResourceProviderframeworkonEvent06E23F02": {
-      "DependsOn": [
-        "PSTNAudioSipMediaApplicationsipMediaAppRequestPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicyA0F54BAB",
-        "PSTNAudioSipMediaApplicationsipMediaAppRequestPSTNResourceProviderframeworkonEventServiceRole1EFEB824",
-      ],
-      "Properties": {
-        "Code": {
-          "S3Bucket": {
-            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
-          },
-          "S3Key": "4b8313cdc235017293aeaa9b32282f38142f7e6923fd0ac5322de1edf4b426d7.zip",
-        },
-        "Description": "AWS CDK resource provider framework - onEvent (test/PSTNAudio/SipMediaApplication/sipMediaAppRequest/PSTNResourceProvider)",
-        "Environment": {
-          "Variables": {
-            "USER_ON_EVENT_FUNCTION_ARN": {
-              "Fn::GetAtt": [
-                "PSTNAudioSipMediaApplicationsipMediaAppRequestpstnResourcesFunctionEB8AF622",
-                "Arn",
-              ],
-            },
-          },
-        },
-        "Handler": "framework.onEvent",
-        "Role": {
-          "Fn::GetAtt": [
-            "PSTNAudioSipMediaApplicationsipMediaAppRequestPSTNResourceProviderframeworkonEventServiceRole1EFEB824",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs18.x",
-        "Timeout": 900,
-      },
-      "Type": "AWS::Lambda::Function",
-    },
-    "PSTNAudioSipMediaApplicationsipMediaAppRequestPSTNResourceProviderframeworkonEventServiceRole1EFEB824": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "lambda.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-              ],
-            ],
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "PSTNAudioSipMediaApplicationsipMediaAppRequestPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicyA0F54BAB": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "lambda:InvokeFunction",
-              "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "PSTNAudioSipMediaApplicationsipMediaAppRequestpstnResourcesFunctionEB8AF622",
-                    "Arn",
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::GetAtt": [
-                          "PSTNAudioSipMediaApplicationsipMediaAppRequestpstnResourcesFunctionEB8AF622",
-                          "Arn",
-                        ],
-                      },
-                      ":*",
-                    ],
-                  ],
-                },
-              ],
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "PSTNAudioSipMediaApplicationsipMediaAppRequestPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicyA0F54BAB",
-        "Roles": [
-          {
-            "Ref": "PSTNAudioSipMediaApplicationsipMediaAppRequestPSTNResourceProviderframeworkonEventServiceRole1EFEB824",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
     },
     "PSTNAudioSipMediaApplicationsipMediaAppRequestpstnCustomResource71D71EAE": {
       "DeletionPolicy": "Delete",
       "Properties": {
         "ServiceToken": {
           "Fn::GetAtt": [
-            "PSTNAudioSipMediaApplicationsipMediaAppRequestPSTNResourceProviderframeworkonEvent06E23F02",
+            "CustomPSTNResourcesCustomResourceProviderHandlerD046A72D",
             "Arn",
           ],
         },
@@ -3145,262 +2922,15 @@ def submit_response(event: dict, context, response_status: str, error_message: s
         "resourceType": "SMA",
         "uid": "testPSTNAudioSipMediaApplicationA1890902",
       },
-      "Type": "AWS::CloudFormation::CustomResource",
+      "Type": "Custom::PSTNResources",
       "UpdateReplacePolicy": "Delete",
-    },
-    "PSTNAudioSipMediaApplicationsipMediaAppRequestpstnCustomResourceRoleF2E0D637": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "lambda.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "Description": "Amazon Chime PSTN Resources",
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-              ],
-            ],
-          },
-        ],
-        "Policies": [
-          {
-            "PolicyDocument": {
-              "Statement": [
-                {
-                  "Action": [
-                    "chime:*VoiceProfileDomain*",
-                    "kms:CreateGrant",
-                    "kms:DescribeKey",
-                    "chime:*MediaInsightsPipelineConfiguration*",
-                    "chime:CreateSipRule",
-                    "chime:DeleteSipRule",
-                    "chime:UpdateSipRule",
-                    "chime:GetSipRule",
-                    "chime:CreateSipMediaApplication",
-                    "chime:DeleteSipMediaApplication",
-                    "chime:GetPhoneNumberOrder",
-                    "chime:SearchAvailablePhoneNumbers",
-                    "chime:CreatePhoneNumberOrder",
-                    "chime:DeletePhoneNumber",
-                    "chime:GetPhoneNumber",
-                    "chime:CreateVoiceConnector",
-                    "chime:PutVoiceConnectorStreamingConfiguration",
-                    "chime:PutVoiceConnectorTermination",
-                    "chime:PutVoiceConnectorOrigination",
-                    "chime:PutVoiceConnectorLoggingConfiguration",
-                    "chime:ListPhoneNumbers",
-                    "chime:AssociatePhoneNumbersWithVoiceConnector",
-                    "chime:DisassociatePhoneNumbersFromVoiceConnector",
-                    "chime:DeleteVoiceConnector",
-                    "chime:PutSipMediaApplicationAlexaSkillConfiguration",
-                    "chime:PutSipMediaApplicationLoggingConfiguration",
-                    "logs:GetLogDelivery",
-                    "logs:DeleteLogDelivery",
-                    "logs:ListLogDeliveries",
-                    "logs:CreateLogGroup",
-                    "logs:DescribeResourcePolicies",
-                    "logs:PutResourcePolicy",
-                    "logs:DescribeLogGroups",
-                    "logs:CreateLogDelivery",
-                    "lambda:GetPolicy",
-                    "lambda:AddPermission",
-                    "iam:PutRolePolicy",
-                    "iam:CreateServiceLinkedRole",
-                  ],
-                  "Effect": "Allow",
-                  "Resource": "*",
-                },
-                {
-                  "Action": [
-                    "ssm:PutParameter",
-                    "ssm:GetParameter",
-                    "ssm:DeleteParameter",
-                  ],
-                  "Effect": "Allow",
-                  "Resource": {
-                    "Fn::Join": [
-                      "",
-                      [
-                        "arn:aws:ssm:",
-                        {
-                          "Ref": "AWS::Region",
-                        },
-                        ":",
-                        {
-                          "Ref": "AWS::AccountId",
-                        },
-                        ":parameter/chime/*",
-                      ],
-                    ],
-                  },
-                },
-              ],
-              "Version": "2012-10-17",
-            },
-            "PolicyName": "chimePolicy",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "PSTNAudioSipMediaApplicationsipMediaAppRequestpstnResourcesFunctionEB8AF622": {
-      "DependsOn": [
-        "PSTNAudioSipMediaApplicationsipMediaAppRequestpstnCustomResourceRoleF2E0D637",
-      ],
-      "Properties": {
-        "Code": {
-          "S3Bucket": {
-            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
-          },
-          "S3Key": "a2fa004ede5cf7f1a3c75206d899edb5a8f9ef2e42f1585dea277d05efbb4115.zip",
-        },
-        "Description": "src/resources/pstn/pstn.lambda.ts",
-        "Environment": {
-          "Variables": {
-            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
-          },
-        },
-        "Handler": "index.handler",
-        "Role": {
-          "Fn::GetAtt": [
-            "PSTNAudioSipMediaApplicationsipMediaAppRequestpstnCustomResourceRoleF2E0D637",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs18.x",
-        "Timeout": 60,
-      },
-      "Type": "AWS::Lambda::Function",
-    },
-    "PSTNAudioSipRulesipRuleRequestPSTNResourceProviderframeworkonEvent4F5C7D51": {
-      "DependsOn": [
-        "PSTNAudioSipRulesipRuleRequestPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicyF50203FE",
-        "PSTNAudioSipRulesipRuleRequestPSTNResourceProviderframeworkonEventServiceRoleB5146012",
-      ],
-      "Properties": {
-        "Code": {
-          "S3Bucket": {
-            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
-          },
-          "S3Key": "4b8313cdc235017293aeaa9b32282f38142f7e6923fd0ac5322de1edf4b426d7.zip",
-        },
-        "Description": "AWS CDK resource provider framework - onEvent (test/PSTNAudio/SipRule/sipRuleRequest/PSTNResourceProvider)",
-        "Environment": {
-          "Variables": {
-            "USER_ON_EVENT_FUNCTION_ARN": {
-              "Fn::GetAtt": [
-                "PSTNAudioSipRulesipRuleRequestpstnResourcesFunction3F447675",
-                "Arn",
-              ],
-            },
-          },
-        },
-        "Handler": "framework.onEvent",
-        "Role": {
-          "Fn::GetAtt": [
-            "PSTNAudioSipRulesipRuleRequestPSTNResourceProviderframeworkonEventServiceRoleB5146012",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs18.x",
-        "Timeout": 900,
-      },
-      "Type": "AWS::Lambda::Function",
-    },
-    "PSTNAudioSipRulesipRuleRequestPSTNResourceProviderframeworkonEventServiceRoleB5146012": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "lambda.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-              ],
-            ],
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "PSTNAudioSipRulesipRuleRequestPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicyF50203FE": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "lambda:InvokeFunction",
-              "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "PSTNAudioSipRulesipRuleRequestpstnResourcesFunction3F447675",
-                    "Arn",
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::GetAtt": [
-                          "PSTNAudioSipRulesipRuleRequestpstnResourcesFunction3F447675",
-                          "Arn",
-                        ],
-                      },
-                      ":*",
-                    ],
-                  ],
-                },
-              ],
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "PSTNAudioSipRulesipRuleRequestPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicyF50203FE",
-        "Roles": [
-          {
-            "Ref": "PSTNAudioSipRulesipRuleRequestPSTNResourceProviderframeworkonEventServiceRoleB5146012",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
     },
     "PSTNAudioSipRulesipRuleRequestpstnCustomResourceB66734D2": {
       "DeletionPolicy": "Delete",
       "Properties": {
         "ServiceToken": {
           "Fn::GetAtt": [
-            "PSTNAudioSipRulesipRuleRequestPSTNResourceProviderframeworkonEvent4F5C7D51",
+            "CustomPSTNResourcesCustomResourceProviderHandlerD046A72D",
             "Arn",
           ],
         },
@@ -3431,147 +2961,8 @@ def submit_response(event: dict, context, response_status: str, error_message: s
         "resourceType": "SMARule",
         "uid": "testPSTNAudioSipRule53F5CC44",
       },
-      "Type": "AWS::CloudFormation::CustomResource",
+      "Type": "Custom::PSTNResources",
       "UpdateReplacePolicy": "Delete",
-    },
-    "PSTNAudioSipRulesipRuleRequestpstnCustomResourceRoleA7AACD96": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "lambda.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "Description": "Amazon Chime PSTN Resources",
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-              ],
-            ],
-          },
-        ],
-        "Policies": [
-          {
-            "PolicyDocument": {
-              "Statement": [
-                {
-                  "Action": [
-                    "chime:*VoiceProfileDomain*",
-                    "kms:CreateGrant",
-                    "kms:DescribeKey",
-                    "chime:*MediaInsightsPipelineConfiguration*",
-                    "chime:CreateSipRule",
-                    "chime:DeleteSipRule",
-                    "chime:UpdateSipRule",
-                    "chime:GetSipRule",
-                    "chime:CreateSipMediaApplication",
-                    "chime:DeleteSipMediaApplication",
-                    "chime:GetPhoneNumberOrder",
-                    "chime:SearchAvailablePhoneNumbers",
-                    "chime:CreatePhoneNumberOrder",
-                    "chime:DeletePhoneNumber",
-                    "chime:GetPhoneNumber",
-                    "chime:CreateVoiceConnector",
-                    "chime:PutVoiceConnectorStreamingConfiguration",
-                    "chime:PutVoiceConnectorTermination",
-                    "chime:PutVoiceConnectorOrigination",
-                    "chime:PutVoiceConnectorLoggingConfiguration",
-                    "chime:ListPhoneNumbers",
-                    "chime:AssociatePhoneNumbersWithVoiceConnector",
-                    "chime:DisassociatePhoneNumbersFromVoiceConnector",
-                    "chime:DeleteVoiceConnector",
-                    "chime:PutSipMediaApplicationAlexaSkillConfiguration",
-                    "chime:PutSipMediaApplicationLoggingConfiguration",
-                    "logs:GetLogDelivery",
-                    "logs:DeleteLogDelivery",
-                    "logs:ListLogDeliveries",
-                    "logs:CreateLogGroup",
-                    "logs:DescribeResourcePolicies",
-                    "logs:PutResourcePolicy",
-                    "logs:DescribeLogGroups",
-                    "logs:CreateLogDelivery",
-                    "lambda:GetPolicy",
-                    "lambda:AddPermission",
-                    "iam:PutRolePolicy",
-                    "iam:CreateServiceLinkedRole",
-                  ],
-                  "Effect": "Allow",
-                  "Resource": "*",
-                },
-                {
-                  "Action": [
-                    "ssm:PutParameter",
-                    "ssm:GetParameter",
-                    "ssm:DeleteParameter",
-                  ],
-                  "Effect": "Allow",
-                  "Resource": {
-                    "Fn::Join": [
-                      "",
-                      [
-                        "arn:aws:ssm:",
-                        {
-                          "Ref": "AWS::Region",
-                        },
-                        ":",
-                        {
-                          "Ref": "AWS::AccountId",
-                        },
-                        ":parameter/chime/*",
-                      ],
-                    ],
-                  },
-                },
-              ],
-              "Version": "2012-10-17",
-            },
-            "PolicyName": "chimePolicy",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "PSTNAudioSipRulesipRuleRequestpstnResourcesFunction3F447675": {
-      "DependsOn": [
-        "PSTNAudioSipRulesipRuleRequestpstnCustomResourceRoleA7AACD96",
-      ],
-      "Properties": {
-        "Code": {
-          "S3Bucket": {
-            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
-          },
-          "S3Key": "a2fa004ede5cf7f1a3c75206d899edb5a8f9ef2e42f1585dea277d05efbb4115.zip",
-        },
-        "Description": "src/resources/pstn/pstn.lambda.ts",
-        "Environment": {
-          "Variables": {
-            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
-          },
-        },
-        "Handler": "index.handler",
-        "Role": {
-          "Fn::GetAtt": [
-            "PSTNAudioSipRulesipRuleRequestpstnCustomResourceRoleA7AACD96",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs18.x",
-        "Timeout": 60,
-      },
-      "Type": "AWS::Lambda::Function",
     },
     "PSTNAudiosmaHandler5098719C": {
       "DependsOn": [
@@ -4488,6 +3879,138 @@ def submit_response(event: dict, context, response_status: str, error_message: s
         ],
       },
       "Type": "AWS::IAM::Policy",
+    },
+    "CustomPSTNResourcesCustomResourceProviderHandlerD046A72D": {
+      "DependsOn": [
+        "CustomPSTNResourcesCustomResourceProviderRole536C0E76",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "f3d44f37ba2f91b38a20981188b9928ee3c53f5d331bdd14ab2918006bd9859d.zip",
+        },
+        "Handler": "__entrypoint__.handler",
+        "MemorySize": 128,
+        "Role": {
+          "Fn::GetAtt": [
+            "CustomPSTNResourcesCustomResourceProviderRole536C0E76",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs18.x",
+        "Timeout": 300,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "CustomPSTNResourcesCustomResourceProviderRole536C0E76": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Sub": "arn:\${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+          },
+        ],
+        "Policies": [
+          {
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Action": [
+                    "chime:CreatePhoneNumberOrder",
+                    "chime:CreateSipMediaApplication",
+                    "chime:CreateSipRule",
+                    "chime:CreateVoiceConnector",
+                    "chime:CreateVoiceProfileDomain",
+                    "chime:DeletePhoneNumber",
+                    "chime:DeleteSipMediaApplication",
+                    "chime:DeleteSipRule",
+                    "chime:DeleteVoiceConnector",
+                    "chime:DeleteVoiceProfileDomain",
+                    "chime:GetPhoneNumber",
+                    "chime:GetPhoneNumberOrder",
+                    "chime:GetSipRule",
+                    "chime:ListPhoneNumbers",
+                    "chime:PutSipMediaApplicationLoggingConfiguration",
+                    "chime:PutVoiceConnectorLoggingConfiguration",
+                    "chime:PutVoiceConnectorOrigination",
+                    "chime:PutVoiceConnectorStreamingConfiguration",
+                    "chime:PutVoiceConnectorTermination",
+                    "chime:*MediaInsightsPipelineConfiguration",
+                    "chime:SearchAvailablePhoneNumbers",
+                    "chime:UpdateSipRule",
+                    "chime:AssociatePhoneNumbersWithVoiceConnector",
+                    "chime:DisassociatePhoneNumbersFromVoiceConnector",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": "*",
+                },
+                {
+                  "Action": [
+                    "logs:DescribeLogGroups",
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:ListLogDeliveries",
+                    "logs:CreateLogDelivery",
+                    "logs:GetLogDelivery",
+                    "logs:DeleteLogDelivery",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": "*",
+                },
+                {
+                  "Action": "iam:CreateServiceLinkedRole",
+                  "Effect": "Allow",
+                  "Resource": "*",
+                },
+                {
+                  "Action": [
+                    "lambda:GetPolicy",
+                    "lambda:AddPermission",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": "*",
+                },
+                {
+                  "Action": "ssm:*Parameter*",
+                  "Effect": "Allow",
+                  "Resource": {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "arn:aws:ssm:",
+                        {
+                          "Ref": "AWS::Region",
+                        },
+                        ":",
+                        {
+                          "Ref": "AWS::AccountId",
+                        },
+                        ":parameter/chime/*",
+                      ],
+                    ],
+                  },
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "Inline",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
     },
     "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F": {
       "DependsOn": [
@@ -6344,120 +5867,12 @@ def submit_response(event: dict, context, response_status: str, error_message: s
       },
       "Type": "AWS::IAM::Policy",
     },
-    "PSTNAudioPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEvent64122BF2": {
-      "DependsOn": [
-        "PSTNAudioPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicy8CDBF19A",
-        "PSTNAudioPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRole98E2764D",
-      ],
-      "Properties": {
-        "Code": {
-          "S3Bucket": {
-            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
-          },
-          "S3Key": "4b8313cdc235017293aeaa9b32282f38142f7e6923fd0ac5322de1edf4b426d7.zip",
-        },
-        "Description": "AWS CDK resource provider framework - onEvent (test/PSTNAudio/PhoneNumber/ChimePhoneNumber/PSTNResourceProvider)",
-        "Environment": {
-          "Variables": {
-            "USER_ON_EVENT_FUNCTION_ARN": {
-              "Fn::GetAtt": [
-                "PSTNAudioPhoneNumberChimePhoneNumberpstnResourcesFunction701B22EE",
-                "Arn",
-              ],
-            },
-          },
-        },
-        "Handler": "framework.onEvent",
-        "Role": {
-          "Fn::GetAtt": [
-            "PSTNAudioPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRole98E2764D",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs18.x",
-        "Timeout": 900,
-      },
-      "Type": "AWS::Lambda::Function",
-    },
-    "PSTNAudioPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRole98E2764D": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "lambda.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-              ],
-            ],
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "PSTNAudioPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicy8CDBF19A": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "lambda:InvokeFunction",
-              "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "PSTNAudioPhoneNumberChimePhoneNumberpstnResourcesFunction701B22EE",
-                    "Arn",
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::GetAtt": [
-                          "PSTNAudioPhoneNumberChimePhoneNumberpstnResourcesFunction701B22EE",
-                          "Arn",
-                        ],
-                      },
-                      ":*",
-                    ],
-                  ],
-                },
-              ],
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "PSTNAudioPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicy8CDBF19A",
-        "Roles": [
-          {
-            "Ref": "PSTNAudioPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEventServiceRole98E2764D",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
     "PSTNAudioPhoneNumberChimePhoneNumberpstnCustomResource61EF469C": {
       "DeletionPolicy": "Delete",
       "Properties": {
         "ServiceToken": {
           "Fn::GetAtt": [
-            "PSTNAudioPhoneNumberChimePhoneNumberPSTNResourceProviderframeworkonEvent64122BF2",
+            "CustomPSTNResourcesCustomResourceProviderHandlerD046A72D",
             "Arn",
           ],
         },
@@ -6470,262 +5885,15 @@ def submit_response(event: dict, context, response_status: str, error_message: s
         "resourceType": "PhoneNumber",
         "uid": "testPSTNAudioPhoneNumber74BA1A22",
       },
-      "Type": "AWS::CloudFormation::CustomResource",
+      "Type": "Custom::PSTNResources",
       "UpdateReplacePolicy": "Delete",
-    },
-    "PSTNAudioPhoneNumberChimePhoneNumberpstnCustomResourceRole3E48ED67": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "lambda.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "Description": "Amazon Chime PSTN Resources",
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-              ],
-            ],
-          },
-        ],
-        "Policies": [
-          {
-            "PolicyDocument": {
-              "Statement": [
-                {
-                  "Action": [
-                    "chime:*VoiceProfileDomain*",
-                    "kms:CreateGrant",
-                    "kms:DescribeKey",
-                    "chime:*MediaInsightsPipelineConfiguration*",
-                    "chime:CreateSipRule",
-                    "chime:DeleteSipRule",
-                    "chime:UpdateSipRule",
-                    "chime:GetSipRule",
-                    "chime:CreateSipMediaApplication",
-                    "chime:DeleteSipMediaApplication",
-                    "chime:GetPhoneNumberOrder",
-                    "chime:SearchAvailablePhoneNumbers",
-                    "chime:CreatePhoneNumberOrder",
-                    "chime:DeletePhoneNumber",
-                    "chime:GetPhoneNumber",
-                    "chime:CreateVoiceConnector",
-                    "chime:PutVoiceConnectorStreamingConfiguration",
-                    "chime:PutVoiceConnectorTermination",
-                    "chime:PutVoiceConnectorOrigination",
-                    "chime:PutVoiceConnectorLoggingConfiguration",
-                    "chime:ListPhoneNumbers",
-                    "chime:AssociatePhoneNumbersWithVoiceConnector",
-                    "chime:DisassociatePhoneNumbersFromVoiceConnector",
-                    "chime:DeleteVoiceConnector",
-                    "chime:PutSipMediaApplicationAlexaSkillConfiguration",
-                    "chime:PutSipMediaApplicationLoggingConfiguration",
-                    "logs:GetLogDelivery",
-                    "logs:DeleteLogDelivery",
-                    "logs:ListLogDeliveries",
-                    "logs:CreateLogGroup",
-                    "logs:DescribeResourcePolicies",
-                    "logs:PutResourcePolicy",
-                    "logs:DescribeLogGroups",
-                    "logs:CreateLogDelivery",
-                    "lambda:GetPolicy",
-                    "lambda:AddPermission",
-                    "iam:PutRolePolicy",
-                    "iam:CreateServiceLinkedRole",
-                  ],
-                  "Effect": "Allow",
-                  "Resource": "*",
-                },
-                {
-                  "Action": [
-                    "ssm:PutParameter",
-                    "ssm:GetParameter",
-                    "ssm:DeleteParameter",
-                  ],
-                  "Effect": "Allow",
-                  "Resource": {
-                    "Fn::Join": [
-                      "",
-                      [
-                        "arn:aws:ssm:",
-                        {
-                          "Ref": "AWS::Region",
-                        },
-                        ":",
-                        {
-                          "Ref": "AWS::AccountId",
-                        },
-                        ":parameter/chime/*",
-                      ],
-                    ],
-                  },
-                },
-              ],
-              "Version": "2012-10-17",
-            },
-            "PolicyName": "chimePolicy",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "PSTNAudioPhoneNumberChimePhoneNumberpstnResourcesFunction701B22EE": {
-      "DependsOn": [
-        "PSTNAudioPhoneNumberChimePhoneNumberpstnCustomResourceRole3E48ED67",
-      ],
-      "Properties": {
-        "Code": {
-          "S3Bucket": {
-            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
-          },
-          "S3Key": "a2fa004ede5cf7f1a3c75206d899edb5a8f9ef2e42f1585dea277d05efbb4115.zip",
-        },
-        "Description": "src/resources/pstn/pstn.lambda.ts",
-        "Environment": {
-          "Variables": {
-            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
-          },
-        },
-        "Handler": "index.handler",
-        "Role": {
-          "Fn::GetAtt": [
-            "PSTNAudioPhoneNumberChimePhoneNumberpstnCustomResourceRole3E48ED67",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs18.x",
-        "Timeout": 60,
-      },
-      "Type": "AWS::Lambda::Function",
-    },
-    "PSTNAudioSipMediaApplicationsipMediaAppRequestPSTNResourceProviderframeworkonEvent06E23F02": {
-      "DependsOn": [
-        "PSTNAudioSipMediaApplicationsipMediaAppRequestPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicyA0F54BAB",
-        "PSTNAudioSipMediaApplicationsipMediaAppRequestPSTNResourceProviderframeworkonEventServiceRole1EFEB824",
-      ],
-      "Properties": {
-        "Code": {
-          "S3Bucket": {
-            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
-          },
-          "S3Key": "4b8313cdc235017293aeaa9b32282f38142f7e6923fd0ac5322de1edf4b426d7.zip",
-        },
-        "Description": "AWS CDK resource provider framework - onEvent (test/PSTNAudio/SipMediaApplication/sipMediaAppRequest/PSTNResourceProvider)",
-        "Environment": {
-          "Variables": {
-            "USER_ON_EVENT_FUNCTION_ARN": {
-              "Fn::GetAtt": [
-                "PSTNAudioSipMediaApplicationsipMediaAppRequestpstnResourcesFunctionEB8AF622",
-                "Arn",
-              ],
-            },
-          },
-        },
-        "Handler": "framework.onEvent",
-        "Role": {
-          "Fn::GetAtt": [
-            "PSTNAudioSipMediaApplicationsipMediaAppRequestPSTNResourceProviderframeworkonEventServiceRole1EFEB824",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs18.x",
-        "Timeout": 900,
-      },
-      "Type": "AWS::Lambda::Function",
-    },
-    "PSTNAudioSipMediaApplicationsipMediaAppRequestPSTNResourceProviderframeworkonEventServiceRole1EFEB824": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "lambda.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-              ],
-            ],
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "PSTNAudioSipMediaApplicationsipMediaAppRequestPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicyA0F54BAB": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "lambda:InvokeFunction",
-              "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "PSTNAudioSipMediaApplicationsipMediaAppRequestpstnResourcesFunctionEB8AF622",
-                    "Arn",
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::GetAtt": [
-                          "PSTNAudioSipMediaApplicationsipMediaAppRequestpstnResourcesFunctionEB8AF622",
-                          "Arn",
-                        ],
-                      },
-                      ":*",
-                    ],
-                  ],
-                },
-              ],
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "PSTNAudioSipMediaApplicationsipMediaAppRequestPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicyA0F54BAB",
-        "Roles": [
-          {
-            "Ref": "PSTNAudioSipMediaApplicationsipMediaAppRequestPSTNResourceProviderframeworkonEventServiceRole1EFEB824",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
     },
     "PSTNAudioSipMediaApplicationsipMediaAppRequestpstnCustomResource71D71EAE": {
       "DeletionPolicy": "Delete",
       "Properties": {
         "ServiceToken": {
           "Fn::GetAtt": [
-            "PSTNAudioSipMediaApplicationsipMediaAppRequestPSTNResourceProviderframeworkonEvent06E23F02",
+            "CustomPSTNResourcesCustomResourceProviderHandlerD046A72D",
             "Arn",
           ],
         },
@@ -6744,262 +5912,15 @@ def submit_response(event: dict, context, response_status: str, error_message: s
         "resourceType": "SMA",
         "uid": "testPSTNAudioSipMediaApplicationA1890902",
       },
-      "Type": "AWS::CloudFormation::CustomResource",
+      "Type": "Custom::PSTNResources",
       "UpdateReplacePolicy": "Delete",
-    },
-    "PSTNAudioSipMediaApplicationsipMediaAppRequestpstnCustomResourceRoleF2E0D637": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "lambda.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "Description": "Amazon Chime PSTN Resources",
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-              ],
-            ],
-          },
-        ],
-        "Policies": [
-          {
-            "PolicyDocument": {
-              "Statement": [
-                {
-                  "Action": [
-                    "chime:*VoiceProfileDomain*",
-                    "kms:CreateGrant",
-                    "kms:DescribeKey",
-                    "chime:*MediaInsightsPipelineConfiguration*",
-                    "chime:CreateSipRule",
-                    "chime:DeleteSipRule",
-                    "chime:UpdateSipRule",
-                    "chime:GetSipRule",
-                    "chime:CreateSipMediaApplication",
-                    "chime:DeleteSipMediaApplication",
-                    "chime:GetPhoneNumberOrder",
-                    "chime:SearchAvailablePhoneNumbers",
-                    "chime:CreatePhoneNumberOrder",
-                    "chime:DeletePhoneNumber",
-                    "chime:GetPhoneNumber",
-                    "chime:CreateVoiceConnector",
-                    "chime:PutVoiceConnectorStreamingConfiguration",
-                    "chime:PutVoiceConnectorTermination",
-                    "chime:PutVoiceConnectorOrigination",
-                    "chime:PutVoiceConnectorLoggingConfiguration",
-                    "chime:ListPhoneNumbers",
-                    "chime:AssociatePhoneNumbersWithVoiceConnector",
-                    "chime:DisassociatePhoneNumbersFromVoiceConnector",
-                    "chime:DeleteVoiceConnector",
-                    "chime:PutSipMediaApplicationAlexaSkillConfiguration",
-                    "chime:PutSipMediaApplicationLoggingConfiguration",
-                    "logs:GetLogDelivery",
-                    "logs:DeleteLogDelivery",
-                    "logs:ListLogDeliveries",
-                    "logs:CreateLogGroup",
-                    "logs:DescribeResourcePolicies",
-                    "logs:PutResourcePolicy",
-                    "logs:DescribeLogGroups",
-                    "logs:CreateLogDelivery",
-                    "lambda:GetPolicy",
-                    "lambda:AddPermission",
-                    "iam:PutRolePolicy",
-                    "iam:CreateServiceLinkedRole",
-                  ],
-                  "Effect": "Allow",
-                  "Resource": "*",
-                },
-                {
-                  "Action": [
-                    "ssm:PutParameter",
-                    "ssm:GetParameter",
-                    "ssm:DeleteParameter",
-                  ],
-                  "Effect": "Allow",
-                  "Resource": {
-                    "Fn::Join": [
-                      "",
-                      [
-                        "arn:aws:ssm:",
-                        {
-                          "Ref": "AWS::Region",
-                        },
-                        ":",
-                        {
-                          "Ref": "AWS::AccountId",
-                        },
-                        ":parameter/chime/*",
-                      ],
-                    ],
-                  },
-                },
-              ],
-              "Version": "2012-10-17",
-            },
-            "PolicyName": "chimePolicy",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "PSTNAudioSipMediaApplicationsipMediaAppRequestpstnResourcesFunctionEB8AF622": {
-      "DependsOn": [
-        "PSTNAudioSipMediaApplicationsipMediaAppRequestpstnCustomResourceRoleF2E0D637",
-      ],
-      "Properties": {
-        "Code": {
-          "S3Bucket": {
-            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
-          },
-          "S3Key": "a2fa004ede5cf7f1a3c75206d899edb5a8f9ef2e42f1585dea277d05efbb4115.zip",
-        },
-        "Description": "src/resources/pstn/pstn.lambda.ts",
-        "Environment": {
-          "Variables": {
-            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
-          },
-        },
-        "Handler": "index.handler",
-        "Role": {
-          "Fn::GetAtt": [
-            "PSTNAudioSipMediaApplicationsipMediaAppRequestpstnCustomResourceRoleF2E0D637",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs18.x",
-        "Timeout": 60,
-      },
-      "Type": "AWS::Lambda::Function",
-    },
-    "PSTNAudioSipRulesipRuleRequestPSTNResourceProviderframeworkonEvent4F5C7D51": {
-      "DependsOn": [
-        "PSTNAudioSipRulesipRuleRequestPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicyF50203FE",
-        "PSTNAudioSipRulesipRuleRequestPSTNResourceProviderframeworkonEventServiceRoleB5146012",
-      ],
-      "Properties": {
-        "Code": {
-          "S3Bucket": {
-            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
-          },
-          "S3Key": "4b8313cdc235017293aeaa9b32282f38142f7e6923fd0ac5322de1edf4b426d7.zip",
-        },
-        "Description": "AWS CDK resource provider framework - onEvent (test/PSTNAudio/SipRule/sipRuleRequest/PSTNResourceProvider)",
-        "Environment": {
-          "Variables": {
-            "USER_ON_EVENT_FUNCTION_ARN": {
-              "Fn::GetAtt": [
-                "PSTNAudioSipRulesipRuleRequestpstnResourcesFunction3F447675",
-                "Arn",
-              ],
-            },
-          },
-        },
-        "Handler": "framework.onEvent",
-        "Role": {
-          "Fn::GetAtt": [
-            "PSTNAudioSipRulesipRuleRequestPSTNResourceProviderframeworkonEventServiceRoleB5146012",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs18.x",
-        "Timeout": 900,
-      },
-      "Type": "AWS::Lambda::Function",
-    },
-    "PSTNAudioSipRulesipRuleRequestPSTNResourceProviderframeworkonEventServiceRoleB5146012": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "lambda.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-              ],
-            ],
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "PSTNAudioSipRulesipRuleRequestPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicyF50203FE": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "lambda:InvokeFunction",
-              "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "PSTNAudioSipRulesipRuleRequestpstnResourcesFunction3F447675",
-                    "Arn",
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::GetAtt": [
-                          "PSTNAudioSipRulesipRuleRequestpstnResourcesFunction3F447675",
-                          "Arn",
-                        ],
-                      },
-                      ":*",
-                    ],
-                  ],
-                },
-              ],
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "PSTNAudioSipRulesipRuleRequestPSTNResourceProviderframeworkonEventServiceRoleDefaultPolicyF50203FE",
-        "Roles": [
-          {
-            "Ref": "PSTNAudioSipRulesipRuleRequestPSTNResourceProviderframeworkonEventServiceRoleB5146012",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
     },
     "PSTNAudioSipRulesipRuleRequestpstnCustomResourceB66734D2": {
       "DeletionPolicy": "Delete",
       "Properties": {
         "ServiceToken": {
           "Fn::GetAtt": [
-            "PSTNAudioSipRulesipRuleRequestPSTNResourceProviderframeworkonEvent4F5C7D51",
+            "CustomPSTNResourcesCustomResourceProviderHandlerD046A72D",
             "Arn",
           ],
         },
@@ -7030,147 +5951,8 @@ def submit_response(event: dict, context, response_status: str, error_message: s
         "resourceType": "SMARule",
         "uid": "testPSTNAudioSipRule53F5CC44",
       },
-      "Type": "AWS::CloudFormation::CustomResource",
+      "Type": "Custom::PSTNResources",
       "UpdateReplacePolicy": "Delete",
-    },
-    "PSTNAudioSipRulesipRuleRequestpstnCustomResourceRoleA7AACD96": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "lambda.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "Description": "Amazon Chime PSTN Resources",
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-              ],
-            ],
-          },
-        ],
-        "Policies": [
-          {
-            "PolicyDocument": {
-              "Statement": [
-                {
-                  "Action": [
-                    "chime:*VoiceProfileDomain*",
-                    "kms:CreateGrant",
-                    "kms:DescribeKey",
-                    "chime:*MediaInsightsPipelineConfiguration*",
-                    "chime:CreateSipRule",
-                    "chime:DeleteSipRule",
-                    "chime:UpdateSipRule",
-                    "chime:GetSipRule",
-                    "chime:CreateSipMediaApplication",
-                    "chime:DeleteSipMediaApplication",
-                    "chime:GetPhoneNumberOrder",
-                    "chime:SearchAvailablePhoneNumbers",
-                    "chime:CreatePhoneNumberOrder",
-                    "chime:DeletePhoneNumber",
-                    "chime:GetPhoneNumber",
-                    "chime:CreateVoiceConnector",
-                    "chime:PutVoiceConnectorStreamingConfiguration",
-                    "chime:PutVoiceConnectorTermination",
-                    "chime:PutVoiceConnectorOrigination",
-                    "chime:PutVoiceConnectorLoggingConfiguration",
-                    "chime:ListPhoneNumbers",
-                    "chime:AssociatePhoneNumbersWithVoiceConnector",
-                    "chime:DisassociatePhoneNumbersFromVoiceConnector",
-                    "chime:DeleteVoiceConnector",
-                    "chime:PutSipMediaApplicationAlexaSkillConfiguration",
-                    "chime:PutSipMediaApplicationLoggingConfiguration",
-                    "logs:GetLogDelivery",
-                    "logs:DeleteLogDelivery",
-                    "logs:ListLogDeliveries",
-                    "logs:CreateLogGroup",
-                    "logs:DescribeResourcePolicies",
-                    "logs:PutResourcePolicy",
-                    "logs:DescribeLogGroups",
-                    "logs:CreateLogDelivery",
-                    "lambda:GetPolicy",
-                    "lambda:AddPermission",
-                    "iam:PutRolePolicy",
-                    "iam:CreateServiceLinkedRole",
-                  ],
-                  "Effect": "Allow",
-                  "Resource": "*",
-                },
-                {
-                  "Action": [
-                    "ssm:PutParameter",
-                    "ssm:GetParameter",
-                    "ssm:DeleteParameter",
-                  ],
-                  "Effect": "Allow",
-                  "Resource": {
-                    "Fn::Join": [
-                      "",
-                      [
-                        "arn:aws:ssm:",
-                        {
-                          "Ref": "AWS::Region",
-                        },
-                        ":",
-                        {
-                          "Ref": "AWS::AccountId",
-                        },
-                        ":parameter/chime/*",
-                      ],
-                    ],
-                  },
-                },
-              ],
-              "Version": "2012-10-17",
-            },
-            "PolicyName": "chimePolicy",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "PSTNAudioSipRulesipRuleRequestpstnResourcesFunction3F447675": {
-      "DependsOn": [
-        "PSTNAudioSipRulesipRuleRequestpstnCustomResourceRoleA7AACD96",
-      ],
-      "Properties": {
-        "Code": {
-          "S3Bucket": {
-            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
-          },
-          "S3Key": "a2fa004ede5cf7f1a3c75206d899edb5a8f9ef2e42f1585dea277d05efbb4115.zip",
-        },
-        "Description": "src/resources/pstn/pstn.lambda.ts",
-        "Environment": {
-          "Variables": {
-            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
-          },
-        },
-        "Handler": "index.handler",
-        "Role": {
-          "Fn::GetAtt": [
-            "PSTNAudioSipRulesipRuleRequestpstnCustomResourceRoleA7AACD96",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs18.x",
-        "Timeout": 60,
-      },
-      "Type": "AWS::Lambda::Function",
     },
     "PSTNAudiosmaHandler5098719C": {
       "DependsOn": [
