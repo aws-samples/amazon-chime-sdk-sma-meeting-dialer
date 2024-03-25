@@ -894,7 +894,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "f3d44f37ba2f91b38a20981188b9928ee3c53f5d331bdd14ab2918006bd9859d.zip",
+          "S3Key": "0fed5cedd63036fe2b76be63465ce6e8e96bb56fc1a1bc4527cb5ea5840720e9.zip",
         },
         "Handler": "__entrypoint__.handler",
         "MemorySize": 128,
@@ -971,6 +971,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
                     "logs:CreateLogDelivery",
                     "logs:GetLogDelivery",
                     "logs:DeleteLogDelivery",
+                    "logs:PutResourcePolicy",
                   ],
                   "Effect": "Allow",
                   "Resource": "*",
@@ -3335,7 +3336,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           },
         ],
         "SourceObjectKeys": [
-          "0b64619ce7ee6016b93aa8340942b8261695c500c9860ca4266dd971e9638ca3.zip",
+          "a697d246e7eb40ca878cd101d9aba8fd91170bd722e892e527030350b00b6bee.zip",
           "7e2723da3d38f7cfb88b2c953d1b5da26dfd4aa7361cdb0bfcdf6041e0a71cad.zip",
         ],
       },
@@ -3889,7 +3890,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "f3d44f37ba2f91b38a20981188b9928ee3c53f5d331bdd14ab2918006bd9859d.zip",
+          "S3Key": "0fed5cedd63036fe2b76be63465ce6e8e96bb56fc1a1bc4527cb5ea5840720e9.zip",
         },
         "Handler": "__entrypoint__.handler",
         "MemorySize": 128,
@@ -3966,6 +3967,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
                     "logs:CreateLogDelivery",
                     "logs:GetLogDelivery",
                     "logs:DeleteLogDelivery",
+                    "logs:PutResourcePolicy",
                   ],
                   "Effect": "Allow",
                   "Resource": "*",
@@ -6316,7 +6318,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           },
         ],
         "SourceObjectKeys": [
-          "0b64619ce7ee6016b93aa8340942b8261695c500c9860ca4266dd971e9638ca3.zip",
+          "a697d246e7eb40ca878cd101d9aba8fd91170bd722e892e527030350b00b6bee.zip",
           "63aeec175be72eeae25596aa0bc3371139c1c37c55d554068b7b0a9cc5fb6c0f.zip",
         ],
       },
