@@ -229,7 +229,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
             "Arn",
           ],
         },
-        "Runtime": "python3.9",
+        "Runtime": "python3.11",
         "Timeout": 300,
       },
       "Type": "AWS::Lambda::Function",
@@ -894,7 +894,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "0fed5cedd63036fe2b76be63465ce6e8e96bb56fc1a1bc4527cb5ea5840720e9.zip",
+          "S3Key": "527f1786ee10df996cc1e33d2cc5c095450c9ef2f4eea71240caa7781581733c.zip",
         },
         "Handler": "__entrypoint__.handler",
         "MemorySize": 128,
@@ -3336,7 +3336,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           },
         ],
         "SourceObjectKeys": [
-          "a697d246e7eb40ca878cd101d9aba8fd91170bd722e892e527030350b00b6bee.zip",
+          "b23038a629906d3073099307ce9b74be93921bdc54f21b70211f9ddf3dfaf109.zip",
           "7e2723da3d38f7cfb88b2c953d1b5da26dfd4aa7361cdb0bfcdf6041e0a71cad.zip",
         ],
       },
@@ -3597,7 +3597,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
             "Arn",
           ],
         },
-        "Runtime": "python3.9",
+        "Runtime": "python3.11",
         "Timeout": 300,
       },
       "Type": "AWS::Lambda::Function",
@@ -3890,7 +3890,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "0fed5cedd63036fe2b76be63465ce6e8e96bb56fc1a1bc4527cb5ea5840720e9.zip",
+          "S3Key": "527f1786ee10df996cc1e33d2cc5c095450c9ef2f4eea71240caa7781581733c.zip",
         },
         "Handler": "__entrypoint__.handler",
         "MemorySize": 128,
@@ -6318,7 +6318,7 @@ def submit_response(event: dict, context, response_status: str, error_message: s
           },
         ],
         "SourceObjectKeys": [
-          "a697d246e7eb40ca878cd101d9aba8fd91170bd722e892e527030350b00b6bee.zip",
+          "b23038a629906d3073099307ce9b74be93921bdc54f21b70211f9ddf3dfaf109.zip",
           "63aeec175be72eeae25596aa0bc3371139c1c37c55d554068b7b0a9cc5fb6c0f.zip",
         ],
       },
