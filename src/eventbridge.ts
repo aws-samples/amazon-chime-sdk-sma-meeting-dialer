@@ -17,7 +17,7 @@ export class EventBridgeResources extends Construct {
     this.eventBridgeLambda = new Function(this, 'eventBridgeLambda', {
       code: Code.fromAsset('src/resources/eventBridge', {
         bundling: {
-          image: Runtime.PYTHON_3_9.bundlingImage,
+          image: Runtime.PYTHON_3_12.bundlingImage,
           command: [
             'bash',
             '-c',
@@ -29,7 +29,7 @@ export class EventBridgeResources extends Construct {
       environment: {
         LOG_LEVEL: props.logLevel,
       },
-      runtime: Runtime.PYTHON_3_9,
+      runtime: Runtime.PYTHON_3_12,
       architecture: Architecture.ARM_64,
       timeout: Duration.seconds(60),
     });

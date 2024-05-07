@@ -58,7 +58,7 @@ export class PSTNAudio extends Construct {
     this.smaHandler = new Function(this, 'smaHandler', {
       code: Code.fromAsset('src/resources/smaHandler', {
         bundling: {
-          image: Runtime.PYTHON_3_9.bundlingImage,
+          image: Runtime.PYTHON_3_12.bundlingImage,
           command: [
             'bash',
             '-c',
@@ -71,7 +71,7 @@ export class PSTNAudio extends Construct {
         MEETING_TABLE: props.meetingTable.tableName,
         LOG_LEVEL: props.logLevel,
       },
-      runtime: Runtime.PYTHON_3_9,
+      runtime: Runtime.PYTHON_3_12,
       architecture: Architecture.ARM_64,
       role: smaLambdaRole,
       timeout: Duration.seconds(60),

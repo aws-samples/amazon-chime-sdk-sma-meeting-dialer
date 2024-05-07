@@ -85,7 +85,7 @@ export class Infrastructure extends Construct {
     this.createMeetingHandler = new Function(this, 'createMeetingHandler', {
       code: Code.fromAsset('src/resources/createMeeting', {
         bundling: {
-          image: Runtime.PYTHON_3_9.bundlingImage,
+          image: Runtime.PYTHON_3_12.bundlingImage,
           command: [
             'bash',
             '-c',
@@ -94,7 +94,7 @@ export class Infrastructure extends Construct {
         },
       }),
       handler: 'index.handler',
-      runtime: Runtime.PYTHON_3_9,
+      runtime: Runtime.PYTHON_3_12,
       architecture: Architecture.ARM_64,
       environment: {
         FROM_NUMBER: props.fromNumber,
@@ -111,7 +111,7 @@ export class Infrastructure extends Construct {
     this.joinMeetingHandler = new Function(this, 'joinMeetingHandler', {
       code: Code.fromAsset('src/resources/joinMeeting', {
         bundling: {
-          image: Runtime.PYTHON_3_9.bundlingImage,
+          image: Runtime.PYTHON_3_12.bundlingImage,
           command: [
             'bash',
             '-c',
@@ -124,7 +124,7 @@ export class Infrastructure extends Construct {
         MEETING_TABLE: props.meetingTable.tableName,
         LOG_LEVEL: props.logLevel,
       },
-      runtime: Runtime.PYTHON_3_9,
+      runtime: Runtime.PYTHON_3_12,
       architecture: Architecture.ARM_64,
       role: infrastructureRole,
       timeout: Duration.seconds(60),
@@ -135,7 +135,7 @@ export class Infrastructure extends Construct {
     this.endMeetingHandler = new Function(this, 'endMeetingHandler', {
       code: Code.fromAsset('src/resources/endMeeting', {
         bundling: {
-          image: Runtime.PYTHON_3_9.bundlingImage,
+          image: Runtime.PYTHON_3_12.bundlingImage,
           command: [
             'bash',
             '-c',
@@ -148,7 +148,7 @@ export class Infrastructure extends Construct {
         MEETING_TABLE: props.meetingTable.tableName,
         LOG_LEVEL: props.logLevel,
       },
-      runtime: Runtime.PYTHON_3_9,
+      runtime: Runtime.PYTHON_3_12,
       architecture: Architecture.ARM_64,
       role: infrastructureRole,
       timeout: Duration.seconds(60),
@@ -159,7 +159,7 @@ export class Infrastructure extends Construct {
     this.queryMeetingHandler = new Function(this, 'queryMeetingHandler', {
       code: Code.fromAsset('src/resources/queryMeeting', {
         bundling: {
-          image: Runtime.PYTHON_3_9.bundlingImage,
+          image: Runtime.PYTHON_3_12.bundlingImage,
           command: [
             'bash',
             '-c',
@@ -172,7 +172,7 @@ export class Infrastructure extends Construct {
         MEETING_TABLE: props.meetingTable.tableName,
         LOG_LEVEL: props.logLevel,
       },
-      runtime: Runtime.PYTHON_3_9,
+      runtime: Runtime.PYTHON_3_12,
       architecture: Architecture.ARM_64,
       role: infrastructureRole,
       timeout: Duration.seconds(60),

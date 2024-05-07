@@ -13,6 +13,8 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   copyrightOwner: 'Amazon.com, Inc.',
   authorAddress: 'https://aws.amazon.com',
   appEntrypoint: 'amazon-chime-sdk-sma-meeting-dialer.ts',
+  projenrcTs: true,
+  jest: false,
   depsUpgradeOptions: {
     ignoreProjen: false,
     workflowOptions: {
@@ -26,8 +28,35 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   },
   autoApproveUpgrades: true,
   devDeps: ['esbuild'],
-  deps: ['cdk-amazon-chime-resources@latest', 'fs-extra', '@types/fs-extra'],
+  deps: [
+    'cdk-amazon-chime-resources',
+    'fs-extra',
+    '@types/fs-extra',
+    '@types/aws-lambda',
+  ],
   projenUpgradeSecret: 'PROJEN_GITHUB_TOKEN',
+});
+
+project.tsconfigDev.file.addOverride('include', [
+  'src/**/*.ts',
+  'site/src/**/*.tsx',
+  './.projenrc.ts',
+]);
+
+project.eslint.addOverride({
+  files: ['site/src/**/*.tsx', 'src/resources/**/*.ts'],
+  rules: {
+    'indent': 'off',
+    '@typescript-eslint/indent': 'off',
+  },
+});
+
+project.eslint.addOverride({
+  files: ['src/resources/**/*.ts', 'src/*.ts', 'site/src/**/*.tsx'],
+  rules: {
+    '@typescript-eslint/no-require-imports': 'off',
+    'import/no-extraneous-dependencies': 'off',
+  },
 });
 
 const common_exclude = [
@@ -82,7 +111,7 @@ upgradeSite.addJobs({
 });
 
 project.addTask('launch', {
-  exec: 'yarn && yarn projen && yarn build && yarn cdk bootstrap && yarn cdk deploy --require-approval never && yarn configLocal',
+  exec: 'yarn && yarn cdk bootstrap && yarn cdk deploy --require-approval never && yarn configLocal',
 });
 project.addTask('getBucket', {
   exec: "aws cloudformation describe-stacks --stack-name SMAMeetingDialer --region us-east-1 --query 'Stacks[0].Outputs[?OutputKey==`siteBucket`].OutputValue' --output text",
