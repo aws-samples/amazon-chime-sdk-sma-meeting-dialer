@@ -64,7 +64,7 @@
     "@smithy/util-utf8" "^2.0.0"
     tslib "^2.6.2"
 
-"@aws-sdk/client-chime-sdk-identity@^3.600.0":
+"@aws-sdk/client-chime-sdk-identity@^3.606.0":
   version "3.606.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/client-chime-sdk-identity/-/client-chime-sdk-identity-3.606.0.tgz#bffb36073ff118f04c8f8ef5678dbb9dda4fe002"
   integrity sha512-WBbYSxCk93knAFHvpn38sGFh51VvppIB25U6c1hFTWJXHgb0r8P4YtymxbGv3SwQQj3RT/sU6WkRGTh/na+ITw==
@@ -112,7 +112,7 @@
     tslib "^2.6.2"
     uuid "^9.0.1"
 
-"@aws-sdk/client-chime-sdk-media-pipelines@^3.600.0":
+"@aws-sdk/client-chime-sdk-media-pipelines@^3.606.0":
   version "3.606.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/client-chime-sdk-media-pipelines/-/client-chime-sdk-media-pipelines-3.606.0.tgz#5a63c6b8ce0cf031b0de00aa15dcfba1c8f0fc97"
   integrity sha512-SR8QX5jWHCGkFmfEMF16SHyzabh5ZADd62WR+4OWE/vskG+AOcSd928jTONptEiNIxKa5m+GqBl5IJHpvGDZNQ==
@@ -160,7 +160,7 @@
     tslib "^2.6.2"
     uuid "^9.0.1"
 
-"@aws-sdk/client-chime-sdk-messaging@^3.600.0":
+"@aws-sdk/client-chime-sdk-messaging@^3.606.0":
   version "3.606.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/client-chime-sdk-messaging/-/client-chime-sdk-messaging-3.606.0.tgz#f75764e30f19cedac1bd668f35d55ea65fe5a927"
   integrity sha512-4bK/ypThl1N2AQL5mEENsrQcGc38yoPtdgQ49v72hc1WGYnCmVHUDXxLMOzffTQHECGFrMeSgK7OLjqW/rAM/g==
@@ -208,7 +208,7 @@
     tslib "^2.6.2"
     uuid "^9.0.1"
 
-"@aws-sdk/client-chime-sdk-voice@^3.600.0":
+"@aws-sdk/client-chime-sdk-voice@^3.606.0":
   version "3.606.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/client-chime-sdk-voice/-/client-chime-sdk-voice-3.606.0.tgz#82d59d54532cfe3a4abfcf4e8bc07542752662e7"
   integrity sha512-DJinHXhMD2iV8nfyEDliATO7iNykwSZdMpmwJFTE2Z1A3UgilZmDJKMdQO+YzeUP/vM/95f3oI0EdhgKjeTNcg==
@@ -255,7 +255,7 @@
     "@smithy/util-utf8" "^3.0.0"
     tslib "^2.6.2"
 
-"@aws-sdk/client-cloudwatch-logs@^3.600.0":
+"@aws-sdk/client-cloudwatch-logs@^3.606.0":
   version "3.606.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/client-cloudwatch-logs/-/client-cloudwatch-logs-3.606.0.tgz#19a2d52b40229d9109e705bfe6b13d8a0ef1f401"
   integrity sha512-2b6rur2wHqooDf5Kpd9h5Mw1J1S/TZEGBDokdQWs51BAvBCWy4cpdizJnb9dfwfUSoFVSfF6Mbi5Hvj0QlGhlQ==
@@ -306,7 +306,7 @@
     tslib "^2.6.2"
     uuid "^9.0.1"
 
-"@aws-sdk/client-kinesis-video@^3.600.0":
+"@aws-sdk/client-kinesis-video@^3.606.0":
   version "3.606.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/client-kinesis-video/-/client-kinesis-video-3.606.0.tgz#bd1aca964c1b948480a6bd81fdba1e093366d10a"
   integrity sha512-Jc48kGu//cusgm/qYyQiX98K3sso8nwtDN1dU7f5ocSNExZk1E0GMAvhmEG9sLoc55xpJ60KMXaXOKXijbWpWw==
@@ -353,7 +353,7 @@
     "@smithy/util-utf8" "^3.0.0"
     tslib "^2.6.2"
 
-"@aws-sdk/client-ssm@^3.600.0":
+"@aws-sdk/client-ssm@^3.606.0":
   version "3.606.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/client-ssm/-/client-ssm-3.606.0.tgz#5e92cf397a79cc13f5fef19fc66e8b2a06339473"
   integrity sha512-s4vRPltot8HsnmBvhgBrY/tmtdQ14/dxG3S1+076pJzb2BfdxKap3GA2gO+n+/1whQtXxeq5Jx/wkIn+3yRDuQ==
@@ -1863,18 +1863,18 @@ case@1.6.3, case@^1.6.3:
   resolved "https://registry.yarnpkg.com/case/-/case-1.6.3.tgz#0a4386e3e9825351ca2e6216c60467ff5f1ea1c9"
   integrity sha512-mzDSXIPaFwVDvZAHqZ9VlbyF4yyXRuX6IvB06WvPYkqJVO24kX1PPhv9bfpKNFZyxYFmmgo03HUiD8iklmJYRQ==
 
-cdk-amazon-chime-resources@^3.2.16:
-  version "3.2.16"
-  resolved "https://registry.yarnpkg.com/cdk-amazon-chime-resources/-/cdk-amazon-chime-resources-3.2.16.tgz#1d36b02a2e92d8f7816c055dfa5dd10393d9b374"
-  integrity sha512-d+ipl8MU6FkCGoa0GdVbLgKE33VedvQlEcOU1zvNPNGG8jAExrwjeklqJWDQXnvyoGR1eLwS1rOxksjL740qvQ==
+cdk-amazon-chime-resources@^3.2.17:
+  version "3.2.17"
+  resolved "https://registry.yarnpkg.com/cdk-amazon-chime-resources/-/cdk-amazon-chime-resources-3.2.17.tgz#24ce9b7b2a68518a9c82ec6a6b83b254c15933b2"
+  integrity sha512-ylvVXtAYxITWRgc48lcBljDiz1YvKPLaj1z9uuF3Cpt0tXa6TsD9wXU6ZcjWCJ1Nlpz+wsLOm9EQ9WtTwi0WlQ==
   dependencies:
-    "@aws-sdk/client-chime-sdk-identity" "^3.600.0"
-    "@aws-sdk/client-chime-sdk-media-pipelines" "^3.600.0"
-    "@aws-sdk/client-chime-sdk-messaging" "^3.600.0"
-    "@aws-sdk/client-chime-sdk-voice" "^3.600.0"
-    "@aws-sdk/client-cloudwatch-logs" "^3.600.0"
-    "@aws-sdk/client-kinesis-video" "^3.600.0"
-    "@aws-sdk/client-ssm" "^3.600.0"
+    "@aws-sdk/client-chime-sdk-identity" "^3.606.0"
+    "@aws-sdk/client-chime-sdk-media-pipelines" "^3.606.0"
+    "@aws-sdk/client-chime-sdk-messaging" "^3.606.0"
+    "@aws-sdk/client-chime-sdk-voice" "^3.606.0"
+    "@aws-sdk/client-cloudwatch-logs" "^3.606.0"
+    "@aws-sdk/client-kinesis-video" "^3.606.0"
+    "@aws-sdk/client-ssm" "^3.606.0"
     "@types/aws-lambda" "^8.10.140"
     aws-cdk-lib "^2.134.0"
     aws-lambda "^1.0.7"

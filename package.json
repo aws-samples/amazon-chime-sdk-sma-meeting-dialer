@@ -42,7 +42,7 @@
     "@types/aws-lambda": "^8.10.140",
     "@types/fs-extra": "^9.0.13",
     "aws-cdk-lib": "^2.65.0",
-    "cdk-amazon-chime-resources": "^3.2.16",
+    "cdk-amazon-chime-resources": "^3.2.17",
     "constructs": "^10.0.5",
     "fs-extra": "^11.2.0"
   },
